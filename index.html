@@ -15,8 +15,8 @@
             </header>
             <form id="loginForm" novalidate>
                 <div class="input-group">
-                    <label for="username">Usuario</label>
-                    <input type="text" id="username" name="username" required autocomplete="username">
+                    <label for="username">Usuario (Email)</label>
+                    <input type="email" id="username" name="username" required autocomplete="email">
                 </div>
                 <div class="input-group">
                     <label for="password">Contraseña</label>
@@ -30,13 +30,17 @@
             </form>
         </div>
     </main>
-    <script src="login.js"></script>
-<!-- Scripts de Firebase - ¡AÑADIR ESTO! -->
+    
+    <!--
+      ORDEN CORRECTO DE SCRIPTS:
+      1. Cargar las librerías de Firebase.
+      2. Cargar NUESTRO script que usa las librerías.
+    -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
-    <!-- Tu script local (login.js o el script del planner) -->
-    <script src="login.js"></script> <!-- O el script integrado en planner.html -->
+    
+    <!-- Cargamos nuestro script UNA SOLA VEZ, al final. -->
+    <script src="login.js"></script>
 </body>
 </html>
