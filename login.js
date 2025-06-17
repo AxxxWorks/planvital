@@ -17,9 +17,10 @@ document.addEventListener('DOMContentLoaded', function () {
   measurementId: "G-MEASUREMENT_ID",
 };
 
-    // Inicializar Firebase
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
+   // Inicializar Firebase (de forma segura)
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
 
     // Obtener los elementos del formulario
     const loginForm = document.getElementById('loginForm');
