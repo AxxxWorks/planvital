@@ -29,18 +29,14 @@
                 </div>
             </form>
         </div>
-    </main>
-    
-    <!--
-      ORDEN CORRECTO DE SCRIPTS:
-      1. Cargar las librerías de Firebase.
-      2. Cargar NUESTRO script que usa las librerías.
-    -->
+     </main>
+
+    <!-- 1. Carga las librerías de Firebase PRIMERO -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    
-    <!-- Cargamos nuestro script UNA SOLA VEZ, al final. -->
+
+    <!-- 2. AHORA carga tu script que las utiliza -->
     <script src="login.js"></script>
 </body>
 </html>
