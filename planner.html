@@ -313,11 +313,10 @@ var firebaseConfig = {
 
 // --- A PARTIR DE AQUÍ, ES SOLO COPIAR Y PEGAR ---
 
-// Inicializar Firebase
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-let currentUser = null; 
+// Inicializar Firebase (de forma segura)
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
 
 // --- NUEVO GUARDIÁN ---
 auth.onAuthStateChanged(user => {
