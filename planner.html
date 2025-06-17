@@ -3,31 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Frecuencia Vital - Plan de Estudios Integral</title>
+    <title>Frecuencia Vital - Plan de Estudios Integral v10.13</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Source+Sans+Pro:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
 
         :root {
-            --bg-color: #121212; --cell-bg: #1a1a1a; --main-border: #2c2c2c; --text-color: #e0e0e0;
-            --text-secondary: #b0b0b0; --text-muted: #777; --accent-green: #50E050; --accent-color: #00FF7F;
-            --subject-title-color: #ffffff; --subject-highlight-color: #ff9800; --meta-bg: #181c25;
-            --meta-header-bg: #101217; --meta-border: #2c3240; --meta-text: #a9bce2; --plan-bg: #1e1e1e;
-            --vfd-green: #50E050; --progress-score-bg: #4caf50; --progress-advance-bg: #ff9800;
-            --text-completed: #777; --bullet-completed: #555; --tag-text-dark: #111;
+            --bg-color: #121212;
+            --cell-bg: #1a1a1a;
+            --main-border: #2c2c2c;
+            --text-color: #e0e0e0;
+            --accent-color: #00FF7F;
+            --subject-title-color: #ffffff;
+            --subject-highlight-color: #ff9800; /* Color naranja para resaltar materias */
+            --meta-bg: #181c25;
+            --meta-header-bg: #101217;
+            --meta-border: #2c3240;
+            --meta-text: #a9bce2;
+            --plan-bg: #1e1e1e;
+            --vfd-green: #50E050;
+            --progress-score-bg: #4caf50;
+            --progress-advance-bg: #ff9800;
+            --text-completed: #777;
+            --bullet-completed: #555;
+            --tag-text-dark: #111;
             --step-1-color: #03dac6; --step-2-color: #ffb74d; --step-3-color: #4fc3f7;
             --step-4-color: #ce93d8; --step-5-color: #ef9a9a; --step-6-color: #a5d6a7;
         }
-        body { font-family: 'Source Sans Pro', sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 20px; overflow-x: hidden; }
+
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
         .main-header { text-align: center; margin-bottom: 25px; padding: 10px 0; }
-        .motivational-quote { font-family: 'Orbitron', sans-serif; color: var(--vfd-green); font-size: 1.5em; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; text-shadow: 0 0 4px rgba(80, 224, 80, 0.6), 0 0 8px rgba(80, 224, 80, 0.4); min-height: 1.2em; }
-        .countdown-timer-container { display: flex; justify-content: center; align-items: center; gap: 25px; margin-bottom: 25px; }
+        .motivational-quote {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--vfd-green);
+            font-size: 1.5em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 4px rgba(80, 224, 80, 0.6), 0 0 8px rgba(80, 224, 80, 0.4);
+            min-height: 1.2em;
+        }
+        .countdown-timer-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
         .countdown-unit { text-align: center; }
-        .countdown-label { font-family: 'Orbitron', sans-serif; font-size: 0.8em; color: var(--vfd-green); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; opacity: 0.8; }
-        .countdown-digits { font-family: 'Orbitron', sans-serif; font-size: 4em; color: var(--vfd-green); line-height: 1; text-shadow: 0 0 5px rgba(80, 224, 80, 0.7), 0 0 10px rgba(80, 224, 80, 0.5), 0 0 15px rgba(80, 224, 80, 0.3); }
+        .countdown-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8em;
+            color: var(--vfd-green);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+            opacity: 0.8;
+        }
+        .countdown-digits {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4em;
+            color: var(--vfd-green);
+            line-height: 1;
+            text-shadow: 0 0 5px rgba(80, 224, 80, 0.7), 0 0 10px rgba(80, 224, 80, 0.5), 0 0 15px rgba(80, 224, 80, 0.3);
+        }
+
         .topic-item.topic-completed { color: var(--text-completed); font-style: italic; }
         .topic-item.topic-completed:hover { color: var(--text-completed); background-color: transparent; }
         .topic-item.topic-completed::before { color: var(--bullet-completed); }
+
         .global-progress-container { max-width: 900px; margin: 30px auto; display: flex; flex-direction: column; gap: 12px; padding: 0 10px; }
         .progress-bar-wrapper { display: flex; flex-direction: column; gap: 4px; }
         .progress-bar-wrapper label { font-size: 0.85em; color: var(--meta-text); font-weight: 600; }
@@ -47,7 +99,17 @@
         .calendar-day-number { font-size: 0.9em; font-weight: 600; color: #777; position: absolute; top: 8px; right: 12px; z-index: 1; }
         .day-content ul { list-style-type: none; padding-left: 0; margin: 25px 0 0 0; }
         .day-content li { margin-bottom: 4px; padding-left: 14px; position: relative; font-size: 0.85em; }
-        .day-content .subject-title, #modal-topics .subject-title { color: var(--subject-highlight-color); font-weight: 700; display: block; margin-bottom: 6px; text-transform: uppercase; font-size: 1em; text-shadow: 0 0 5px rgba(255, 152, 0, 0.4); }
+        
+        .day-content .subject-title, #modal-topics .subject-title {
+            color: var(--subject-highlight-color);
+            font-weight: 700;
+            display: block;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            font-size: 1em;
+            text-shadow: 0 0 5px rgba(255, 152, 0, 0.4);
+        }
+        
         .topic-item { padding: 4px 6px; margin-left: -6px; border-radius: 4px; transition: background-color 0.2s ease, color 0.2s ease; }
         .topic-item:not(.topic-completed):hover { background-color: var(--meta-bg); color: var(--accent-color); }
         .topic-item::before { content: '■'; position: absolute; left: 0; top: 5px; color: var(--accent-color); font-size: 0.8em; line-height: 1.5; transition: color 0.3s ease; }
@@ -116,86 +178,37 @@
         .topic-finish-btn { background-color: var(--vfd-green); color: var(--bg-color); border: none; border-radius: 6px; padding: 12px 25px; font-family: 'Orbitron', sans-serif; font-size: 1em; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: background-color 0.2s ease, transform 0.2s ease; }
         .topic-finish-btn:hover { background-color: #76ff76; transform: translateY(-2px); }
         
-        /* --- ESTILOS PARA PESTAÑAS Y VISTA GLOBAL --- */
-        .tab-navigation { display: flex; justify-content: center; border-bottom: 2px solid var(--main-border); margin: 0 auto 25px auto; max-width: 900px; width: 100%; }
-        .tab-button { font-family: 'Orbitron', sans-serif; font-size: 1.1em; padding: 10px 25px; cursor: pointer; background: none; border: none; color: var(--text-secondary); border-bottom: 4px solid transparent; transition: color 0.3s, border-bottom-color 0.3s; margin-bottom: -2px; }
-        .tab-button:hover { color: var(--text-primary); }
-        .tab-button.active { color: var(--accent-green); border-bottom-color: var(--accent-green); }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .global-view-header h1 { text-align: center; font-family: 'Orbitron', sans-serif; color: var(--vfd-green); font-size: 1.8em; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 30px; text-shadow: 0 0 4px rgba(80, 224, 80, 0.6); }
-        #specialty-accordions { display: flex; flex-direction: column; gap: 10px; max-width: 900px; margin: 0 auto; }
-        .specialty-accordion .accordion-header { background-color: var(--cell-bg); color: var(--text-primary); cursor: pointer; padding: 15px 20px; width: 100%; border: 1px solid var(--main-border); text-align: left; outline: none; font-size: 1.2em; font-weight: 500; display: flex; align-items: center; justify-content: space-between; border-radius: 8px; transition: background-color 0.3s, border-color 0.3s; }
-        .specialty-accordion .accordion-header:hover, .specialty-accordion .accordion-header.active { background-color: #2a2a2a; border-color: var(--accent-green); }
-        .accordion-header .specialty-name { font-family: 'Source Sans Pro', sans-serif; font-weight: 700; }
-        .specialty-progress-indicators { display: flex; gap: 20px; align-items: center; font-size: 0.9em; margin-left: 20px; }
-        .indicator { display: flex; align-items: center; gap: 6px; }
-        .indicator .fas { font-size: 0.9em; }
-        .score-indicator .fas { color: #ffc107; }
-        .completion-indicator .fas { color: #4caf50; }
-        .score-value, .completion-value { font-weight: bold; font-family: monospace; }
-        .accordion-header .fa-chevron-down { transition: transform 0.3s ease; }
-        .specialty-accordion .accordion-header.active .fa-chevron-down { transform: rotate(180deg); }
-        .accordion-panel { padding: 0px 20px; background-color: transparent; max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out, padding 0.4s ease-out; border-left: 1px solid var(--main-border); border-right: 1px solid var(--main-border); border-bottom: 1px solid var(--main-border); border-radius: 0 0 8px 8px; margin-top: -8px; }
-        .topic-progress-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 10px; border-bottom: 1px solid #2c2c2c; font-size: 0.95em; }
-        .topic-progress-item:last-child { border-bottom: none; }
-        .topic-name { color: var(--text-secondary); }
-        .topic-score { font-weight: 500; }
-        .score-red { color: #ff6b6b; }
-        .score-yellow { color: #ffd54f; }
-        .score-green { color: var(--accent-green); }
-        .score-not-started { color: var(--text-muted); }
-
-        @media (max-width: 768px) { .motivational-quote { font-size: 1.2em; } .countdown-digits { font-size: 3em; } .countdown-timer-container { gap: 15px; } .parallel-steps-container, .practice-step-layout { flex-direction: column; } .day-cell { min-height: 120px; } .specialty-progress-indicators { display: none; } }
+        @media (max-width: 768px) { .motivational-quote { font-size: 1.2em; } .countdown-digits { font-size: 3em; } .countdown-timer-container { gap: 15px; } .parallel-steps-container, .practice-step-layout { flex-direction: column; } .day-cell { min-height: 120px; } }
         @media (max-width: 600px) { .motivational-quote { font-size: 1em; letter-spacing: 1px; } .countdown-digits { font-size: 2.2em; } .countdown-label { font-size: 0.6em; } .countdown-timer-container { gap: 10px; } body { padding: 10px; } .calendar-container { grid-template-columns: 30px 30px repeat(7, 1fr); } .modal-content { padding: 15px; } .step-card { flex-direction: column; } .step-icon-container { text-align: left; margin-bottom: 5px;} }
     </style>
 </head>
 <body>
-
-    <nav class="tab-navigation">
-        <button class="tab-button active" onclick="switchTabView('calendar-view', event)">CALENDARIO</button>
-        <button class="tab-button" onclick="switchTabView('global-view', event)">PROGRESO GLOBAL</button>
-    </nav>
-
-    <div class="tab-content-area">
-
-        <div id="calendar-view" class="tab-content active">
-            <header class="main-header">
-                <div id="motivational-quote-container" class="motivational-quote"></div>
-                <div class="countdown-timer-container">
-                    <div class="countdown-unit"> <div class="countdown-label">Days</div> <div class="countdown-digits" id="countdown-days">000</div> </div>
-                    <div class="countdown-unit"> <div class="countdown-label">Hours</div> <div class="countdown-digits" id="countdown-hours">00</div> </div>
-                    <div class="countdown-unit"> <div class="countdown-label">Minutes</div> <div class="countdown-digits" id="countdown-minutes">00</div> </div>
-                    <div class="countdown-unit"> <div class="countdown-label">Seconds</div> <div class="countdown-digits" id="countdown-seconds">00</div> </div>
-                </div>
-                <div class="global-progress-container">
-                    <div class="progress-bar-wrapper">
-                        <label id="global-score-label">Puntuación Global (Promedio de Calificaciones)</label>
-                        <div class="progress-bar-background">
-                            <div class="progress-bar-fill" id="global-score-bar" role="progressbar" aria-labelledby="global-score-label">0%</div>
-                        </div>
-                    </div>
-                    <div class="progress-bar-wrapper">
-                        <label id="global-advance-label">Avance Global (Temas Completados)</label>
-                        <div class="progress-bar-background">
-                            <div class="progress-bar-fill" id="global-advance-bar" role="progressbar" aria-labelledby="global-advance-label">0%</div>
-                        </div>
-                    </div>
-                </div>
-            </header>
-            <div class="calendar-container" id="calendar-container"></div>
+    <header class="main-header">
+        <div id="motivational-quote-container" class="motivational-quote"></div>
+        <div class="countdown-timer-container">
+            <div class="countdown-unit"> <div class="countdown-label">Days</div> <div class="countdown-digits" id="countdown-days">000</div> </div>
+            <div class="countdown-unit"> <div class="countdown-label">Hours</div> <div class="countdown-digits" id="countdown-hours">00</div> </div>
+            <div class="countdown-unit"> <div class="countdown-label">Minutes</div> <div class="countdown-digits" id="countdown-minutes">00</div> </div>
+            <div class="countdown-unit"> <div class="countdown-label">Seconds</div> <div class="countdown-digits" id="countdown-seconds">00</div> </div>
         </div>
-
-        <div id="global-view" class="tab-content">
-            <div class="global-view-header">
-                <h1>PROGRESO VITAL POR MATERIA</h1>
+        <!-- BLOQUE HTML CORREGIDO PARA ACCESIBILIDAD -->
+        <div class="global-progress-container">
+            <div class="progress-bar-wrapper">
+                <label id="global-score-label">Puntuación Global (Promedio de Calificaciones)</label>
+                <div class="progress-bar-background">
+                    <div class="progress-bar-fill" id="global-score-bar" role="progressbar" aria-labelledby="global-score-label">0%</div>
+                </div>
             </div>
-            <div id="specialty-accordions">
-                <!-- Los acordeones de especialidades se generarán aquí con JS -->
+            <div class="progress-bar-wrapper">
+                <label id="global-advance-label">Avance Global (Temas Completados)</label>
+                <div class="progress-bar-background">
+                    <div class="progress-bar-fill" id="global-advance-bar" role="progressbar" aria-labelledby="global-advance-label">0%</div>
+                </div>
             </div>
         </div>
+    </header>
 
-    </div>
+    <div class="calendar-container" id="calendar-container"></div>
 
     <div class="modal-overlay" id="modal-overlay"></div>
     <div class="modal-container" id="details-modal">
@@ -207,21 +220,98 @@
         <div class="modal-header"> <h2 id="topic-plan-title"></h2> <span class="modal-close" id="modal-close-topic">×</span> </div>
         <div class="modal-content">
             <div class="study-flow-diagram">
-                <div class="step-card step-1"> <div class="step-icon-container"><i class="fas fa-binoculars"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">1</span>VISTA RÁPIDA</h2> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-1-1"><i class="fas fa-list-ul task-icon"></i><span class="task-text">Índice</span><span class="tool-tag tag-madera">MADERA</span></label></li> <li><label><input type="checkbox" class="task-checkbox" id="task-1-2"><i class="fas fa-download task-icon"></i><span class="task-text">Descargar guías</span><span class="optional-tag">* opcional</span></label></li> <li><label><input type="checkbox" class="task-checkbox" id="task-1-3"><i class="fas fa-brain task-icon"></i><span class="task-text">CREA resúmenes + casos con IA (5min)</span><span class="tool-tag tag-ia">IAGOOGLE</span></label></li> </ul> </div> </div>
-                <div class="parallel-steps-container"> <div class="step-card step-2"> <div class="step-icon-container"><i class="fas fa-magic"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">2</span>CREAR</h2> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-2-1"><i class="fas fa-chalkboard-teacher task-icon"></i><span class="task-text">Presentación</span><span class="tool-tag tag-genspark">Genspark</span></label></li> <li><label><input type="checkbox" class="task-checkbox" id="task-2-2"><i class="fas fa-microphone-alt task-icon"></i><span class="task-text">Podcast MP3</span><span class="tool-tag tag-notebooklm">NOTEBOOKLM</span></label></li> </ul> </div> </div> <div class="step-card step-3"> <div class="step-icon-container"><i class="fas fa-book-reader"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">3</span>LEER</h2> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-3-1"><i class="fas fa-file-alt task-icon"></i><span class="task-text">Leer Resumen</span></label></li> </ul> </div> </div> </div>
-                <div class="step-card step-4"> <div class="step-icon-container"><i class="fas fa-puzzle-piece"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">4</span>UNIFICAR<span class="subtitle">(resumen + presentación + simular + enlaces)</span></h2> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-4-1"><i class="fas fa-code task-icon"></i><span class="task-text">HTML</span><span class="tool-tag tag-ia">IAGOOGLE</span></label></li> </ul> </div> </div>
-                <div class="step-card step-5"> <div class="step-icon-container"><i class="fas fa-tasks"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">5</span>PRACTICAR</h2> <div class="practice-step-layout"> <div class="practice-tasks-column"> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-5-1"><i class="fas fa-notes-medical task-icon"></i><span class="task-text">Realiza CASOS CLÍNICOS</span></label></li> <li><label><input type="checkbox" class="task-checkbox" id="task-5-2"><i class="fas fa-redo-alt task-icon"></i><span class="task-text">Repasar</span><span class="tool-tag tag-genspark">GENSPARK</span><span class="tool-tag tag-madera">MADERAS</span></label></li> </ul> </div> <div class="practice-score-column"> <h3>PUNTUACIÓN</h3> <div class="score-inputs-row"> <div class="score-input-group"><label for="score-aciertos">Aciertos:</label><input type="number" id="score-aciertos" min="0"></div> <div class="score-input-group"><label for="score-reactivos">Reactivos:</label><input type="number" id="score-reactivos" min="0"></div> <div class="score-input-group"><label for="score-percentage">%:</label><input type="text" id="score-percentage" class="percentage-output" readonly value="0%"></div> </div> </div> </div> </div> </div>
-                <div class="step-card step-6"> <div class="step-icon-container"><i class="fas fa-head-side-headphones"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">6</span>MEMORIZAR</h2> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-6-1"><i class="fas fa-headphones-alt task-icon"></i><span class="task-text">Escuchar MP3</span></label></li> </ul> </div> </div>
+                <!-- VISTA RÁPIDA -->
+                <div class="step-card step-1">
+                    <div class="step-icon-container"><i class="fas fa-binoculars"></i></div>
+                    <div class="step-content">
+                        <h2 class="step-title"><span class="step-number">1</span>VISTA RÁPIDA</h2>
+                        <ul class="step-details">
+                            <li><label><input type="checkbox" class="task-checkbox" id="task-1-1"><i class="fas fa-list-ul task-icon"></i><span class="task-text">Índice</span><span class="tool-tag tag-madera">MADERA</span></label></li>
+                            <li><label><input type="checkbox" class="task-checkbox" id="task-1-2"><i class="fas fa-download task-icon"></i><span class="task-text">Descargar guías</span><span class="optional-tag">* opcional</span></label></li>
+                            <li><label><input type="checkbox" class="task-checkbox" id="task-1-3"><i class="fas fa-brain task-icon"></i><span class="task-text">CREA resúmenes + casos con IA (5min)</span><span class="tool-tag tag-ia">IAGOOGLE</span></label></li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- CREAR y LEER -->
+                <div class="parallel-steps-container">
+                    <div class="step-card step-2">
+                        <div class="step-icon-container"><i class="fas fa-magic"></i></div>
+                        <div class="step-content">
+                            <h2 class="step-title"><span class="step-number">2</span>CREAR</h2>
+                            <ul class="step-details">
+                                <li><label><input type="checkbox" class="task-checkbox" id="task-2-1"><i class="fas fa-chalkboard-teacher task-icon"></i><span class="task-text">Presentación</span><span class="tool-tag tag-genspark">Genspark</span></label></li>
+                                <li><label><input type="checkbox" class="task-checkbox" id="task-2-2"><i class="fas fa-microphone-alt task-icon"></i><span class="task-text">Podcast MP3</span><span class="tool-tag tag-notebooklm">NOTEBOOKLM</span></label></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="step-card step-3">
+                        <div class="step-icon-container"><i class="fas fa-book-reader"></i></div>
+                        <div class="step-content">
+                            <h2 class="step-title"><span class="step-number">3</span>LEER</h2>
+                            <ul class="step-details">
+                                <li><label><input type="checkbox" class="task-checkbox" id="task-3-1"><i class="fas fa-file-alt task-icon"></i><span class="task-text">Leer Resumen</span></label></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- UNIFICAR -->
+                <div class="step-card step-4">
+                    <div class="step-icon-container"><i class="fas fa-puzzle-piece"></i></div>
+                    <div class="step-content">
+                        <h2 class="step-title"><span class="step-number">4</span>UNIFICAR<span class="subtitle">(resumen + presentación + simular + enlaces)</span></h2>
+                        <ul class="step-details">
+                            <li><label><input type="checkbox" class="task-checkbox" id="task-4-1"><i class="fas fa-code task-icon"></i><span class="task-text">HTML</span><span class="tool-tag tag-ia">IAGOOGLE</span></label></li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- PRACTICAR -->
+                <div class="step-card step-5">
+                    <div class="step-icon-container"><i class="fas fa-tasks"></i></div>
+                    <div class="step-content">
+                        <h2 class="step-title"><span class="step-number">5</span>PRACTICAR</h2>
+                        <div class="practice-step-layout">
+                            <div class="practice-tasks-column">
+                                <ul class="step-details">
+                                    <li><label><input type="checkbox" class="task-checkbox" id="task-5-1"><i class="fas fa-notes-medical task-icon"></i><span class="task-text">Realiza CASOS CLÍNICOS</span></label></li>
+                                    <li><label><input type="checkbox" class="task-checkbox" id="task-5-2"><i class="fas fa-redo-alt task-icon"></i><span class="task-text">Repasar</span><span class="tool-tag tag-genspark">GENSPARK</span><span class="tool-tag tag-madera">MADERAS</span></label></li>
+                                </ul>
+                            </div>
+                            <div class="practice-score-column">
+                                <h3>PUNTUACIÓN</h3>
+                                <div class="score-inputs-row">
+                                    <div class="score-input-group"><label for="score-aciertos">Aciertos:</label><input type="number" id="score-aciertos" min="0"></div>
+                                    <div class="score-input-group"><label for="score-reactivos">Reactivos:</label><input type="number" id="score-reactivos" min="0"></div>
+                                    <div class="score-input-group"><label for="score-percentage">%:</label><input type="text" id="score-percentage" class="percentage-output" readonly value="0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- MEMORIZAR -->
+                <div class="step-card step-6">
+                    <div class="step-icon-container"><i class="fas fa-head-side-headphones"></i></div>
+                    <div class="step-content">
+                        <h2 class="step-title"><span class="step-number">6</span>MEMORIZAR</h2>
+                        <ul class="step-details">
+                            <li><label><input type="checkbox" class="task-checkbox" id="task-6-1"><i class="fas fa-headphones-alt task-icon"></i><span class="task-text">Escuchar MP3</span></label></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
             <div class="topic-modal-footer"> <button id="topic-finish-btn" class="topic-finish-btn">Terminar Tema</button> </div>
         </div>
     </div>
 
+    <!-- 1. Carga las librerías de Firebase PRIMERO -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
+    <!-- 2. AHORA carga tu script que las utiliza -->
     <script>
+    // --- SCRIPT CORREGIDO Y COMPLETO PARA planner.html CON FIREBASE ---
+    
+    // 1. Configuración REAL de Firebase (la misma que en login.js)
     const firebaseConfig = {
         apiKey: "AIzaSyD4SjKhedm4ZWHed70_sjQgxPokjHvwvUc",
         authDomain: "frecuencia-vital.firebaseapp.com",
@@ -232,92 +322,244 @@
         measurementId: "G-0C466YCX31"
     };
     
-    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+    // 2. Inicializar Firebase y sus servicios
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
     const auth = firebase.auth();
     const db = firebase.firestore();
     let currentUser = null;
     
+    // --- GUARDIÁN DE AUTENTICACIÓN ---
     auth.onAuthStateChanged(user => {
         if (user) {
+            console.log('Guardián: Acceso permitido para', user.uid);
             currentUser = user;
             initializeAppLogic();
         } else {
+            console.log('Guardián: Acceso denegado. Redirigiendo al login.');
             window.location.href = 'index.html';
         }
     });
     
+    // --- TODA TU LÓGICA DE LA APLICACIÓN VA DENTRO DE ESTA FUNCIÓN ---
     function initializeAppLogic() {
-
-        const legacyProgressData = { "GENÉTICA": { score: 0, completion: 100 }, "GERIATRÍA": { score: 80, completion: 79 }, "PSIQUIATRÍA": { score: 77, completion: 84 }, "DERMATOLOGÍA": { score: 82, completion: 52 }, "NEFROLOGÍA": { score: 73, completion: 40 }, "REUMATOLOGÍA": { score: 75, completion: 38 }, "NEUMOLOGÍA": { score: 56, completion: 43 }, "NEUROLOGÍA": { score: 68, completion: 62 }, "HEMATOLOGÍA": { score: 60, completion: 18 }, "INFECTOLOGÍA": { score: 77, completion: 74 }, "ENDOCRINOLOGÍA": { score: 74, completion: 26, topics: [ { name: "Prediabetes", score: 100, text: "15/15 correctas" }, { name: "Diabetes en el adulto mayor", score: 67, text: "6/9 correctas" }, { name: "Diabetes en pediatría", score: 56, text: "5/9 correctas" }, { name: "Diabetes mellitus", score: 80, text: "12/15 correctas" }, { name: "Cetoacidosis diabética y EHH", score: 72, text: "13/18 correctas" }, ] } };
         
-        function switchTabView(tabId, event) {
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            event.currentTarget.classList.add('active');
-            if (tabId === 'global-view') {
-                renderGlobalProgressView();
+        // --- FUNCIONES AUXILIARES AÑADIDAS ---
+        function displayDailyQuote() {
+            const quoteContainer = document.getElementById('motivational-quote-container');
+            if (quoteContainer) {
+                const randomIndex = Math.floor(Math.random() * motivationalQuotes.length);
+                quoteContainer.textContent = motivationalQuotes[randomIndex];
             }
         }
-        window.switchTabView = switchTabView;
 
-        function renderGlobalProgressView() {
-            const container = document.getElementById('specialty-accordions');
-            container.innerHTML = '';
-            for (const specialty in legacyProgressData) {
-                const data = legacyProgressData[specialty];
-                let scoreClass = 'score-red';
-                if (data.score >= 80) scoreClass = 'score-green';
-                else if (data.score >= 60) scoreClass = 'score-yellow';
-                let panelContent = '';
-                if (data.topics) {
-                    panelContent += '<div class="accordion-panel">';
-                    data.topics.forEach(topic => {
-                        let topicScoreClass = 'score-red';
-                        if (topic.score >= 80) topicScoreClass = 'score-green';
-                        else if (topic.score >= 60) topicScoreClass = 'score-yellow';
-                        panelContent += `<div class="topic-progress-item"><span class="topic-name">${topic.name}</span><span class="topic-score ${topicScoreClass}">${topic.text} (${topic.score}%)</span></div>`;
-                    });
-                    panelContent += '</div>';
+        function startCountdown() {
+            const targetDate = new Date("2025-09-18T08:00:00").getTime();
+            const daysEl = document.getElementById('countdown-days');
+            const hoursEl = document.getElementById('countdown-hours');
+            const minutesEl = document.getElementById('countdown-minutes');
+            const secondsEl = document.getElementById('countdown-seconds');
+
+            if (!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
+
+            const interval = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = targetDate - now;
+
+                if (distance < 0) {
+                    clearInterval(interval);
+                    daysEl.textContent = "000";
+                    hoursEl.textContent = "00";
+                    minutesEl.textContent = "00";
+                    secondsEl.textContent = "00";
+                    return;
                 }
-                const accordionHTML = `<div class="specialty-accordion"><button class="accordion-header" ${data.topics ? '' : 'style="cursor:default;"'}><span class="specialty-name">${specialty}</span><div class="specialty-progress-indicators"><div class="indicator score-indicator"><i class="fas fa-star"></i><span class="score-value ${scoreClass}">${data.score}%</span></div><div class="indicator completion-indicator"><i class="fas fa-check-double"></i><span class="completion-value">${data.completion}%</span></div></div><i class="fas fa-chevron-down" ${data.topics ? '' : 'style="display:none;"'}></i></button>${panelContent}</div>`;
-                container.innerHTML += accordionHTML;
-            }
-            document.querySelectorAll('.accordion-header').forEach(button => {
-                if (button.nextElementSibling && button.nextElementSibling.classList.contains('accordion-panel')) {
-                    button.addEventListener('click', () => {
-                        button.classList.toggle('active');
-                        const panel = button.nextElementSibling;
-                        if (panel.style.maxHeight) {
-                            panel.style.maxHeight = null;
-                            panel.style.padding = "0px 20px";
-                        } else {
-                            panel.style.maxHeight = panel.scrollHeight + "px";
-                            panel.style.padding = "15px 20px";
-                        } 
-                    });
-                }
-            });
+
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                daysEl.textContent = String(days).padStart(3, '0');
+                hoursEl.textContent = String(hours).padStart(2, '0');
+                minutesEl.textContent = String(minutes).padStart(2, '0');
+                secondsEl.textContent = String(seconds).padStart(2, '0');
+            }, 1000);
         }
         
-        function displayDailyQuote() { const quoteContainer = document.getElementById('motivational-quote-container'); if(quoteContainer) { const quotes = ["La disciplina es el puente entre metas y logros.","El éxito es la suma de pequeños esfuerzos repetidos."]; quoteContainer.textContent = quotes[Math.floor(Math.random() * quotes.length)]; } }
-        function startCountdown() { const target = new Date("2025-09-18T08:00:00").getTime(); const interval = setInterval(() => { const now = new Date().getTime(), distance = target - now; document.getElementById('countdown-days').textContent = String(Math.floor(distance / 86400000)).padStart(3, '0'); document.getElementById('countdown-hours').textContent = String(Math.floor((distance % 86400000) / 3600000)).padStart(2, '0'); document.getElementById('countdown-minutes').textContent = String(Math.floor((distance % 3600000) / 60000)).padStart(2, '0'); document.getElementById('countdown-seconds').textContent = String(Math.floor((distance % 60000) / 1000)).padStart(2, '0'); if (distance < 0) clearInterval(interval); }, 1000); }
-        
-        const studyPlan = [ { date: "2025-06-18", subjects: ["ENDOCRINOLOGÍA"], topics: ["Dislipidemias", "Hipertiroidismo", "Hipotiroidismo", "Cáncer de tiroides (Enfoque en Papilar)"] }, { date: "2025-06-19", subjects: [], topics: ["Nódulo tiroideo", "Obesidad en adultos", "Síndrome metabólico", "Enfermedad de Cushing / Síndrome de Cushing"] }, { date: "2025-06-20", subjects: ["UROLOGÍA"], topics: ["Enfermedad de Addison", "Escroto agudo y Torsión testicular", "Hiperplasia prostática benigna", "Cáncer de próstata"] }, { date: "2025-06-21", subjects: [], topics: ["Pielonefritis aguda", "Infección de tracto urinario", "Urolitiasis", "Cáncer testicular"] }, { date: "2025-06-22", subjects: ["ORL"], topics: ["Disfunción eréctil", "Faringoamigdalitis", "Epistaxis", "Rinosinusitis aguda"] }, { date: "2025-06-23", subjects: [], topics: ["Otitis externa aguda", "VPPB", "Mastoiditis aguda", "Parálisis de Bell"] }, { date: "2025-06-24", subjects: ["OFTALMOLOGÍA"], topics: ["Catarata", "Conjuntivitis", "Glaucoma de ángulo aberto", "Glaucoma de ángulo cerrado"] }, { date: "2025-06-25", subjects: [], topics: ["Ojo rojo", "Retinopatía diabética", "Trauma ocular", "Desprendimiento de retina"] }, { date: "2025-06-26", subjects: ["TYO"], topics: ["Osteoartritis", "Osteomielitis", "Fracturas expuestas", "Esguince cervical", "Lumbalgia"] }, { date: "2025-06-27", subjects: [], topics: ["Síndrome de hombro doloroso", "Luxación glenohumeral", "Fractura de clavícula", "Fractura de radio distal"] }, { date: "2025-06-28", subjects: [], topics: ["Fractura de cadera", "Lesiones de rodilla", "Esguince de tobillo", "Fractura de tobillo"] }, { date: "2025-06-29", subjects: [], topics: ["Osteosarcoma", "Sarcoma de Ewing", "Hernia de disco", "Túnel del carpo"] }, { date: "2025-06-30", subjects: [], topics: ["Epifisiolistesis femoral", "Legg-Calvé-Perthes", "Embolia grasa", "Tumores óseos malignos"] }, { date: "2025-07-01", subjects: [], topics: ["Costilla cervical", "Fractura de húmero proximal", "Luxación de codo", "Codo de niñera"] }, { date: "2025-07-02", subjects: [], topics: ["Fracturas de codo", "Fracturas de antebrazo", "Lesiones fisiarias", "Luxación coxofemoral", "Fractura de diáfisis de tibia"] }, { date: "2025-07-03", subjects: ["CARDIOLOGÍA"], topics: ["Rotura de talón de Aquiles", "Pie equino varo", "Pie plano", "Pericarditis"] }, { date: "2025-07-04", subjects: [], topics: ["Endocarditis infecciosa", "Estenosis aórtica", "Insuficiencia aórtica", "Estenosis mitral"] }, { date: "2025-07-05", subjects: [], topics: ["Insuficiencia mitral", "Fiebre reumática", "Hipertensión arterial sistémica", "Crisis hipertensivas"] }, { date: "2025-07-06", subjects: [], topics: ["Insuficiencia cardíaca aguda", "Insuficiencia cardíaca crónica", "Infarto agudo de miocardio", "Disección aórtica"] }, { date: "2025-07-07", subjects: [], topics: ["Cor pulmonar crónico", "Edema pulmonar", "Hipotensión ortostática", "Aneurisma aórtico abdominal"] }, { date: "2025-07-08", subjects: [], topics: ["Enfermedad coronaria", "Otras valvulopatías", "Hipertensión pulmonar", "Rehabilitación cardíaca"] }, { date: "2025-07-09", subjects: ["ANGIOLOGÍA"], topics: ["Enfermedad arterial periférica", "Insuficiencia venosa", "Pie diabético", "Tromboembolia pulmonar"] }, { date: "2025-07-10", subjects: [], topics: ["Trombosis venosa profunda", "Úlceras por presión", "Paget-Schroetter", "Tromboembolia venosa en obstetricia"] }, { date: "2025-07-11", subjects: ["ACLS"], topics: ["Soporte vital básico", "RCP", "Taquicardia ACLS", "Taquicardia supraventricular"] }, { date: "2025-07-12", subjects: [], topics: ["Bloqueos AV", "Bradicardia", "Fibrilación auricular", "Fibrilación ventricular"] }, { date: "2025-07-13", subjects: ["ATLS"], topics: ["Síndrome de WPW", "PLS (Posición Lateral de Seguridad)", "Ahogamiento", "Politrauma"] }, { date: "2025-07-14", subjects: [], topics: ["Tipos de shock", "Choque hipovolémico", "Quemaduras", "Gran quemado"] }, { date: "2025-07-15", subjects: [], topics: ["TCE adultos", "TCE pediátrico", "Trauma torácico", "Hemotórax"] }, { date: "2025-07-16", subjects: [], topics: ["Neumotórax a tensión", "Taponamiento cardiaco", "Trauma abdominal", "Shock neurogénico"] }, { date: "2025-07-17", subjects: [], topics: ["Neumotórax aberto", "Neumotórax simple", "Trauma espinal", "Catéter venoso central"] }, { date: "2025-07-18", subjects: [], topics: ["Hipotermia", "Fracturas de cráneo", "Lesión traqueobronquial", "Ruptura diafragmática"] }, { date: "2025-07-19", subjects: ["TOXICOLOGÍA"], topics: ["Trauma esplénico", "Trauma obstétrico", "Trauma pélvico", "Manejo de intoxicaciones", "Toxíndromes"] }, { date: "2025-07-20", subjects: [], topics: ["Intoxicación por benzodiacepinas", "Intoxicación por organofosforados", "Intoxicación por paracetamol", "Intoxicación por salicilatos"] }, { date: "2025-07-21", subjects: [], topics: ["Lactrodectus", "Loxosceles", "Mordedura de serpiente", "Picadura de alacrán"] }, { date: "2025-07-22", subjects: [], topics: ["Golpe de calor", "Intoxicación por etanol", "Intoxicación por monóxido de carbono", "Intoxicación por opiáceos"] }, { date: "2025-07-23", subjects: [], topics: ["Anafilaxia", "Ingesta de cáusticos", "Intoxicación alimentaria", "Intoxicación por alcoholes"] }, { date: "2025-07-24", subjects: [], topics: ["Intoxicación por anfetaminas", "Intoxicación por DMT", "Intoxicación por fentanilo", "Intoxicación por hidrocarburos"] }, { date: "2025-07-25", subjects: ["GASTROENTEROLOGÍA"], topics: ["Intoxicación por metales pesados", "Intoxicación por plomo", "Picadura de himenópteros", "Absceso hepático amebiano"] }, { date: "2025-07-26", subjects: [], topics: ["Cirrosis hepática", "Insuficiencia hepática", "Ascitis", "Encefalopatía hepática"] }, { date: "2025-07-27", subjects: [], topics: ["Hepatitis A", "Hepatitis B", "Hepatitis C", "Pancreatitis aguda"] }, { date: "2025-07-28", subjects: [], topics: ["Reflujo ERGE", "Enfermedad ácido péptica", "Síndrome de intestino irritable", "Sangrado TDA"] }, { date: "2025-07-29", subjects: [], topics: ["Sangrado TDB", "Várices esofágicas", "EHGNA", "Enfermedad de Crohn"] }, { date: "2025-07-30", subjects: [], topics: ["Colitis ulcerativa", "Cáncer gástrico", "Carcinoma hepatocelular", "Absceso hepático piógeno"] }, { date: "2025-07-31", subjects: [], topics: ["Hepatitis autoinmune", "Pancreatitis crónica", "Acalasia", "Esófago de Barret"] }, { date: "2025-08-01", subjects: [], topics: ["Dispepsia funcional", "Mallory Weiss", "Zollinger-Ellison", "Enfermedad celíaca", "Cáncer de esófago"] }, { date: "2025-08-02", subjects: ["CIRUGÍA ABDOMINAL Y COLOPROCTOLOGÍA"], topics: ["Cáncer de páncreas", "Apendicitis aguda", "Apendicitis en el embarazo", "Colecistitis aguda"] }, { date: "2025-08-03", subjects: [], topics: ["Coledocolitiasis", "Colelitiasis", "Colangitis aguda", "Hernias"] }, { date: "2025-08-04", subjects: [], topics: ["Hernia inguinal", "Oclusión intestinal", "Enfermedad hemorroidal", "Fístula anal"] }, { date: "2025-08-05", subjects: [], topics: ["Fisura anal", "Absceso anal", "Enfermedad diverticular", "Cáncer colorrectal"] }, { date: "2025-08-06", subjects: [], topics: ["Isquemia intestinal", "Vólvulo de sigmoides", "Heridas quirúrgicas", "Complicaciones post Qx"] }, { date: "2025-08-07", subjects: [], topics: ["Colangiocarcinoma", "Fístulas biliointestinales", "Hernia femoral", "Hernia hiatal"] }, { date: "2025-08-08", subjects: [], topics: ["Hernia umbilical", "Hernia ventral", "Vólvulo de ciego", "Quiste pilonidal", "Poliposis adenomatosa familiar (PAF)"] }, { date: "2025-08-09", subjects: ["CIRUGÍA PEDIÁTRICA"], topics: ["Atresia duodenal", "Atresia esofágica", "Criptorquidia", "Estenosis pilórica"] }, { date: "2025-08-10", subjects: [], topics: ["Hernia diafragmática congénita", "Invaginación intestinal", "Nefroblastoma", "Neuroblastoma"] }, { date: "2025-08-11", subjects: [], topics: ["Divertículo de Meckel", "Hirschsprung", "Atresia biliar", "Atresia de coanas"] }, { date: "2025-08-12", subjects: [], topics: ["Atresia yeyunoileal", "Espina bífida", "Malformaciones rectales", "Malrotación intestinal", "Patología umbilical"] },  { date: "2025-08-13", subjects: ["GINECOLOGÍA"], topics: ["Fitz-Hugh-Curtis", "Dismenorrea aguda", "Amenorreas primarias", "Amenorreas secundarias", "Sangrado uterino anormal"] }, { date: "2025-08-14", subjects: [], topics: ["Adenomiosis", "Anticonceptivos generalidades", "Anticonceptivos GPC", "Anticonceptivos hormonales combinados", "Anticoncepción de emergencia"] }, { date: "2025-08-15", subjects: [], topics: ["DIU de cobre", "DIU de levonorgestrel", "Implante subdérmico", "Progestágenos solos", "Lactancia como anticonceptivo"] }, { date: "2025-08-16", subjects: [], topics: ["Infertilidad", "Condón", "Vasectomía", "Cistocele e incontinencia", "Endometriosis"] }, { date: "2025-08-17", subjects: [], topics: ["Enfermedad pélvica inflamatoria", "Hidrosalpinx", "Hiperplasia endometrial", "Mastitis", "Mastopatía fibroquística"] }, { date: "2025-08-18", subjects: [], topics: ["Fibroadenoma", "Papiloma intraductal", "Patología mamaria benigna", "Quiste mamario", "Osteoporosis post menopausia"] }, { date: "2025-08-19", subjects: [], topics: ["Insuficiencia ovárica primaria", "Menopausia y climaterio", "Miomatosis uterina", "Oclusión tubaria bilateral OTB", "Ovario poliquístico"] }, { date: "2025-08-20", subjects: [], topics: ["Quiste de ovario benigno", "Torsión ovárica", "Vaginitis bacteriana", "Vaginitis infecciosa", "Trichomoniasis"] }, { date: "2025-08-21", subjects: ["ONCOGINE"], topics: ["Bartolinitis", "Candidiasis vulvovaginal", "Chlamydia", "Tamizaje cáncer de mama", "Cáncer de mama"] }, { date: "2025-08-22", subjects: [], topics: ["Cáncer cérvicouterino", "Cáncer de endometrio", "Cáncer de ovario", "Cáncer de vagina", "Tumores anexiales"] }, { date: "2025-08-23", subjects: ["OBSTETRICIA"], topics: ["Control prenatal", "Aloinmunización materna", "Estática fetal", "Tipos de pelvis", "Atención del parto"] }, { date: "2025-08-24", subjects: [], topics: ["Manejo activo del parto", "Cesárea", "Parto pretérmino", "Puerperio fisiológico", "Líquido amniótico"] }, { date: "2025-08-25", subjects: [], topics: ["Ruptura prematura de membranas", "Corioamnionitis", "Distocias", "Embarazo múltiple", "Endometritis puerperal"] }, { date: "2025-08-26", subjects: [], topics: ["Hiperémesis gravídica", "Insuficiencia cervical", "Muerte fetal", "Enfermedades hipertensivas del embarazo", "Preeclampsia sin datos de severidad"] }, { date: "2025-08-27", subjects: [], topics: ["Síndrome de HELLP", "Diabetes gestacional", "IVU en el embarazo", "Restricción del crecimiento intrauterino", "Sepsis puerperal"] }, { date: "2025-08-28", subjects: ["HEMORRAGIAS OBSTÉTRICAS"], topics: ["Síndrome de Sheehan", "Depresión posparto", "Generalidades de hemorragias", "Hemorragia postparto", "Desgarro perineal"] }, { date: "2025-08-29", subjects: [], topics: ["Amenaza de aborto", "Aborto espontáneo", "Acretismo placentario", "Atonía uterina", "Choque hemorrágico en obstetricia"] }, { date: "2025-08-30", subjects: [], topics: ["Desprendimiento prematuro de placenta normoinserta", "Embarazo ectópico", "Placenta previa", "Ruptura uterina", "Vasa previa"] }, { date: "2025-08-31", subjects: ["NEONATOLOGÍA"], topics: ["Enfermedad trofoblástica gestacional", "APGAR", "Apnea del prematuro", "Asfixia neonatal", "Displasia broncopulmonar"] }, { date: "2025-09-01", subjects: [], topics: ["Silverman Anderson", "Síndrome de aspiración de meconio", "Maduración pulmonar", "Síndrome de dificultad respiratoria", "Encefalopatía hipóxica"] }, { date: "2025-09-02", subjects: [], topics: ["Enfermedad hemorrágica del recién nacido", "Enterocolitis necrotizante", "Hipoacusia neonatal", "Hipoglucemia neonatal", "Ictericia neonatal"] }, { date: "2025-09-03", subjects: [], topics: ["Muerte súbita del lactante", "Prematuro sano", "Reanimación neonatal", "Recién nacido de término", "Sepsis neonatal"] }, { date: "2025-09-04", subjects: [], topics: ["Tamiz neonatal", "Taquipnea transitoria del recién nacido", "Lesiones de plexo braquial obstétrico", "Lesiones extracraneales", "Displasia del desarrollo de la cadera DDC"] }, { date: "2025-09-05", subjects: ["CONGENITAS"], topics: ["Hirschsprung", "Cardiopatías congénitas", "Tetralogía de Fallot", "Coartación aórtica", "Persistencia del conducto arterioso"] }, { date: "2025-09-06", subjects: [], topics: ["Fenilcetonuria", "Fibrosis quística", "Galactosemia clásica", "Storch", "Storch Citomegalovirus"] }, { date: "2025-09-07", subjects: [], topics: ["Storch herpes simple", "Storch rubéola congénita", "Storch sífilis congénita", "Storch toxoplasmosis", "Storch varicela congénita"] }, { date: "2025-09-08", subjects: ["ESCOLAR"], topics: ["Control de niño sano", "Etapas del crecimiento", "Talla baja", "Alergia alimentaria", "Cuerpo extraño"] }, { date: "2025-09-09", subjects: [], topics: ["Dermatitis del pañal", "Estreñimiento funcional", "Hiperplasia adrenal congénita", "Hipotiroidismo congénito", "Maltrato infantil"] }, { date: "2025-09-10", subjects: [], topics: ["Mucopolisacaridosis", "Reflujo gastroesofágico del lactante"] }, { date: "2025-09-11", subjects: ["NUTRICIÓN PEDIÁTRICA"], topics: ["Alimentación complementaria", "Deficiencia de vitamina A", "Desnutrición pediátrica", "Hipovitaminosis", "Intolerancia a la lactosa", "Lactancia materna"] }, { date: "2025-09-12", subjects: [], topics: ["Obesidad en escolares", "Pelagra en niños", "Raquitismo carencial", "Síndrome metabólico en niños"] }, { date: "2025-09-13", subjects: ["INFECTOLOGÍA PEDIÁTRICA"], topics: ["Adenitis mesentérica", "Onfalitis", "Exantemáticas Diferencial", "Eritema infeccioso", "Escarlatina", "Exantema súbito"] }, { date: "2025-09-14", subjects: [], topics: ["Enfermedad de Kawasaki", "Síndrome mano pie boca", "Rubéola", "Sarampión", "Varicela", "Parotiditis"] }, { date: "2025-09-15", subjects: [], topics: ["Bronquiolitis", "Epiglotitis", "Laringotraqueitis CRUP", "Mononucleosis infecciosa", "Tos ferina", "IVU en menores"] }, { date: "2025-09-16", subjects: ["VACUNAS"], topics: ["Vacunas generalidades", "Tipos de vacunas", "Vacunación universal", "Aplicación de vacunas", "Vacuna para personal de salud", "Vacunas en el embarazo"] }, { date: "2025-09-17", subjects: [], topics: ["Esquema de vacunación", "Bcg", "Hepatitis A", "Hepatitis B", "Hexavalente", "Influenza", "Neumocócica"] }, { date: "2025-09-18", subjects: [], topics: ["Rotavirus", "Sabin", "Salmonella", "Dpt", "Srp", "Tétanos", "Varicela", "Vph"] }];
-        let userProgress = {}; const totalTopics = studyPlan.reduce((acc, day) => acc + day.topics.length, 0); const ALL_TASK_IDS = ['task-1-1', 'task-1-2', 'task-1-3', 'task-2-1', 'task-2-2', 'task-3-1', 'task-4-1', 'task-5-1', 'task-5-2', 'task-6-1'];
-        
-        const calendarContainer = document.getElementById('calendar-container'); const dayModal = document.getElementById('details-modal'), dayModalOverlay = document.getElementById('modal-overlay'), dayModalTitle = document.getElementById('modal-title'), dayModalTopicsContainer = document.getElementById('modal-topics'), dayModalNotes = document.getElementById('modal-notes'), saveNoteButton = document.getElementById('modal-save-btn');
-        const topicModal = document.getElementById('topic-plan-modal'), topicModalOverlay = document.getElementById('topic-plan-overlay'), topicModalTitle = document.getElementById('topic-plan-title'), topicTaskCheckboxes = topicModal.querySelectorAll('.task-checkbox'), aciertosInput = document.getElementById('score-aciertos'), reactivosInput = document.getElementById('score-reactivos'), percentageOutput = document.getElementById('score-percentage'), finishTopicButton = document.getElementById('topic-finish-btn');
+       const studyPlan = [
+    { date: "2025-06-18", subjects: ["ENDOCRINOLOGÍA"], topics: ["Dislipidemias", "Hipertiroidismo", "Hipotiroidismo", "Cáncer de tiroides (Enfoque en Papilar)"] },
+    { date: "2025-06-19", subjects: [], topics: ["Nódulo tiroideo", "Obesidad en adultos", "Síndrome metabólico", "Enfermedad de Cushing / Síndrome de Cushing"] },
+    { date: "2025-06-20", subjects: ["UROLOGÍA"], topics: ["Enfermedad de Addison", "Escroto agudo y Torsión testicular", "Hiperplasia prostática benigna", "Cáncer de próstata"] },
+    { date: "2025-06-21", subjects: [], topics: ["Pielonefritis aguda", "Infección de tracto urinario", "Urolitiasis", "Cáncer testicular"] },
+    { date: "2025-06-22", subjects: ["ORL"], topics: ["Disfunción eréctil", "Faringoamigdalitis", "Epistaxis", "Rinosinusitis aguda"] },
+    { date: "2025-06-23", subjects: [], topics: ["Otitis externa aguda", "VPPB", "Mastoiditis aguda", "Parálisis de Bell"] },
+    { date: "2025-06-24", subjects: ["OFTALMOLOGÍA"], topics: ["Catarata", "Conjuntivitis", "Glaucoma de ángulo aberto", "Glaucoma de ángulo cerrado"] },
+    { date: "2025-06-25", subjects: [], topics: ["Ojo rojo", "Retinopatía diabética", "Trauma ocular", "Desprendimiento de retina"] },
+    { date: "2025-06-26", subjects: ["TYO"], topics: ["Osteoartritis", "Osteomielitis", "Fracturas expuestas", "Esguince cervical", "Lumbalgia"] },
+    { date: "2025-06-27", subjects: [], topics: ["Síndrome de hombro doloroso", "Luxación glenohumeral", "Fractura de clavícula", "Fractura de radio distal"] },
+    { date: "2025-06-28", subjects: [], topics: ["Fractura de cadera", "Lesiones de rodilla", "Esguince de tobillo", "Fractura de tobillo"] },
+    { date: "2025-06-29", subjects: [], topics: ["Osteosarcoma", "Sarcoma de Ewing", "Hernia de disco", "Túnel del carpo"] },
+    { date: "2025-06-30", subjects: [], topics: ["Epifisiolistesis femoral", "Legg-Calvé-Perthes", "Embolia grasa", "Tumores óseos malignos"] },
+    { date: "2025-07-01", subjects: [], topics: ["Costilla cervical", "Fractura de húmero proximal", "Luxación de codo", "Codo de niñera"] },
+    { date: "2025-07-02", subjects: [], topics: ["Fracturas de codo", "Fracturas de antebrazo", "Lesiones fisiarias", "Luxación coxofemoral", "Fractura de diáfisis de tibia"] },
+    { date: "2025-07-03", subjects: ["CARDIOLOGÍA"], topics: ["Rotura de talón de Aquiles", "Pie equino varo", "Pie plano", "Pericarditis"] },
+    { date: "2025-07-04", subjects: [], topics: ["Endocarditis infecciosa", "Estenosis aórtica", "Insuficiencia aórtica", "Estenosis mitral"] },
+    { date: "2025-07-05", subjects: [], topics: ["Insuficiencia mitral", "Fiebre reumática", "Hipertensión arterial sistémica", "Crisis hipertensivas"] },
+    { date: "2025-07-06", subjects: [], topics: ["Insuficiencia cardíaca aguda", "Insuficiencia cardíaca crónica", "Infarto agudo de miocardio", "Disección aórtica"] },
+    { date: "2025-07-07", subjects: [], topics: ["Cor pulmonar crónico", "Edema pulmonar", "Hipotensión ortostática", "Aneurisma aórtico abdominal"] },
+    { date: "2025-07-08", subjects: [], topics: ["Enfermedad coronaria", "Otras valvulopatías", "Hipertensión pulmonar", "Rehabilitación cardíaca"] },
+    { date: "2025-07-09", subjects: ["ANGIOLOGÍA"], topics: ["Enfermedad arterial periférica", "Insuficiencia venosa", "Pie diabético", "Tromboembolia pulmonar"] },
+    { date: "2025-07-10", subjects: [], topics: ["Trombosis venosa profunda", "Úlceras por presión", "Paget-Schroetter", "Tromboembolia venosa en obstetricia"] },
+    { date: "2025-07-11", subjects: ["ACLS"], topics: ["Soporte vital básico", "RCP", "Taquicardia ACLS", "Taquicardia supraventricular"] },
+    { date: "2025-07-12", subjects: [], topics: ["Bloqueos AV", "Bradicardia", "Fibrilación auricular", "Fibrilación ventricular"] },
+    { date: "2025-07-13", subjects: ["ATLS"], topics: ["Síndrome de WPW", "PLS (Posición Lateral de Seguridad)", "Ahogamiento", "Politrauma"] },
+    { date: "2025-07-14", subjects: [], topics: ["Tipos de shock", "Choque hipovolémico", "Quemaduras", "Gran quemado"] },
+    { date: "2025-07-15", subjects: [], topics: ["TCE adultos", "TCE pediátrico", "Trauma torácico", "Hemotórax"] },
+    { date: "2025-07-16", subjects: [], topics: ["Neumotórax a tensión", "Taponamiento cardiaco", "Trauma abdominal", "Shock neurogénico"] },
+    { date: "2025-07-17", subjects: [], topics: ["Neumotórax aberto", "Neumotórax simple", "Trauma espinal", "Catéter venoso central"] },
+    { date: "2025-07-18", subjects: [], topics: ["Hipotermia", "Fracturas de cráneo", "Lesión traqueobronquial", "Ruptura diafragmática"] },
+    { date: "2025-07-19", subjects: ["TOXICOLOGÍA"], topics: ["Trauma esplénico", "Trauma obstétrico", "Trauma pélvico", "Manejo de intoxicaciones", "Toxíndromes"] },
+    { date: "2025-07-20", subjects: [], topics: ["Intoxicación por benzodiacepinas", "Intoxicación por organofosforados", "Intoxicación por paracetamol", "Intoxicación por salicilatos"] },
+    { date: "2025-07-21", subjects: [], topics: ["Lactrodectus", "Loxosceles", "Mordedura de serpiente", "Picadura de alacrán"] },
+    { date: "2025-07-22", subjects: [], topics: ["Golpe de calor", "Intoxicación por etanol", "Intoxicación por monóxido de carbono", "Intoxicación por opiáceos"] },
+    { date: "2025-07-23", subjects: [], topics: ["Anafilaxia", "Ingesta de cáusticos", "Intoxicación alimentaria", "Intoxicación por alcoholes"] },
+    { date: "2025-07-24", subjects: [], topics: ["Intoxicación por anfetaminas", "Intoxicación por DMT", "Intoxicación por fentanilo", "Intoxicación por hidrocarburos"] },
+    { date: "2025-07-25", subjects: ["GASTROENTEROLOGÍA"], topics: ["Intoxicación por metales pesados", "Intoxicación por plomo", "Picadura de himenópteros", "Absceso hepático amebiano"] },
+    { date: "2025-07-26", subjects: [], topics: ["Cirrosis hepática", "Insuficiencia hepática", "Ascitis", "Encefalopatía hepática"] },
+    { date: "2025-07-27", subjects: [], topics: ["Hepatitis A", "Hepatitis B", "Hepatitis C", "Pancreatitis aguda"] },
+    { date: "2025-07-28", subjects: [], topics: ["Reflujo ERGE", "Enfermedad ácido péptica", "Síndrome de intestino irritable", "Sangrado TDA"] },
+    { date: "2025-07-29", subjects: [], topics: ["Sangrado TDB", "Várices esofágicas", "EHGNA", "Enfermedad de Crohn"] },
+    { date: "2025-07-30", subjects: [], topics: ["Colitis ulcerativa", "Cáncer gástrico", "Carcinoma hepatocelular", "Absceso hepático piógeno"] },
+    { date: "2025-07-31", subjects: [], topics: ["Hepatitis autoinmune", "Pancreatitis crónica", "Acalasia", "Esófago de Barret"] },
+    { date: "2025-08-01", subjects: [], topics: ["Dispepsia funcional", "Mallory Weiss", "Zollinger-Ellison", "Enfermedad celíaca", "Cáncer de esófago"] },
+    { date: "2025-08-02", subjects: ["CIRUGÍA ABDOMINAL Y COLOPROCTOLOGÍA"], topics: ["Cáncer de páncreas", "Apendicitis aguda", "Apendicitis en el embarazo", "Colecistitis aguda"] },
+    { date: "2025-08-03", subjects: [], topics: ["Coledocolitiasis", "Colelitiasis", "Colangitis aguda", "Hernias"] },
+    { date: "2025-08-04", subjects: [], topics: ["Hernia inguinal", "Oclusión intestinal", "Enfermedad hemorroidal", "Fístula anal"] },
+    { date: "2025-08-05", subjects: [], topics: ["Fisura anal", "Absceso anal", "Enfermedad diverticular", "Cáncer colorrectal"] },
+    { date: "2025-08-06", subjects: [], topics: ["Isquemia intestinal", "Vólvulo de sigmoides", "Heridas quirúrgicas", "Complicaciones post Qx"] },
+    { date: "2025-08-07", subjects: [], topics: ["Colangiocarcinoma", "Fístulas biliointestinales", "Hernia femoral", "Hernia hiatal"] },
+    { date: "2025-08-08", subjects: [], topics: ["Hernia umbilical", "Hernia ventral", "Vólvulo de ciego", "Quiste pilonidal", "Poliposis adenomatosa familiar (PAF)"] },
+    { date: "2025-08-09", subjects: ["CIRUGÍA PEDIÁTRICA"], topics: ["Atresia duodenal", "Atresia esofágica", "Criptorquidia", "Estenosis pilórica"] },
+    { date: "2025-08-10", subjects: [], topics: ["Hernia diafragmática congénita", "Invaginación intestinal", "Nefroblastoma", "Neuroblastoma"] },
+    { date: "2025-08-11", subjects: [], topics: ["Divertículo de Meckel", "Hirschsprung", "Atresia biliar", "Atresia de coanas"] },
+    { date: "2025-08-12", subjects: [], topics: ["Atresia yeyunoileal", "Espina bífida", "Malformaciones rectales", "Malrotación intestinal", "Patología umbilical"] }, 
+    { date: "2025-08-13", subjects: ["GINECOLOGÍA"], topics: ["Fitz-Hugh-Curtis", "Dismenorrea aguda", "Amenorreas primarias", "Amenorreas secundarias", "Sangrado uterino anormal"] },
+    { date: "2025-08-14", subjects: [], topics: ["Adenomiosis", "Anticonceptivos generalidades", "Anticonceptivos GPC", "Anticonceptivos hormonales combinados", "Anticoncepción de emergencia"] },
+    { date: "2025-08-15", subjects: [], topics: ["DIU de cobre", "DIU de levonorgestrel", "Implante subdérmico", "Progestágenos solos", "Lactancia como anticonceptivo"] },
+    { date: "2025-08-16", subjects: [], topics: ["Infertilidad", "Condón", "Vasectomía", "Cistocele e incontinencia", "Endometriosis"] },
+    { date: "2025-08-17", subjects: [], topics: ["Enfermedad pélvica inflamatoria", "Hidrosalpinx", "Hiperplasia endometrial", "Mastitis", "Mastopatía fibroquística"] },
+    { date: "2025-08-18", subjects: [], topics: ["Fibroadenoma", "Papiloma intraductal", "Patología mamaria benigna", "Quiste mamario", "Osteoporosis post menopausia"] },
+    { date: "2025-08-19", subjects: [], topics: ["Insuficiencia ovárica primaria", "Menopausia y climaterio", "Miomatosis uterina", "Oclusión tubaria bilateral OTB", "Ovario poliquístico"] },
+    { date: "2025-08-20", subjects: [], topics: ["Quiste de ovario benigno", "Torsión ovárica", "Vaginitis bacteriana", "Vaginitis infecciosa", "Trichomoniasis"] },
+    { date: "2025-08-21", subjects: ["ONCOGINE"], topics: ["Bartolinitis", "Candidiasis vulvovaginal", "Chlamydia", "Tamizaje cáncer de mama", "Cáncer de mama"] },
+    { date: "2025-08-22", subjects: [], topics: ["Cáncer cérvicouterino", "Cáncer de endometrio", "Cáncer de ovario", "Cáncer de vagina", "Tumores anexiales"] },
+    { date: "2025-08-23", subjects: ["OBSTETRICIA"], topics: ["Control prenatal", "Aloinmunización materna", "Estática fetal", "Tipos de pelvis", "Atención del parto"] },
+    { date: "2025-08-24", subjects: [], topics: ["Manejo activo del parto", "Cesárea", "Parto pretérmino", "Puerperio fisiológico", "Líquido amniótico"] },
+    { date: "2025-08-25", subjects: [], topics: ["Ruptura prematura de membranas", "Corioamnionitis", "Distocias", "Embarazo múltiple", "Endometritis puerperal"] },
+    { date: "2025-08-26", subjects: [], topics: ["Hiperémesis gravídica", "Insuficiencia cervical", "Muerte fetal", "Enfermedades hipertensivas del embarazo", "Preeclampsia sin datos de severidad"] },
+    { date: "2025-08-27", subjects: [], topics: ["Síndrome de HELLP", "Diabetes gestacional", "IVU en el embarazo", "Restricción del crecimiento intrauterino", "Sepsis puerperal"] },
+    { date: "2025-08-28", subjects: ["HEMORRAGIAS OBSTÉTRICAS"], topics: ["Síndrome de Sheehan", "Depresión posparto", "Generalidades de hemorragias", "Hemorragia postparto", "Desgarro perineal"] },
+    { date: "2025-08-29", subjects: [], topics: ["Amenaza de aborto", "Aborto espontáneo", "Acretismo placentario", "Atonía uterina", "Choque hemorrágico en obstetricia"] },
+    { date: "2025-08-30", subjects: [], topics: ["Desprendimiento prematuro de placenta normoinserta", "Embarazo ectópico", "Placenta previa", "Ruptura uterina", "Vasa previa"] },
+    { date: "2025-08-31", subjects: ["NEONATOLOGÍA"], topics: ["Enfermedad trofoblástica gestacional", "APGAR", "Apnea del prematuro", "Asfixia neonatal", "Displasia broncopulmonar"] },
+    { date: "2025-09-01", subjects: [], topics: ["Silverman Anderson", "Síndrome de aspiración de meconio", "Maduración pulmonar", "Síndrome de dificultad respiratoria", "Encefalopatía hipóxica"] },
+    { date: "2025-09-02", subjects: [], topics: ["Enfermedad hemorrágica del recién nacido", "Enterocolitis necrotizante", "Hipoacusia neonatal", "Hipoglucemia neonatal", "Ictericia neonatal"] },
+    { date: "2025-09-03", subjects: [], topics: ["Muerte súbita del lactante", "Prematuro sano", "Reanimación neonatal", "Recién nacido de término", "Sepsis neonatal"] },
+    { date: "2025-09-04", subjects: [], topics: ["Tamiz neonatal", "Taquipnea transitoria del recién nacido", "Lesiones de plexo braquial obstétrico", "Lesiones extracraneales", "Displasia del desarrollo de la cadera DDC"] },
+    { date: "2025-09-05", subjects: ["CONGENITAS"], topics: ["Hirschsprung", "Cardiopatías congénitas", "Tetralogía de Fallot", "Coartación aórtica", "Persistencia del conducto arterioso"] },
+    { date: "2025-09-06", subjects: [], topics: ["Fenilcetonuria", "Fibrosis quística", "Galactosemia clásica", "Storch", "Storch Citomegalovirus"] },
+    { date: "2025-09-07", subjects: [], topics: ["Storch herpes simple", "Storch rubéola congénita", "Storch sífilis congénita", "Storch toxoplasmosis", "Storch varicela congénita"] },
+    { date: "2025-09-08", subjects: ["ESCOLAR"], topics: ["Control de niño sano", "Etapas del crecimiento", "Talla baja", "Alergia alimentaria", "Cuerpo extraño"] },
+    { date: "2025-09-09", subjects: [], topics: ["Dermatitis del pañal", "Estreñimiento funcional", "Hiperplasia adrenal congénita", "Hipotiroidismo congénito", "Maltrato infantil"] },
+    { date: "2025-09-10", subjects: [], topics: ["Mucopolisacaridosis", "Reflujo gastroesofágico del lactante"] },
+    { date: "2025-09-11", subjects: ["NUTRICIÓN PEDIÁTRICA"], topics: ["Alimentación complementaria", "Deficiencia de vitamina A", "Desnutrición pediátrica", "Hipovitaminosis", "Intolerancia a la lactosa", "Lactancia materna"] },
+    { date: "2025-09-12", subjects: [], topics: ["Obesidad en escolares", "Pelagra en niños", "Raquitismo carencial", "Síndrome metabólico en niños"] },
+    { date: "2025-09-13", subjects: ["INFECTOLOGÍA PEDIÁTRICA"], topics: ["Adenitis mesentérica", "Onfalitis", "Exantemáticas Diferencial", "Eritema infeccioso", "Escarlatina", "Exantema súbito"] },
+    { date: "2025-09-14", subjects: [], topics: ["Enfermedad de Kawasaki", "Síndrome mano pie boca", "Rubéola", "Sarampión", "Varicela", "Parotiditis"] },
+    { date: "2025-09-15", subjects: [], topics: ["Bronquiolitis", "Epiglotitis", "Laringotraqueitis CRUP", "Mononucleosis infecciosa", "Tos ferina", "IVU en menores"] },
+    { date: "2025-09-16", subjects: ["VACUNAS"], topics: ["Vacunas generalidades", "Tipos de vacunas", "Vacunación universal", "Aplicación de vacunas", "Vacuna para personal de salud", "Vacunas en el embarazo"] },
+    { date: "2025-09-17", subjects: [], topics: ["Esquema de vacunación", "Bcg", "Hepatitis A", "Hepatitis B", "Hexavalente", "Influenza", "Neumocócica"] },
+    { date: "2025-09-18", subjects: [], topics: ["Rotavirus", "Sabin", "Salmonella", "Dpt", "Srp", "Tétanos", "Varicela", "Vph"] }
+];
+
+        let userProgress = {};
+        const totalTopics = studyPlan.reduce((acc, day) => acc + day.topics.length, 0);
+        const ALL_TASK_IDS = ['task-1-1', 'task-1-2', 'task-1-3', 'task-2-1', 'task-2-2', 'task-3-1', 'task-4-1', 'task-5-1', 'task-5-2', 'task-6-1'];
+        const motivationalQuotes = [ "La disciplina es el puente entre metas y logros.", "El éxito es la suma de pequeños esfuerzos repetidos día tras día.", "No te detengas hasta que te sientas orgulloso.", "Cree en ti mismo y todo será posible.", "El único modo de hacer un gran trabajo es amar lo que haces.", "La clave del éxito es empezar antes de estar listo.", "Cada día es una nueva oportunidad para cambiar tu vida.", "Si puedes soñarlo, puedes hacerlo.", "La perseverancia no es una carrera larga, son muchas carreras cortas una tras otra.", "El aprendizaje es un tesoro que seguirá a su dueño a todas partes.", "La motivación te pone en marcha, el hábito te mantiene.", "No cuentes los días, haz que los días cuenten.", "El futuro pertenece a quienes creen en la belleza de sus sueños.", "La mejor forma de predecir el futuro es crearlo.", "Un pequeño progreso cada día suma grandes resultados." ];
+
+        const calendarContainer = document.getElementById('calendar-container');
+        const dayModal = document.getElementById('details-modal'), dayModalOverlay = document.getElementById('modal-overlay'), dayModalTitle = document.getElementById('modal-title'), dayModalTopicsContainer = document.getElementById('modal-topics'), dayModalNotes = document.getElementById('modal-notes'), saveNoteButton = document.getElementById('modal-save-btn');
+        const topicModal = document.getElementById('topic-plan-modal'), topicModalOverlay = document.getElementById('topic-plan-overlay'), topicModalTitle = document.getElementById('topic-plan-title'), topicStepCards = topicModal.querySelectorAll('.step-card'), topicTaskCheckboxes = topicModal.querySelectorAll('.task-checkbox'), aciertosInput = document.getElementById('score-aciertos'), reactivosInput = document.getElementById('score-reactivos'), percentageOutput = document.getElementById('score-percentage'), finishTopicButton = document.getElementById('topic-finish-btn');
         const globalScoreBar = document.getElementById('global-score-bar'), globalAdvanceBar = document.getElementById('global-advance-bar');
         
-        async function saveData(key, value) { if (!currentUser) return; const docRef = db.collection('userProgress').doc(currentUser.uid); const dataToUpdate = {}; dataToUpdate[key] = value; await docRef.update(dataToUpdate).catch((error) => { if (error.code === 'not-found') { return docRef.set(dataToUpdate); } console.error("Error al actualizar el documento: ", error); }); const keys = key.split('.'); let current = userProgress; for (let i = 0; i < keys.length - 1; i++) { current[keys[i]] = current[keys[i]] || {}; current = current[keys[i]]; } current[keys[keys.length - 1]] = value; }
-        
-        function loadUserProgress(data) { if (data) { userProgress = data; } else { userProgress = {}; } }
-        function getData(key, defaultValue = null) { const keys = key.split('.'); let result = userProgress; for (const k of keys) { if (result && typeof result === 'object' && k in result) { result = result[k]; } else { return defaultValue; } } return result; }
+        function loadUserProgress(data) {
+            if (data) {
+                userProgress = data;
+                console.log("Progreso del usuario cargado desde Firestore.");
+            } else {
+                console.log("No se encontró progreso para este usuario. Se creará uno nuevo.");
+                userProgress = {};
+            }
+        }
+
+        async function saveData(key, value) {
+    if (!currentUser) return;
+    const docRef = db.collection('userProgress').doc(currentUser.uid);
+
+    const dataToUpdate = {};
+    dataToUpdate[key] = value;
+
+    await docRef.update(dataToUpdate).catch((error) => {
+        if (error.code === 'not-found') {
+            console.log("Documento no encontrado, creando uno nuevo...");
+            return docRef.set(dataToUpdate);
+        }
+        console.error("Error al actualizar el documento: ", error);
+    });
+
+    console.log(`Dato guardado en Firestore: { ${key}: "${value}" }`);
+
+    const keys = key.split('.');
+    let current = userProgress;
+    for (let i = 0; i < keys.length - 1; i++) {
+        current[keys[i]] = current[keys[i]] || {};
+        current = current[keys[i]];
+    }
+    current[keys[keys.length - 1]] = value;
+}
+
+        function getData(key, defaultValue = null) {
+            const keys = key.split('.');
+            let result = userProgress;
+            for (const k of keys) {
+                if (result && typeof result === 'object' && k in result) {
+                    result = result[k];
+                } else {
+                    return defaultValue;
+                }
+            }
+            return result;
+        }
+
         function isTopicComplete(topicId) { return ALL_TASK_IDS.every(taskId => getData(`topicData.${topicId}.${taskId}`) === true); }
         function generateTopicId(dateString, topicName) { const cleanTopic = topicName.toLowerCase().replace(/[^a-z0-9]/g, ''); return `topic_${dateString}_${cleanTopic}`; }
         function createTopicListItem(topic, dateString) { const topicId = generateTopicId(dateString, topic); const isComplete = isTopicComplete(topicId); const liClass = `topic-item ${isComplete ? 'topic-completed' : ''}`; return `<li class="${liClass}" data-topic-id="${topicId}" data-topic-name="${topic}">${topic}</li>`; }
-        function populateCalendar() { const daysMap = new Map(studyPlan.map(day => [day.date, day])); const startDate = new Date(studyPlan[0].date + "T00:00:00"); const visualEndDate = new Date("2025-09-27T23:59:59"); const calendarGridEndDate = new Date(visualEndDate.getFullYear(), visualEndDate.getMonth() + 1, 0, 23, 59, 59); let weeks = []; let dateCursor = new Date(startDate); dateCursor.setDate(dateCursor.getDate() - dateCursor.getDay()); while (dateCursor <= calendarGridEndDate) { let week = []; for(let i=0; i < 7; i++) { week.push(new Date(dateCursor)); dateCursor.setDate(dateCursor.getDate() + 1); } weeks.push(week); } const monthLayout = new Map(); weeks.forEach((week, weekIndex) => { const firstDayOfWeek = week[0]; const monthName = firstDayOfWeek.toLocaleString('es-ES', { month: 'long' }); if (!monthLayout.has(monthName)) { monthLayout.set(monthName, { startRow: weekIndex + 2, rowSpan: 1 }); } else { monthLayout.get(monthName).rowSpan++; } }); calendarContainer.innerHTML = ''; calendarContainer.innerHTML += '<div class="header-cell meta-header">M</div><div class="header-cell meta-header">S</div>'; ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].forEach(day => calendarContainer.innerHTML += `<div class="header-cell day-header">${day}</div>`); monthLayout.forEach((layout, name) => { calendarContainer.innerHTML += `<div class="month-cell" style="grid-row: ${layout.startRow} / span ${layout.rowSpan}">${name}</div>`; }); weeks.forEach((week, weekIndex) => { calendarContainer.innerHTML += `<div class="week-cell-container" style="grid-row: ${weekIndex + 2}"><span class="week-number">${weekIndex + 1}</span></div>`; week.forEach(date => { const cell = document.createElement('div'); cell.className = 'day-cell'; const dateString = date.toISOString().split('T')[0]; if (date < startDate || date > visualEndDate) { cell.classList.add('empty'); } else { cell.dataset.date = dateString; cell.innerHTML = `<div class="calendar-day-number">${date.getDate()}</div>`; const dayData = daysMap.get(dateString); if (dayData) { let contentHTML = '<ul>'; if (dayData.subjects && dayData.subjects.length > 0) { contentHTML += `<li><span class="subject-title">${dayData.subjects.join(' / ')}</span></li>`; } contentHTML += dayData.topics.map(topic => createTopicListItem(topic, dateString)).join(''); contentHTML += '</ul>'; cell.innerHTML += `<div class="day-content">${contentHTML}</div>`; } } calendarContainer.appendChild(cell); }); }); }
+
+        function populateCalendar() {
+                const daysMap = new Map(studyPlan.map(day => [day.date, day]));
+                const startDate = new Date(studyPlan[0].date + "T00:00:00");
+                const visualEndDate = new Date("2025-09-27T23:59:59"); 
+                const calendarGridEndDate = new Date(visualEndDate.getFullYear(), visualEndDate.getMonth() + 1, 0, 23, 59, 59);
+                let weeks = []; let dateCursor = new Date(startDate); dateCursor.setDate(dateCursor.getDate() - dateCursor.getDay());
+                while (dateCursor <= calendarGridEndDate) { let week = []; for(let i=0; i < 7; i++) { week.push(new Date(dateCursor)); dateCursor.setDate(dateCursor.getDate() + 1); } weeks.push(week); }
+                const monthLayout = new Map(); weeks.forEach((week, weekIndex) => { const firstDayOfWeek = week[0]; const monthName = firstDayOfWeek.toLocaleString('es-ES', { month: 'long' }); if (!monthLayout.has(monthName)) { monthLayout.set(monthName, { startRow: weekIndex + 2, rowSpan: 1 }); } else { monthLayout.get(monthName).rowSpan++; } });
+                calendarContainer.innerHTML = ''; calendarContainer.innerHTML += '<div class="header-cell meta-header">M</div><div class="header-cell meta-header">S</div>'; ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].forEach(day => calendarContainer.innerHTML += `<div class="header-cell day-header">${day}</div>`);
+                monthLayout.forEach((layout, name) => { calendarContainer.innerHTML += `<div class="month-cell" style="grid-row: ${layout.startRow} / span ${layout.rowSpan}">${name}</div>`; });
+                weeks.forEach((week, weekIndex) => { calendarContainer.innerHTML += `<div class="week-cell-container" style="grid-row: ${weekIndex + 2}"><span class="week-number">${weekIndex + 1}</span></div>`; week.forEach(date => { const cell = document.createElement('div'); cell.className = 'day-cell'; const dateString = date.toISOString().split('T')[0]; if (date < startDate || date > visualEndDate) { cell.classList.add('empty'); } else { cell.dataset.date = dateString; cell.innerHTML = `<div class="calendar-day-number">${date.getDate()}</div>`; const dayData = daysMap.get(dateString); if (dayData) { let contentHTML = '<ul>'; if (dayData.subjects && dayData.subjects.length > 0) { contentHTML += `<li><span class="subject-title">${dayData.subjects.join(' / ')}</span></li>`; } contentHTML += dayData.topics.map(topic => createTopicListItem(topic, dateString)).join(''); contentHTML += '</ul>'; cell.innerHTML += `<div class="day-content">${contentHTML}</div>`; } } calendarContainer.appendChild(cell); }); });
+        }
+
         function showDayModal(dateString) { const dayData = new Map(studyPlan.map(d => [d.date, d])).get(dateString); const date = new Date(dateString + "T00:00:00"); dayModalTitle.textContent = date.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }); let topicsHTML = '<ul>'; if (dayData) { if (dayData.subjects && dayData.subjects.length > 0) { topicsHTML += `<li><span class="subject-title">${dayData.subjects.join(' / ')}</span></li>`; } topicsHTML += dayData.topics.map(topic => createTopicListItem(topic, dateString)).join(''); } topicsHTML += '</ul>'; dayModalTopicsContainer.innerHTML = topicsHTML; dayModalNotes.value = getData(`dayNotes.${dateString}`, ''); dayModal.dataset.currentDate = dateString; dayModalOverlay.classList.add('visible'); dayModal.classList.add('visible'); }
         function closeDayModal() { dayModalOverlay.classList.remove('visible'); dayModal.classList.remove('visible'); }
         function saveDayNote() { const dateString = dayModal.dataset.currentDate; if (dateString) { saveData(`dayNotes.${dateString}`, dayModalNotes.value); } closeDayModal(); }
@@ -329,24 +571,31 @@
         function updateStepCardStatus(cardElement) { const tasksInCard = cardElement.querySelectorAll('.task-checkbox'); const allTasksCompleted = Array.from(tasksInCard).every(task => task.checked); cardElement.classList.toggle('completed', allTasksCompleted); }
         function updateAllStepCardsStatus() { topicStepCards.forEach(updateStepCardStatus); }
         function finishTopicSession() { const topicId = topicModal.dataset.currentTopicId; if (!topicId) return; updateGlobalProgressBars(); const isNowComplete = isTopicComplete(topicId); const topicElements = document.querySelectorAll(`[data-topic-id="${topicId}"]`); topicElements.forEach(el => { el.classList.toggle('topic-completed', isNowComplete); }); closeTopicModal(); }
-        function updateGlobalProgressBars() { let completedTopics = 0; let totalScoreSum = 0; let scoredTopicsCount = 0; studyPlan.forEach(day => { day.topics.forEach(topic => { const topicId = generateTopicId(day.date, topic); if (isTopicComplete(topicId)) { completedTopics++; } const aciertos = parseInt(getData(`topicData.${topicId}.scoreAciertos`)) || 0; const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`)) || 0; if (reactivos > 0) { const score = (aciertos / reactivos) * 100; totalScoreSum += score; scoredTopicsCount++; } }); }); const advancePercentage = totalTopics > 0 ? Math.round((completedTopics / totalTopics) * 100) : 0; globalAdvanceBar.style.width = `${advancePercentage}%`; globalAdvanceBar.textContent = `${advancePercentage}%`; const scorePercentage = scoredTopicsCount > 0 ? Math.round(totalScoreSum / scoredTopicsCount) : 0; globalScoreBar.style.width = `${scorePercentage}%`; globalScoreBar.textContent = `${scorePercentage}%`; }
-        
+        function updateGlobalProgressBars() { let completedTopics = 0; let totalScoreSum = 0; let scoredTopicsCount = 0; const topicData = getData('topicData', {}); studyPlan.forEach(day => { day.topics.forEach(topic => { const topicId = generateTopicId(day.date, topic); if (isTopicComplete(topicId)) { completedTopics++; } const aciertos = parseInt(getData(`topicData.${topicId}.scoreAciertos`)) || 0; const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`)) || 0; if (reactivos > 0) { const score = (aciertos / reactivos) * 100; totalScoreSum += score; scoredTopicsCount++; } }); }); const advancePercentage = totalTopics > 0 ? Math.round((completedTopics / totalTopics) * 100) : 0; globalAdvanceBar.style.width = `${advancePercentage}%`; globalAdvanceBar.textContent = `${advancePercentage}%`; const scorePercentage = scoredTopicsCount > 0 ? Math.round(totalScoreSum / scoredTopicsCount) : 0; globalScoreBar.style.width = `${scorePercentage}%`; globalScoreBar.textContent = `${scorePercentage}%`; }
+
         async function main() {
-            displayDailyQuote(); startCountdown();
+            displayDailyQuote();
+            startCountdown();
+            
             const docRef = db.collection('userProgress').doc(currentUser.uid);
             const doc = await docRef.get();
             loadUserProgress(doc.exists ? doc.data() : null);
-            populateCalendar(); updateGlobalProgressBars();
+            
+            populateCalendar();
+            updateGlobalProgressBars();
+            
             calendarContainer.addEventListener('click', e => { const cell = e.target.closest('.day-cell:not(.empty)'); if (cell) showDayModal(cell.dataset.date); });
             dayModalTopicsContainer.addEventListener('click', e => { const topicLi = e.target.closest('.topic-item'); if (topicLi) { const { topicId, topicName } = topicLi.dataset; showTopicPlan(topicId, topicName); } });
             dayModal.querySelector('#modal-close-day').addEventListener('click', closeDayModal); dayModalOverlay.addEventListener('click', closeDayModal);
-            topicModal.querySelector('#modal-close-topic').addEventListener('click', closeTopicModal); finishTopicButton.addEventListener('click', finishTopicSession);
+            topicModal.querySelector('#modal-close-topic').addEventListener('click', closeTopicModal);
+            finishTopicButton.addEventListener('click', finishTopicSession);
             document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (topicModal.classList.contains('visible')) { closeTopicModal(); } else if (dayModal.classList.contains('visible')) { closeDayModal(); } } });
             saveNoteButton.addEventListener('click', saveDayNote);
             topicTaskCheckboxes.forEach(checkbox => { checkbox.addEventListener('change', function() { saveTopicState(this.id, this.checked); updateStepCardStatus(this.closest('.step-card')); }); });
             aciertosInput.addEventListener('input', () => { saveTopicState('scoreAciertos', aciertosInput.value); updateScorePercentage(); });
             reactivosInput.addEventListener('input', () => { saveTopicState('scoreReactivos', reactivosInput.value); updateScorePercentage(); });
         }
+
         main();
     }
     </script>
