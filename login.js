@@ -1,14 +1,15 @@
 document.addEventListener('DOMContentLoaded', function () {
     // 1. Pega aquí tu configuración REAL de Firebase
     // ¡¡¡ASEGÚRATE DE QUE ESTAS SEAN TUS LLAVES REALES!!!
-    const firebaseConfig = {
-        apiKey: "AIzaSy...", // <-- Tus llaves reales van aquí
-        authDomain: "tu-proyecto.firebaseapp.com",
-        projectId: "tu-proyecto",
-        storageBucket: "tu-proyecto.appspot.com",
-        messagingSenderId: "123456789",
-        appId: "1:123456789:web:abcdef"
-    };
+ const firebaseConfig = {
+  apiKey: "AIzaSyD4SjKhedm4ZWHed70_sjQgxPokjHvwvUc",
+  authDomain: "frecuencia-vital.firebaseapp.com",
+  projectId: "frecuencia-vital",
+  storageBucket: "frecuencia-vital.firebasestorage.app",
+  messagingSenderId: "492064882273",
+  appId: "1:492064882273:web:46ad9f9a66126bfdb53420",
+  measurementId: "G-0C466YCX31"
+};
 
     // 2. Inicializar Firebase de forma segura
     if (!firebase.apps.length) {
