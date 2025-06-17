@@ -1,37 +1,36 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // 1. Pega aquí tu configuración REAL de Firebase
+    // 1. TU CONFIGURACIÓN REAL DE FIREBASE
     const firebaseConfig = {
-        apiKey: "AIzaS...", // <-- TUS LLAVES REALES VAN AQUÍ
-        authDomain: "tu-proyecto.firebaseapp.com",
-        projectId: "tu-proyecto",
-        storageBucket: "tu-proyecto.appspot.com",
-        messagingSenderId: "123456789",
-        appId: "1:123456789:web:abcdef"
+        apiKey: "...", // TUS LLAVES REALES DEBEN ESTAR AQUÍ
+        authDomain: "...",
+        projectId: "...",
+        storageBucket: "...",
+        messagingSenderId: "...",
+        appId: "..."
     };
 
-    // 2. Inicializar Firebase de forma segura
+    // 2. INICIALIZACIÓN SEGURA DE FIREBASE
     if (!firebase.apps.length) {
         firebase.initializeApp(firebaseConfig);
     }
 
-    // 3. Contratar al experto en autenticación.
-    // ¡ESTA ES LA LÍNEA QUE PROBABLEMENTE FALTABA O ESTABA MAL!
+    // 3. DEFINICIÓN CLAVE DEL MÓDULO DE AUTENTICACIÓN
     const auth = firebase.auth();
 
-    // 4. Obtener los elementos del formulario
+    // 4. OBTENER ELEMENTOS DEL FORMULARIO
     const loginForm = document.getElementById('loginForm');
     const emailInput = document.getElementById('username');
     const passwordInput = document.getElementById('password');
     const errorMessage = document.getElementById('error-message');
     
-    // 5. Escuchar el evento de envío del formulario
+    // 5. LISTENER DEL FORMULARIO
     loginForm.addEventListener('submit', function (event) {
         event.preventDefault();
 
         const email = emailInput.value;
         const password = passwordInput.value;
 
-        // 6. Darle la orden al experto en autenticación
+        // 6. INTENTO DE LOGIN CON FIREBASE
         auth.signInWithEmailAndPassword(email, password)
             .then((userCredential) => {
                 console.log('¡ACCESO CONCEDIDO! Redirigiendo...');
