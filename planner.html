@@ -483,26 +483,38 @@
             else { userProgress = {}; }
         }
 
-// =========================================================================
-// ============ REEMPLAZA TU FUNCIÓN saveData ENTERA CON ESTO ============
-// =========================================================================
-
 async function saveData(key, value) {
-    if (!currentUser) return;
+    // 1. Verificación inicial: Si no hay usuario, no hacemos nada.
+    if (!currentUser) {
+        console.error("No se puede guardar: El usuario no está autenticado.");
+        return;
+    }
     const docRef = db.collection('userProgress').doc(currentUser.uid);
 
-    // Esta es la sintaxis correcta que Firestore entiende para campos anidados.
-    const dataToUpdate = { [key]: value };
+    // 2. Usamos `update` que es el método correcto para modificar campos anidados
+    //    usando la notación de punto.
+    try {
+        await docRef.update({ [key]: value });
+        console.log(`%cDato actualizado en Firestore:`, 'color: lightgreen', { [key]: value });
+    } catch (error) {
+        // 3. Si `update` falla porque el documento no existe, lo creamos con `set`.
+        //    Esto hace el código robusto para el primer guardado de un usuario.
+        if (error.code === 'not-found') {
+            console.warn("El documento no existía. Creándolo por primera vez...");
+            try {
+                await docRef.set({ [key]: value });
+                console.log(`%cDocumento creado y dato guardado:`, 'color: lightblue', { [key]: value });
+            } catch (creationError) {
+                console.error("Error crítico al intentar crear el documento:", creationError);
+            }
+        } else {
+            // 4. Si el error es otro (ej. permisos), lo mostramos en la consola.
+            console.error("Error al guardar en Firestore (que no fue 'not-found'):", error);
+        }
+    }
 
-    // Usamos set con merge:true que es robusto tanto para crear como para actualizar.
-    // El error anterior estaba en cómo se construía el objeto, no tanto en el método.
-    await docRef.set(dataToUpdate, { merge: true }).catch(error => {
-        console.error("Error al guardar los datos en Firestore: ", error);
-    });
-
-    console.log(`Dato guardado: { ${key}: "${value}" }`);
-
-    // Actualizar el objeto local para que la UI sea instantánea
+    // 5. Actualizamos el objeto local `userProgress` para que la UI responda
+    //    al instante sin tener que volver a leer de la base de datos.
     const keys = key.split('.');
     let current = userProgress;
     for (let i = 0; i < keys.length - 1; i++) {
