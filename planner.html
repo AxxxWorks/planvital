@@ -598,31 +598,46 @@ async function saveData(key, value) {
             });
         }
 
-        function updateGlobalProgressBars() {
-            let completedTopics = 0;
-            studyPlan.forEach(day => {
-                day.topics.forEach(topic => {
-                    const topicId = generateTopicId(day.date, topic);
-                    if (isTopicComplete(topicId)) { completedTopics++; }
-                });
-            });
-            const advancePercentage = totalTopics > 0 ? Math.round((completedTopics / totalTopics) * 100) : 0;
-            globalAdvanceBar.style.width = `${advancePercentage}%`;
-            globalAdvanceBar.textContent = `${advancePercentage}%`;
-            let totalSubjectScoreSum = 0;
-            let subjectsWithScoresCount = 0;
-            const allSubjects = Array.from(subjectToTopicsMap.keys());
-            allSubjects.forEach(subject => {
-                const subjectScore = calculateSubjectScore(subject);
-                if (subjectScore !== null) {
-                    totalSubjectScoreSum += subjectScore;
-                    subjectsWithScoresCount++;
-                }
-            });
-            const scorePercentage = subjectsWithScoresCount > 0 ? Math.round(totalSubjectScoreSum / subjectsWithScoresCount) : 0;
-            globalScoreBar.style.width = `${scorePercentage}%`;
-            globalScoreBar.textContent = `${scorePercentage}%`;
+   function updateGlobalProgressBars() {
+    // 1. Lógica para la barra de AVANCE (Temas Completados)
+    let completedTopics = 0;
+    studyPlan.forEach(day => {
+        day.topics.forEach(topic => {
+            const topicId = generateTopicId(day.date, topic);
+            if (isTopicComplete(topicId)) {
+                completedTopics++;
+            }
+        });
+    });
+    const advancePercentage = totalTopics > 0 ? (completedTopics / totalTopics) * 100 : 0;
+    
+    // Para el ancho de la barra usamos el número redondeado
+    globalAdvanceBar.style.width = `${Math.round(advancePercentage)}%`;
+    // Para el texto, usamos el número con dos decimales
+    globalAdvanceBar.textContent = `${advancePercentage.toFixed(2)}%`;
+
+    // 2. Lógica para la barra de PUNTUACIÓN (Promedio de Calificaciones)
+    let totalSubjectScoreSum = 0;
+    let subjectsWithScoresCount = 0;
+    const allSubjects = Array.from(subjectToTopicsMap.keys());
+    
+    allSubjects.forEach(subject => {
+        // La función calculateSubjectScore ya devuelve un string con .toFixed(2) o null.
+        // Necesitamos convertirlo de nuevo a número para poder sumarlo.
+        const subjectScoreStr = calculateSubjectScore(subject);
+        if (subjectScoreStr !== null) {
+            totalSubjectScoreSum += parseFloat(subjectScoreStr);
+            subjectsWithScoresCount++;
         }
+    });
+
+    const scorePercentage = subjectsWithScoresCount > 0 ? totalSubjectScoreSum / subjectsWithScoresCount : 0;
+    
+    // Para el ancho de la barra usamos el número redondeado
+    globalScoreBar.style.width = `${Math.round(scorePercentage)}%`;
+    // Para el texto, usamos el número con dos decimales
+    globalScoreBar.textContent = `${scorePercentage.toFixed(2)}%`;
+}
 
         function showDayModal(dateString) { const dayData = new Map(studyPlan.map(d => [d.date, d])).get(dateString); const date = new Date(dateString + "T00:00:00"); dayModalTitle.textContent = date.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }); let topicsHTML = '<ul>'; if (dayData) { if (dayData.subjects && dayData.subjects.length > 0) { const subjectTitles = dayData.subjects.map(subject => { const score = calculateSubjectScore(subject); const scoreText = score !== null ? `<span class="subject-score">(${score}%)</span>` : ''; return `${subject}${scoreText}`; }).join(' / '); topicsHTML += `<li><span class="subject-title">${subjectTitles}</span></li>`; } topicsHTML += dayData.topics.map(topic => createTopicListItem(topic, dateString)).join(''); } topicsHTML += '</ul>'; dayModalTopicsContainer.innerHTML = topicsHTML; dayModalNotes.value = getData(`dayNotes.${dateString}`, ''); dayModal.dataset.currentDate = dateString; dayModalOverlay.classList.add('visible'); dayModal.classList.add('visible'); }
         function closeDayModal() { dayModalOverlay.classList.remove('visible'); dayModal.classList.remove('visible'); }
