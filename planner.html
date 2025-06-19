@@ -65,16 +65,19 @@
         .month-cell { grid-column: 1; background-color: var(--meta-bg); color: var(--meta-text); font-family: 'Orbitron', sans-serif; writing-mode: vertical-rl; text-transform: uppercase; letter-spacing: 2px; display: flex; align-items: center; justify-content: center; border-right: 1px solid var(--meta-border); }
         .week-cell-container { grid-column: 2; background-color: var(--meta-bg); position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--meta-border); }
         .week-number { font-family: 'Orbitron', sans-serif; font-size: 1.6em; color: var(--meta-text); }
-        .day-cell { background-color: var(--cell-bg); min-height: 160px; padding: 8px 12px; position: relative; overflow-y: auto; cursor: pointer; }
+        .day-cell { background-color: var(--cell-bg); min-height: 160px; padding: 8px 12px; position: relative; overflow-y: auto; cursor: pointer; transition: background-color 0.2s; }
         .day-cell.empty { background-color: var(--bg-color); cursor: default; }
+        .day-cell.drag-over { background-color: var(--meta-bg); border: 2px dashed var(--accent-color); }
         .calendar-day-number { font-size: 0.9em; font-weight: 600; color: #777; position: absolute; top: 8px; right: 12px; z-index: 1; }
         .day-content ul { list-style-type: none; padding-left: 0; margin: 25px 0 0 0; }
         .day-content li { margin-bottom: 4px; padding-left: 14px; position: relative; font-size: 0.85em; }
-        .day-content .subject-title, #modal-topics .subject-title { color: var(--subject-highlight-color); font-weight: 700; display: block; margin-bottom: 6px; text-transform: uppercase; font-size: 1em; text-shadow: 0 0 5px rgba(255, 152, 0, 0.4); padding-left: 0; /* Ajuste para el título */ }
-        .subject-title::before { content: none !important; /* Quitar el bullet del título */ }
+        .day-content .subject-title, #modal-topics .subject-title { color: var(--subject-highlight-color); font-weight: 700; display: block; margin-bottom: 6px; text-transform: uppercase; font-size: 1em; text-shadow: 0 0 5px rgba(255, 152, 0, 0.4); padding-left: 0; }
+        .subject-title::before { content: none !important; }
         .subject-score { color: var(--meta-text); font-size: 0.8em; font-weight: 400; margin-left: 8px; }
-        .topic-item { display: flex; align-items: center; justify-content: space-between; padding: 4px 6px; margin-left: -6px; border-radius: 4px; transition: background-color 0.2s ease, color 0.2s ease; }
-        .topic-item:not(.topic-completed):hover { background-color: var(--meta-bg); color: var(--accent-color); }
+        .topic-item { display: flex; align-items: center; justify-content: space-between; padding: 4px 6px; margin-left: -6px; border-radius: 4px; transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s; }
+        .topic-item[draggable="true"] { cursor: grab; }
+        .topic-item.dragging { opacity: 0.5; }
+        .topic-item:not(.topic-completed):not(.dragging):hover { background-color: var(--meta-bg); color: var(--accent-color); }
         .topic-item::before { content: '■'; position: absolute; left: 0; top: 5px; color: var(--accent-color); font-size: 0.8em; line-height: 1.5; transition: color 0.3s ease; }
         .topic-score { font-size: 0.85em; font-weight: bold; margin-left: 10px; flex-shrink: 0; }
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px); z-index: 998; display: none; opacity: 0; transition: opacity 0.3s ease; }
@@ -296,13 +299,11 @@
         }
     });
 
-    function initializeAppLogic() {
+    async function initializeAppLogic() {
         const subjectToTopicsMap = new Map();
         const motivationalQuotes = [ "La disciplina es el puente entre metas y logros.", "El éxito es la suma de pequeños esfuerzos repetidos día tras día.", "No te detengas hasta que te sientas orgulloso.", "Cree en ti mismo y todo será posible.", "El único modo de hacer un gran trabajo es amar lo que haces.", "La clave del éxito es empezar antes de estar listo.", "Cada día es una nueva oportunidad para cambiar tu vida.", "Si puedes soñarlo, puedes hacerlo.", "La perseverancia no es una carrera larga, son muchas carreras cortas una tras otra.", "El aprendizaje es un tesoro que seguirá a su dueño a todas partes.", "La motivación te pone en marcha, el hábito te mantiene.", "No cuentes los días, haz que los días cuenten.", "El futuro pertenece a quienes creen en la belleza de sus sueños.", "La mejor forma de predecir el futuro es crearlo.", "Un pequeño progreso cada día suma grandes resultados." ];
         
-        // ===== MODIFICACIÓN #1: NUEVA ESTRUCTURA DEL PLAN DE ESTUDIOS =====
-        // Se agrupan los temas en "bloques" por materia para un renderizado preciso.
-        const studyPlan = [
+        const defaultStudyPlan = [
             { date: "2025-06-19", blocks: [{ subject: "ENDOCRINOLOGÍA", topics: ["Dislipidemias", "Hipertiroidismo", "Hipotiroidismo", "Cáncer de tiroides (Enfoque en Papilar)"] }] },
             { date: "2025-06-20", blocks: [{ topics: ["Nódulo tiroideo", "Obesidad en adultos", "Síndrome metabólico", "Enfermedad de Cushing / Síndrome de Cushing", "Enfermedad de Addison"] }] },
             { date: "2025-06-21", blocks: [{ subject: "UROLOGÍA", topics: ["Escroto agudo y Torsión testicular", "Hiperplasia prostática benigna", "Cáncer de próstata", "Pielonefritis aguda"] }] },
@@ -397,9 +398,10 @@
             { date: "2025-09-18", blocks: [{ topics: ["Esquema de vacunación", "Bcg", "Hepatitis A", "Hepatitis B", "Hexavalente", "Influenza", "Neumocócica"] }] },
             { date: "2025-09-19", blocks: [{ topics: ["Rotavirus", "Sabin", "Salmonella", "Dpt", "Srp", "Tétanos", "Varicela", "Vph"] }] }
         ];
+        let studyPlan; // Se declarará después de cargar los datos del usuario
 
         let userProgress = {};
-        const totalTopics = studyPlan.reduce((acc, day) => acc + day.blocks.reduce((blockAcc, block) => blockAcc + block.topics.length, 0), 0);
+        let totalTopics = 0; // Se calculará después de cargar el plan
         const ALL_TASK_IDS = ['task-1-1', 'task-1-2', 'task-1-3', 'task-2-1', 'task-2-2', 'task-3-1', 'task-4-1', 'task-5-1', 'task-5-2', 'task-6-1'];
         
         const calendarContainer = document.getElementById('calendar-container');
@@ -446,8 +448,7 @@
                 secondsEl.textContent = String(seconds).padStart(2, '0');
             }, 1000);
         }
-
-        // ===== MODIFICACIÓN #2: LÓGICA DE MAPEO DE MATERIAS ACTUALIZADA =====
+        
         function buildSubjectMap() {
             subjectToTopicsMap.clear();
             let lastSubject = null;
@@ -460,7 +461,7 @@
                         if (!subjectToTopicsMap.has(lastSubject)) {
                             subjectToTopicsMap.set(lastSubject, []);
                         }
-                        const dayTopicIds = block.topics.map(topicName => generateTopicId(day.date, topicName));
+                        const dayTopicIds = block.topics.map(topicName => generateTopicId(topicName));
                         const currentTopics = subjectToTopicsMap.get(lastSubject);
                         const updatedTopics = new Set([...currentTopics, ...dayTopicIds]);
                         subjectToTopicsMap.set(lastSubject, Array.from(updatedTopics));
@@ -505,18 +506,23 @@
             } catch (error) {
                 if (error.code === 'not-found') {
                     try {
-                        await docRef.set({ [key]: value });
+                        await docRef.set({ [key]: value }, { merge: true });
                     } catch (creationError) {
                         console.error("Error crítico al intentar crear el documento:", creationError);
                     }
                 } else {
-                    console.error("Error al guardar en Firestore (que no fue 'not-found'):", error);
+                     try {
+                        await docRef.set({ [key]: value }, { merge: true });
+                    } catch (creationError) {
+                        console.error("Error al guardar con merge:", creationError);
+                    }
                 }
             }
             const keys = key.split('.');
             let current = userProgress;
             for (let i = 0; i < keys.length - 1; i++) {
-                current = current[keys[i]] = current[keys[i]] || {};
+                if (!current[keys[i]]) current[keys[i]] = {};
+                current = current[keys[i]];
             }
             current[keys[keys.length - 1]] = value;
         }
@@ -532,10 +538,15 @@
         }
 
         function isTopicComplete(topicId) { return ALL_TASK_IDS.every(taskId => getData(`topicData.${topicId}.${taskId}`) === true); }
-        function generateTopicId(dateString, topicName) { const cleanTopic = topicName.toLowerCase().replace(/[^a-z0-9]/g, ''); return `topic_${dateString}_${cleanTopic}`; }
         
-        function createTopicListItem(topic, dateString) {
-            const topicId = generateTopicId(dateString, topic);
+        // ===== MODIFICACIÓN CRÍTICA: ID DE TEMA INDEPENDIENTE DE LA FECHA =====
+        function generateTopicId(topicName) { 
+            const cleanTopic = topicName.toLowerCase().replace(/[^a-z0-9]/g, ''); 
+            return `topic_${cleanTopic}`; 
+        }
+        
+        function createTopicListItem(topic) {
+            const topicId = generateTopicId(topic);
             const isComplete = isTopicComplete(topicId);
             const liClass = `topic-item ${isComplete ? 'topic-completed' : ''}`;
             let scoreHTML = '';
@@ -546,11 +557,12 @@
                 const color = getScoreColor(percentage);
                 scoreHTML = `<span class="topic-score" style="color: ${color};">(${percentage.toFixed(2)}%)</span>`;
             }
-            return `<li class="${liClass}" data-topic-id="${topicId}" data-topic-name="${topic}"><span>${topic}</span>${scoreHTML}</li>`;
+            // ===== MODIFICACIÓN: AÑADIDO draggable="true" Y DATASETS NECESARIOS =====
+            return `<li class="${liClass}" draggable="true" data-topic-id="${topicId}" data-topic-name="${topic}"><span>${topic}</span>${scoreHTML}</li>`;
         }
         
-        // ===== MODIFICACIÓN #3: LÓGICA DE RENDERIZADO DEL CALENDARIO ACTUALIZADA =====
         function populateCalendar() {
+            buildSubjectMap();
             const daysMap = new Map(studyPlan.map(day => [day.date, day]));
             const startDate = new Date(studyPlan[0].date + "T00:00:00");
             const visualEndDate = new Date("2025-09-28T23:59:59"); 
@@ -571,7 +583,7 @@
                         cell.dataset.date = dateString;
                         cell.innerHTML = `<div class="calendar-day-number">${date.getDate()}</div>`;
                         const dayData = daysMap.get(dateString);
-                        if (dayData) {
+                        if (dayData && dayData.blocks) {
                             let contentHTML = '<ul>';
                             dayData.blocks.forEach(block => {
                                 if (block.subject) {
@@ -579,7 +591,7 @@
                                     const scoreText = score !== null ? `<span class="subject-score">(${score}%)</span>` : '';
                                     contentHTML += `<li><span class="subject-title">${block.subject}${scoreText}</span></li>`;
                                 }
-                                contentHTML += block.topics.map(topic => createTopicListItem(topic, dateString)).join('');
+                                contentHTML += block.topics.map(topic => createTopicListItem(topic)).join('');
                             });
                             contentHTML += '</ul>';
                             cell.innerHTML += `<div class="day-content">${contentHTML}</div>`;
@@ -588,14 +600,16 @@
                     calendarContainer.appendChild(cell);
                 });
             });
+            updateGlobalProgressBars();
         }
 
         function updateGlobalProgressBars() {
+            totalTopics = studyPlan.reduce((acc, day) => acc + day.blocks.reduce((blockAcc, block) => blockAcc + block.topics.length, 0), 0);
             let completedTopics = 0;
             studyPlan.forEach(day => {
                 day.blocks.forEach(block => {
                     block.topics.forEach(topic => {
-                        const topicId = generateTopicId(day.date, topic);
+                        const topicId = generateTopicId(topic);
                         if (isTopicComplete(topicId)) {
                             completedTopics++;
                         }
@@ -605,11 +619,9 @@
             const advancePercentage = totalTopics > 0 ? (completedTopics / totalTopics) * 100 : 0;
             globalAdvanceBar.style.width = `${Math.round(advancePercentage)}%`;
             globalAdvanceBar.textContent = `${advancePercentage.toFixed(2)}%`;
-
             let totalSubjectScoreSum = 0;
             let subjectsWithScoresCount = 0;
             const allSubjects = Array.from(subjectToTopicsMap.keys());
-            
             allSubjects.forEach(subject => {
                 const subjectScoreStr = calculateSubjectScore(subject);
                 if (subjectScoreStr !== null) {
@@ -617,26 +629,24 @@
                     subjectsWithScoresCount++;
                 }
             });
-
             const scorePercentage = subjectsWithScoresCount > 0 ? totalSubjectScoreSum / subjectsWithScoresCount : 0;
             globalScoreBar.style.width = `${Math.round(scorePercentage)}%`;
             globalScoreBar.textContent = `${scorePercentage.toFixed(2)}%`;
         }
         
-        // ===== MODIFICACIÓN #4: LÓGICA DE RENDERIZADO DEL MODAL ACTUALIZADA =====
         function showDayModal(dateString) { 
-            const dayData = new Map(studyPlan.map(d => [d.date, d])).get(dateString); 
+            const dayData = studyPlan.find(d => d.date === dateString);
             const date = new Date(dateString + "T00:00:00"); 
             dayModalTitle.textContent = date.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }); 
             let topicsHTML = '<ul>'; 
-            if (dayData) {
+            if (dayData && dayData.blocks) {
                 dayData.blocks.forEach(block => {
                     if (block.subject) {
                         const score = calculateSubjectScore(block.subject);
                         const scoreText = score !== null ? `<span class="subject-score">(${score}%)</span>` : '';
                         topicsHTML += `<li><span class="subject-title">${block.subject}${scoreText}</span></li>`;
                     }
-                    topicsHTML += block.topics.map(topic => createTopicListItem(topic, dateString)).join('');
+                    topicsHTML += block.topics.map(topic => createTopicListItem(topic)).join('');
                 });
             }
             topicsHTML += '</ul>'; 
@@ -657,9 +667,7 @@
             const aciertos = parseInt(aciertosInput.value) || 0;
             const reactivos = parseInt(reactivosInput.value) || 0;
             let percentage = 0;
-            if (reactivos > 0) {
-                percentage = (aciertos / reactivos) * 100;
-            }
+            if (reactivos > 0) { percentage = (aciertos / reactivos) * 100; }
             const color = getScoreColor(percentage);
             percentageOutput.value = percentage.toFixed(2) + "%";
             percentageOutput.style.color = color;
@@ -671,20 +679,137 @@
             const topicId = topicModal.dataset.currentTopicId;
             if (!topicId) return;
             closeTopicModal();
-            updateGlobalProgressBars();
-            populateCalendar();
+            populateCalendar(); // Refrescará calendario y barras de progreso
         }
+
+        // ===== INICIO: LÓGICA DE DRAG AND DROP =====
+        let draggedItem = null;
+        let lastDragOverCell = null;
+
+        calendarContainer.addEventListener('dragstart', e => {
+            if (e.target.classList.contains('topic-item')) {
+                draggedItem = e.target;
+                setTimeout(() => e.target.classList.add('dragging'), 0);
+                const sourceDate = e.target.closest('.day-cell').dataset.date;
+                e.dataTransfer.setData('text/plain', JSON.stringify({
+                    topicName: draggedItem.dataset.topicName,
+                    sourceDate: sourceDate
+                }));
+            }
+        });
+
+        calendarContainer.addEventListener('dragend', e => {
+            if (draggedItem) {
+                draggedItem.classList.remove('dragging');
+                draggedItem = null;
+            }
+            if(lastDragOverCell) {
+                lastDragOverCell.classList.remove('drag-over');
+                lastDragOverCell = null;
+            }
+        });
+
+        calendarContainer.addEventListener('dragover', e => {
+            e.preventDefault();
+            const targetCell = e.target.closest('.day-cell:not(.empty)');
+            if (lastDragOverCell && lastDragOverCell !== targetCell) {
+                lastDragOverCell.classList.remove('drag-over');
+            }
+            if (targetCell) {
+                targetCell.classList.add('drag-over');
+                lastDragOverCell = targetCell;
+            }
+        });
+
+        calendarContainer.addEventListener('dragleave', e => {
+             const targetCell = e.target.closest('.day-cell');
+             if(targetCell && !targetCell.contains(e.relatedTarget)){
+                 targetCell.classList.remove('drag-over');
+                 if(lastDragOverCell === targetCell) lastDragOverCell = null;
+             }
+        });
+
+        calendarContainer.addEventListener('drop', e => {
+            e.preventDefault();
+            const targetCell = e.target.closest('.day-cell:not(.empty)');
+            if (targetCell && lastDragOverCell) {
+                lastDragOverCell.classList.remove('drag-over');
+                lastDragOverCell = null;
+            }
+
+            if (targetCell && draggedItem) {
+                const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+                const { topicName, sourceDate } = data;
+                const targetDate = targetCell.dataset.date;
+
+                if (sourceDate === targetDate) return; // No hacer nada si se suelta en el mismo día
+
+                // --- Lógica de mover el tema ---
+                const sourceDay = studyPlan.find(d => d.date === sourceDate);
+                let topicFoundAndRemoved = false;
+                if (sourceDay) {
+                    sourceDay.blocks.forEach(block => {
+                        const topicIndex = block.topics.indexOf(topicName);
+                        if (topicIndex > -1) {
+                            block.topics.splice(topicIndex, 1);
+                            topicFoundAndRemoved = true;
+                        }
+                    });
+                    // Limpiar bloques vacíos
+                    sourceDay.blocks = sourceDay.blocks.filter(b => b.topics.length > 0 || b.subject);
+                }
+
+                if (topicFoundAndRemoved) {
+                    let targetDay = studyPlan.find(d => d.date === targetDate);
+                    if (!targetDay) { // Si el día de destino no existe en el plan, crearlo
+                        targetDay = { date: targetDate, blocks: [] };
+                        studyPlan.push(targetDay);
+                        studyPlan.sort((a,b) => new Date(a.date) - new Date(b.date));
+                    }
+                    if (targetDay.blocks.length === 0) { // Si el día no tiene bloques, crear uno
+                        targetDay.blocks.push({ topics: [] });
+                    }
+                    targetDay.blocks[targetDay.blocks.length - 1].topics.push(topicName); // Añadir al último bloque
+
+                    saveData('studyPlan', studyPlan); // Guardar todo el plan actualizado
+                    populateCalendar(); // Re-renderizar todo
+                }
+            }
+        });
+        // ===== FIN: LÓGICA DE DRAG AND DROP =====
 
         async function main() {
             displayDailyQuote();
             startCountdown();
-            buildSubjectMap();
+            
             const docRef = db.collection('userProgress').doc(currentUser.uid);
             const doc = await docRef.get();
             loadUserProgress(doc.exists ? doc.data() : null);
+            
+            // Cargar plan de estudios del usuario o usar el de por defecto
+            const userPlan = getData('studyPlan', null);
+            if (userPlan) {
+                studyPlan = userPlan;
+            } else {
+                studyPlan = defaultStudyPlan;
+                await saveData('studyPlan', defaultStudyPlan); // Guardar el plan por defecto para el usuario la primera vez
+            }
+
             populateCalendar();
-            updateGlobalProgressBars();
-            calendarContainer.addEventListener('click', e => { const cell = e.target.closest('.day-cell:not(.empty)'); if (cell) showDayModal(cell.dataset.date); });
+            
+            calendarContainer.addEventListener('click', e => {
+                const topicLi = e.target.closest('.topic-item');
+                if (topicLi) {
+                     const { topicId, topicName } = topicLi.dataset;
+                     showTopicPlan(topicId, topicName);
+                     return; // Evita que se abra el modal del día
+                }
+                const cell = e.target.closest('.day-cell:not(.empty)');
+                if (cell) {
+                    showDayModal(cell.dataset.date);
+                }
+            });
+
             dayModalTopicsContainer.addEventListener('click', e => { const topicLi = e.target.closest('.topic-item'); if (topicLi) { const { topicId, topicName } = topicLi.dataset; showTopicPlan(topicId, topicName); } });
             dayModal.querySelector('#modal-close-day').addEventListener('click', closeDayModal); dayModalOverlay.addEventListener('click', closeDayModal);
             topicModal.querySelector('#modal-close-topic').addEventListener('click', closeTopicModal);
