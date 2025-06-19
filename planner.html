@@ -109,6 +109,13 @@
             font-size: 1em;
             text-shadow: 0 0 5px rgba(255, 152, 0, 0.4);
         }
+
+        .subject-score {
+            color: var(--meta-text);
+            font-size: 0.8em;
+            font-weight: 400;
+            margin-left: 8px;
+        }
         
         .topic-item { padding: 4px 6px; margin-left: -6px; border-radius: 4px; transition: background-color 0.2s ease, color 0.2s ease; }
         .topic-item:not(.topic-completed):hover { background-color: var(--meta-bg); color: var(--accent-color); }
@@ -191,7 +198,6 @@
             <div class="countdown-unit"> <div class="countdown-label">Minutes</div> <div class="countdown-digits" id="countdown-minutes">00</div> </div>
             <div class="countdown-unit"> <div class="countdown-label">Seconds</div> <div class="countdown-digits" id="countdown-seconds">00</div> </div>
         </div>
-        <!-- BLOQUE HTML CORREGIDO PARA ACCESIBILIDAD -->
         <div class="global-progress-container">
             <div class="progress-bar-wrapper">
                 <label id="global-score-label">Puntuación Global (Promedio de Calificaciones)</label>
@@ -344,8 +350,9 @@
     
     // --- TODA TU LÓGICA DE LA APLICACIÓN VA DENTRO DE ESTA FUNCIÓN ---
     function initializeAppLogic() {
-        
-        // --- FUNCIONES AUXILIARES AÑADIDAS ---
+
+        const subjectToTopicsMap = new Map();
+
         function displayDailyQuote() {
             const quoteContainer = document.getElementById('motivational-quote-container');
             if (quoteContainer) {
@@ -360,13 +367,10 @@
             const hoursEl = document.getElementById('countdown-hours');
             const minutesEl = document.getElementById('countdown-minutes');
             const secondsEl = document.getElementById('countdown-seconds');
-
             if (!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
-
             const interval = setInterval(() => {
                 const now = new Date().getTime();
                 const distance = targetDate - now;
-
                 if (distance < 0) {
                     clearInterval(interval);
                     daysEl.textContent = "000";
@@ -375,170 +379,200 @@
                     secondsEl.textContent = "00";
                     return;
                 }
-
                 const days = Math.floor(distance / (1000 * 60 * 60 * 24));
                 const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
                 const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                 const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
                 daysEl.textContent = String(days).padStart(3, '0');
                 hoursEl.textContent = String(hours).padStart(2, '0');
                 minutesEl.textContent = String(minutes).padStart(2, '0');
                 secondsEl.textContent = String(seconds).padStart(2, '0');
             }, 1000);
         }
+
+        function buildSubjectMap() {
+            studyPlan.forEach(day => {
+                // Generar los IDs de los temas para el día actual
+                const dayTopicIds = day.topics.map(topicName => generateTopicId(day.date, topicName));
+
+                // Asignar los temas a cada materia del día
+                if (day.subjects.length > 0) {
+                    day.subjects.forEach(subjectName => {
+                        if (!subjectToTopicsMap.has(subjectName)) {
+                            subjectToTopicsMap.set(subjectName, []);
+                        }
+                        const currentTopics = subjectToTopicsMap.get(subjectName);
+                        // Usamos un Set para evitar duplicados si un tema aparece bajo la misma materia en diferentes días
+                        const updatedTopics = new Set([...currentTopics, ...dayTopicIds]);
+                        subjectToTopicsMap.set(subjectName, Array.from(updatedTopics));
+                    });
+                } else {
+                    // Si un día no tiene materia asignada, buscamos la materia del día anterior
+                    const currentDayIndex = studyPlan.findIndex(d => d.date === day.date);
+                    if (currentDayIndex > 0) {
+                        const previousDaySubjects = studyPlan[currentDayIndex - 1].subjects;
+                        if (previousDaySubjects.length > 0) {
+                             previousDaySubjects.forEach(subjectName => {
+                                const currentTopics = subjectToTopicsMap.get(subjectName) || [];
+                                const updatedTopics = new Set([...currentTopics, ...dayTopicIds]);
+                                subjectToTopicsMap.set(subjectName, Array.from(updatedTopics));
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        function calculateSubjectScore(subjectName) {
+            const topicIds = subjectToTopicsMap.get(subjectName);
+            if (!topicIds || topicIds.length === 0) return null;
+            let totalScoreSum = 0;
+            let scoredTopicsCount = 0;
+            topicIds.forEach(topicId => {
+                const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`)) || 0;
+                if (reactivos > 0) {
+                    const aciertos = parseInt(getData(`topicData.${topicId}.scoreAciertos`)) || 0;
+                    const score = (aciertos / reactivos) * 100;
+                    totalScoreSum += score;
+                    scoredTopicsCount++;
+                }
+            });
+            return scoredTopicsCount > 0 ? Math.round(totalScoreSum / scoredTopicsCount) : null;
+        }
         
-       const studyPlan = [
-    { date: "2025-06-18", subjects: ["ENDOCRINOLOGÍA"], topics: ["Dislipidemias", "Hipertiroidismo", "Hipotiroidismo", "Cáncer de tiroides (Enfoque en Papilar)"] },
-    { date: "2025-06-19", subjects: [], topics: ["Nódulo tiroideo", "Obesidad en adultos", "Síndrome metabólico", "Enfermedad de Cushing / Síndrome de Cushing"] },
-    { date: "2025-06-20", subjects: ["UROLOGÍA"], topics: ["Enfermedad de Addison", "Escroto agudo y Torsión testicular", "Hiperplasia prostática benigna", "Cáncer de próstata"] },
-    { date: "2025-06-21", subjects: [], topics: ["Pielonefritis aguda", "Infección de tracto urinario", "Urolitiasis", "Cáncer testicular"] },
-    { date: "2025-06-22", subjects: ["ORL"], topics: ["Disfunción eréctil", "Faringoamigdalitis", "Epistaxis", "Rinosinusitis aguda"] },
-    { date: "2025-06-23", subjects: [], topics: ["Otitis externa aguda", "VPPB", "Mastoiditis aguda", "Parálisis de Bell"] },
-    { date: "2025-06-24", subjects: ["OFTALMOLOGÍA"], topics: ["Catarata", "Conjuntivitis", "Glaucoma de ángulo aberto", "Glaucoma de ángulo cerrado"] },
-    { date: "2025-06-25", subjects: [], topics: ["Ojo rojo", "Retinopatía diabética", "Trauma ocular", "Desprendimiento de retina"] },
-    { date: "2025-06-26", subjects: ["TYO"], topics: ["Osteoartritis", "Osteomielitis", "Fracturas expuestas", "Esguince cervical", "Lumbalgia"] },
-    { date: "2025-06-27", subjects: [], topics: ["Síndrome de hombro doloroso", "Luxación glenohumeral", "Fractura de clavícula", "Fractura de radio distal"] },
-    { date: "2025-06-28", subjects: [], topics: ["Fractura de cadera", "Lesiones de rodilla", "Esguince de tobillo", "Fractura de tobillo"] },
-    { date: "2025-06-29", subjects: [], topics: ["Osteosarcoma", "Sarcoma de Ewing", "Hernia de disco", "Túnel del carpo"] },
-    { date: "2025-06-30", subjects: [], topics: ["Epifisiolistesis femoral", "Legg-Calvé-Perthes", "Embolia grasa", "Tumores óseos malignos"] },
-    { date: "2025-07-01", subjects: [], topics: ["Costilla cervical", "Fractura de húmero proximal", "Luxación de codo", "Codo de niñera"] },
-    { date: "2025-07-02", subjects: [], topics: ["Fracturas de codo", "Fracturas de antebrazo", "Lesiones fisiarias", "Luxación coxofemoral", "Fractura de diáfisis de tibia"] },
-    { date: "2025-07-03", subjects: ["CARDIOLOGÍA"], topics: ["Rotura de talón de Aquiles", "Pie equino varo", "Pie plano", "Pericarditis"] },
-    { date: "2025-07-04", subjects: [], topics: ["Endocarditis infecciosa", "Estenosis aórtica", "Insuficiencia aórtica", "Estenosis mitral"] },
-    { date: "2025-07-05", subjects: [], topics: ["Insuficiencia mitral", "Fiebre reumática", "Hipertensión arterial sistémica", "Crisis hipertensivas"] },
-    { date: "2025-07-06", subjects: [], topics: ["Insuficiencia cardíaca aguda", "Insuficiencia cardíaca crónica", "Infarto agudo de miocardio", "Disección aórtica"] },
-    { date: "2025-07-07", subjects: [], topics: ["Cor pulmonar crónico", "Edema pulmonar", "Hipotensión ortostática", "Aneurisma aórtico abdominal"] },
-    { date: "2025-07-08", subjects: [], topics: ["Enfermedad coronaria", "Otras valvulopatías", "Hipertensión pulmonar", "Rehabilitación cardíaca"] },
-    { date: "2025-07-09", subjects: ["ANGIOLOGÍA"], topics: ["Enfermedad arterial periférica", "Insuficiencia venosa", "Pie diabético", "Tromboembolia pulmonar"] },
-    { date: "2025-07-10", subjects: [], topics: ["Trombosis venosa profunda", "Úlceras por presión", "Paget-Schroetter", "Tromboembolia venosa en obstetricia"] },
-    { date: "2025-07-11", subjects: ["ACLS"], topics: ["Soporte vital básico", "RCP", "Taquicardia ACLS", "Taquicardia supraventricular"] },
-    { date: "2025-07-12", subjects: [], topics: ["Bloqueos AV", "Bradicardia", "Fibrilación auricular", "Fibrilación ventricular"] },
-    { date: "2025-07-13", subjects: ["ATLS"], topics: ["Síndrome de WPW", "PLS (Posición Lateral de Seguridad)", "Ahogamiento", "Politrauma"] },
-    { date: "2025-07-14", subjects: [], topics: ["Tipos de shock", "Choque hipovolémico", "Quemaduras", "Gran quemado"] },
-    { date: "2025-07-15", subjects: [], topics: ["TCE adultos", "TCE pediátrico", "Trauma torácico", "Hemotórax"] },
-    { date: "2025-07-16", subjects: [], topics: ["Neumotórax a tensión", "Taponamiento cardiaco", "Trauma abdominal", "Shock neurogénico"] },
-    { date: "2025-07-17", subjects: [], topics: ["Neumotórax aberto", "Neumotórax simple", "Trauma espinal", "Catéter venoso central"] },
-    { date: "2025-07-18", subjects: [], topics: ["Hipotermia", "Fracturas de cráneo", "Lesión traqueobronquial", "Ruptura diafragmática"] },
-    { date: "2025-07-19", subjects: ["TOXICOLOGÍA"], topics: ["Trauma esplénico", "Trauma obstétrico", "Trauma pélvico", "Manejo de intoxicaciones", "Toxíndromes"] },
-    { date: "2025-07-20", subjects: [], topics: ["Intoxicación por benzodiacepinas", "Intoxicación por organofosforados", "Intoxicación por paracetamol", "Intoxicación por salicilatos"] },
-    { date: "2025-07-21", subjects: [], topics: ["Lactrodectus", "Loxosceles", "Mordedura de serpiente", "Picadura de alacrán"] },
-    { date: "2025-07-22", subjects: [], topics: ["Golpe de calor", "Intoxicación por etanol", "Intoxicación por monóxido de carbono", "Intoxicación por opiáceos"] },
-    { date: "2025-07-23", subjects: [], topics: ["Anafilaxia", "Ingesta de cáusticos", "Intoxicación alimentaria", "Intoxicación por alcoholes"] },
-    { date: "2025-07-24", subjects: [], topics: ["Intoxicación por anfetaminas", "Intoxicación por DMT", "Intoxicación por fentanilo", "Intoxicación por hidrocarburos"] },
-    { date: "2025-07-25", subjects: ["GASTROENTEROLOGÍA"], topics: ["Intoxicación por metales pesados", "Intoxicación por plomo", "Picadura de himenópteros", "Absceso hepático amebiano"] },
-    { date: "2025-07-26", subjects: [], topics: ["Cirrosis hepática", "Insuficiencia hepática", "Ascitis", "Encefalopatía hepática"] },
-    { date: "2025-07-27", subjects: [], topics: ["Hepatitis A", "Hepatitis B", "Hepatitis C", "Pancreatitis aguda"] },
-    { date: "2025-07-28", subjects: [], topics: ["Reflujo ERGE", "Enfermedad ácido péptica", "Síndrome de intestino irritable", "Sangrado TDA"] },
-    { date: "2025-07-29", subjects: [], topics: ["Sangrado TDB", "Várices esofágicas", "EHGNA", "Enfermedad de Crohn"] },
-    { date: "2025-07-30", subjects: [], topics: ["Colitis ulcerativa", "Cáncer gástrico", "Carcinoma hepatocelular", "Absceso hepático piógeno"] },
-    { date: "2025-07-31", subjects: [], topics: ["Hepatitis autoinmune", "Pancreatitis crónica", "Acalasia", "Esófago de Barret"] },
-    { date: "2025-08-01", subjects: [], topics: ["Dispepsia funcional", "Mallory Weiss", "Zollinger-Ellison", "Enfermedad celíaca", "Cáncer de esófago"] },
-    { date: "2025-08-02", subjects: ["CIRUGÍA ABDOMINAL Y COLOPROCTOLOGÍA"], topics: ["Cáncer de páncreas", "Apendicitis aguda", "Apendicitis en el embarazo", "Colecistitis aguda"] },
-    { date: "2025-08-03", subjects: [], topics: ["Coledocolitiasis", "Colelitiasis", "Colangitis aguda", "Hernias"] },
-    { date: "2025-08-04", subjects: [], topics: ["Hernia inguinal", "Oclusión intestinal", "Enfermedad hemorroidal", "Fístula anal"] },
-    { date: "2025-08-05", subjects: [], topics: ["Fisura anal", "Absceso anal", "Enfermedad diverticular", "Cáncer colorrectal"] },
-    { date: "2025-08-06", subjects: [], topics: ["Isquemia intestinal", "Vólvulo de sigmoides", "Heridas quirúrgicas", "Complicaciones post Qx"] },
-    { date: "2025-08-07", subjects: [], topics: ["Colangiocarcinoma", "Fístulas biliointestinales", "Hernia femoral", "Hernia hiatal"] },
-    { date: "2025-08-08", subjects: [], topics: ["Hernia umbilical", "Hernia ventral", "Vólvulo de ciego", "Quiste pilonidal", "Poliposis adenomatosa familiar (PAF)"] },
-    { date: "2025-08-09", subjects: ["CIRUGÍA PEDIÁTRICA"], topics: ["Atresia duodenal", "Atresia esofágica", "Criptorquidia", "Estenosis pilórica"] },
-    { date: "2025-08-10", subjects: [], topics: ["Hernia diafragmática congénita", "Invaginación intestinal", "Nefroblastoma", "Neuroblastoma"] },
-    { date: "2025-08-11", subjects: [], topics: ["Divertículo de Meckel", "Hirschsprung", "Atresia biliar", "Atresia de coanas"] },
-    { date: "2025-08-12", subjects: [], topics: ["Atresia yeyunoileal", "Espina bífida", "Malformaciones rectales", "Malrotación intestinal", "Patología umbilical"] }, 
-    { date: "2025-08-13", subjects: ["GINECOLOGÍA"], topics: ["Fitz-Hugh-Curtis", "Dismenorrea aguda", "Amenorreas primarias", "Amenorreas secundarias", "Sangrado uterino anormal"] },
-    { date: "2025-08-14", subjects: [], topics: ["Adenomiosis", "Anticonceptivos generalidades", "Anticonceptivos GPC", "Anticonceptivos hormonales combinados", "Anticoncepción de emergencia"] },
-    { date: "2025-08-15", subjects: [], topics: ["DIU de cobre", "DIU de levonorgestrel", "Implante subdérmico", "Progestágenos solos", "Lactancia como anticonceptivo"] },
-    { date: "2025-08-16", subjects: [], topics: ["Infertilidad", "Condón", "Vasectomía", "Cistocele e incontinencia", "Endometriosis"] },
-    { date: "2025-08-17", subjects: [], topics: ["Enfermedad pélvica inflamatoria", "Hidrosalpinx", "Hiperplasia endometrial", "Mastitis", "Mastopatía fibroquística"] },
-    { date: "2025-08-18", subjects: [], topics: ["Fibroadenoma", "Papiloma intraductal", "Patología mamaria benigna", "Quiste mamario", "Osteoporosis post menopausia"] },
-    { date: "2025-08-19", subjects: [], topics: ["Insuficiencia ovárica primaria", "Menopausia y climaterio", "Miomatosis uterina", "Oclusión tubaria bilateral OTB", "Ovario poliquístico"] },
-    { date: "2025-08-20", subjects: [], topics: ["Quiste de ovario benigno", "Torsión ovárica", "Vaginitis bacteriana", "Vaginitis infecciosa", "Trichomoniasis"] },
-    { date: "2025-08-21", subjects: ["ONCOGINE"], topics: ["Bartolinitis", "Candidiasis vulvovaginal", "Chlamydia", "Tamizaje cáncer de mama", "Cáncer de mama"] },
-    { date: "2025-08-22", subjects: [], topics: ["Cáncer cérvicouterino", "Cáncer de endometrio", "Cáncer de ovario", "Cáncer de vagina", "Tumores anexiales"] },
-    { date: "2025-08-23", subjects: ["OBSTETRICIA"], topics: ["Control prenatal", "Aloinmunización materna", "Estática fetal", "Tipos de pelvis", "Atención del parto"] },
-    { date: "2025-08-24", subjects: [], topics: ["Manejo activo del parto", "Cesárea", "Parto pretérmino", "Puerperio fisiológico", "Líquido amniótico"] },
-    { date: "2025-08-25", subjects: [], topics: ["Ruptura prematura de membranas", "Corioamnionitis", "Distocias", "Embarazo múltiple", "Endometritis puerperal"] },
-    { date: "2025-08-26", subjects: [], topics: ["Hiperémesis gravídica", "Insuficiencia cervical", "Muerte fetal", "Enfermedades hipertensivas del embarazo", "Preeclampsia sin datos de severidad"] },
-    { date: "2025-08-27", subjects: [], topics: ["Síndrome de HELLP", "Diabetes gestacional", "IVU en el embarazo", "Restricción del crecimiento intrauterino", "Sepsis puerperal"] },
-    { date: "2025-08-28", subjects: ["HEMORRAGIAS OBSTÉTRICAS"], topics: ["Síndrome de Sheehan", "Depresión posparto", "Generalidades de hemorragias", "Hemorragia postparto", "Desgarro perineal"] },
-    { date: "2025-08-29", subjects: [], topics: ["Amenaza de aborto", "Aborto espontáneo", "Acretismo placentario", "Atonía uterina", "Choque hemorrágico en obstetricia"] },
-    { date: "2025-08-30", subjects: [], topics: ["Desprendimiento prematuro de placenta normoinserta", "Embarazo ectópico", "Placenta previa", "Ruptura uterina", "Vasa previa"] },
-    { date: "2025-08-31", subjects: ["NEONATOLOGÍA"], topics: ["Enfermedad trofoblástica gestacional", "APGAR", "Apnea del prematuro", "Asfixia neonatal", "Displasia broncopulmonar"] },
-    { date: "2025-09-01", subjects: [], topics: ["Silverman Anderson", "Síndrome de aspiración de meconio", "Maduración pulmonar", "Síndrome de dificultad respiratoria", "Encefalopatía hipóxica"] },
-    { date: "2025-09-02", subjects: [], topics: ["Enfermedad hemorrágica del recién nacido", "Enterocolitis necrotizante", "Hipoacusia neonatal", "Hipoglucemia neonatal", "Ictericia neonatal"] },
-    { date: "2025-09-03", subjects: [], topics: ["Muerte súbita del lactante", "Prematuro sano", "Reanimación neonatal", "Recién nacido de término", "Sepsis neonatal"] },
-    { date: "2025-09-04", subjects: [], topics: ["Tamiz neonatal", "Taquipnea transitoria del recién nacido", "Lesiones de plexo braquial obstétrico", "Lesiones extracraneales", "Displasia del desarrollo de la cadera DDC"] },
-    { date: "2025-09-05", subjects: ["CONGENITAS"], topics: ["Hirschsprung", "Cardiopatías congénitas", "Tetralogía de Fallot", "Coartación aórtica", "Persistencia del conducto arterioso"] },
-    { date: "2025-09-06", subjects: [], topics: ["Fenilcetonuria", "Fibrosis quística", "Galactosemia clásica", "Storch", "Storch Citomegalovirus"] },
-    { date: "2025-09-07", subjects: [], topics: ["Storch herpes simple", "Storch rubéola congénita", "Storch sífilis congénita", "Storch toxoplasmosis", "Storch varicela congénita"] },
-    { date: "2025-09-08", subjects: ["ESCOLAR"], topics: ["Control de niño sano", "Etapas del crecimiento", "Talla baja", "Alergia alimentaria", "Cuerpo extraño"] },
-    { date: "2025-09-09", subjects: [], topics: ["Dermatitis del pañal", "Estreñimiento funcional", "Hiperplasia adrenal congénita", "Hipotiroidismo congénito", "Maltrato infantil"] },
-    { date: "2025-09-10", subjects: [], topics: ["Mucopolisacaridosis", "Reflujo gastroesofágico del lactante"] },
-    { date: "2025-09-11", subjects: ["NUTRICIÓN PEDIÁTRICA"], topics: ["Alimentación complementaria", "Deficiencia de vitamina A", "Desnutrición pediátrica", "Hipovitaminosis", "Intolerancia a la lactosa", "Lactancia materna"] },
-    { date: "2025-09-12", subjects: [], topics: ["Obesidad en escolares", "Pelagra en niños", "Raquitismo carencial", "Síndrome metabólico en niños"] },
-    { date: "2025-09-13", subjects: ["INFECTOLOGÍA PEDIÁTRICA"], topics: ["Adenitis mesentérica", "Onfalitis", "Exantemáticas Diferencial", "Eritema infeccioso", "Escarlatina", "Exantema súbito"] },
-    { date: "2025-09-14", subjects: [], topics: ["Enfermedad de Kawasaki", "Síndrome mano pie boca", "Rubéola", "Sarampión", "Varicela", "Parotiditis"] },
-    { date: "2025-09-15", subjects: [], topics: ["Bronquiolitis", "Epiglotitis", "Laringotraqueitis CRUP", "Mononucleosis infecciosa", "Tos ferina", "IVU en menores"] },
-    { date: "2025-09-16", subjects: ["VACUNAS"], topics: ["Vacunas generalidades", "Tipos de vacunas", "Vacunación universal", "Aplicación de vacunas", "Vacuna para personal de salud", "Vacunas en el embarazo"] },
-    { date: "2025-09-17", subjects: [], topics: ["Esquema de vacunación", "Bcg", "Hepatitis A", "Hepatitis B", "Hexavalente", "Influenza", "Neumocócica"] },
-    { date: "2025-09-18", subjects: [], topics: ["Rotavirus", "Sabin", "Salmonella", "Dpt", "Srp", "Tétanos", "Varicela", "Vph"] }
-];
+        const studyPlan = [
+            { date: "2025-06-18", subjects: ["ENDOCRINOLOGÍA"], topics: ["Dislipidemias", "Hipertiroidismo", "Hipotiroidismo", "Cáncer de tiroides (Enfoque en Papilar)"] },
+            { date: "2025-06-19", subjects: [], topics: ["Nódulo tiroideo", "Obesidad en adultos", "Síndrome metabólico", "Enfermedad de Cushing / Síndrome de Cushing"] },
+            { date: "2025-06-20", subjects: ["UROLOGÍA"], topics: ["Enfermedad de Addison", "Escroto agudo y Torsión testicular", "Hiperplasia prostática benigna", "Cáncer de próstata"] },
+            { date: "2025-06-21", subjects: [], topics: ["Pielonefritis aguda", "Infección de tracto urinario", "Urolitiasis", "Cáncer testicular"] },
+            { date: "2025-06-22", subjects: ["ORL"], topics: ["Disfunción eréctil", "Faringoamigdalitis", "Epistaxis", "Rinosinusitis aguda"] },
+            { date: "2025-06-23", subjects: [], topics: ["Otitis externa aguda", "VPPB", "Mastoiditis aguda", "Parálisis de Bell"] },
+            { date: "2025-06-24", subjects: ["OFTALMOLOGÍA"], topics: ["Catarata", "Conjuntivitis", "Glaucoma de ángulo aberto", "Glaucoma de ángulo cerrado"] },
+            { date: "2025-06-25", subjects: [], topics: ["Ojo rojo", "Retinopatía diabética", "Trauma ocular", "Desprendimiento de retina"] },
+            { date: "2025-06-26", subjects: ["TYO"], topics: ["Osteoartritis", "Osteomielitis", "Fracturas expuestas", "Esguince cervical", "Lumbalgia"] },
+            { date: "2025-06-27", subjects: [], topics: ["Síndrome de hombro doloroso", "Luxación glenohumeral", "Fractura de clavícula", "Fractura de radio distal"] },
+            { date: "2025-06-28", subjects: [], topics: ["Fractura de cadera", "Lesiones de rodilla", "Esguince de tobillo", "Fractura de tobillo"] },
+            { date: "2025-06-29", subjects: [], topics: ["Osteosarcoma", "Sarcoma de Ewing", "Hernia de disco", "Túnel del carpo"] },
+            { date: "2025-06-30", subjects: [], topics: ["Epifisiolistesis femoral", "Legg-Calvé-Perthes", "Embolia grasa", "Tumores óseos malignos"] },
+            { date: "2025-07-01", subjects: [], topics: ["Costilla cervical", "Fractura de húmero proximal", "Luxación de codo", "Codo de niñera"] },
+            { date: "2025-07-02", subjects: [], topics: ["Fracturas de codo", "Fracturas de antebrazo", "Lesiones fisiarias", "Luxación coxofemoral", "Fractura de diáfisis de tibia"] },
+            { date: "2025-07-03", subjects: ["CARDIOLOGÍA"], topics: ["Rotura de talón de Aquiles", "Pie equino varo", "Pie plano", "Pericarditis"] },
+            { date: "2025-07-04", subjects: [], topics: ["Endocarditis infecciosa", "Estenosis aórtica", "Insuficiencia aórtica", "Estenosis mitral"] },
+            { date: "2025-07-05", subjects: [], topics: ["Insuficiencia mitral", "Fiebre reumática", "Hipertensión arterial sistémica", "Crisis hipertensivas"] },
+            { date: "2025-07-06", subjects: [], topics: ["Insuficiencia cardíaca aguda", "Insuficiencia cardíaca crónica", "Infarto agudo de miocardio", "Disección aórtica"] },
+            { date: "2025-07-07", subjects: [], topics: ["Cor pulmonar crónico", "Edema pulmonar", "Hipotensión ortostática", "Aneurisma aórtico abdominal"] },
+            { date: "2025-07-08", subjects: [], topics: ["Enfermedad coronaria", "Otras valvulopatías", "Hipertensión pulmonar", "Rehabilitación cardíaca"] },
+            { date: "2025-07-09", subjects: ["ANGIOLOGÍA"], topics: ["Enfermedad arterial periférica", "Insuficiencia venosa", "Pie diabético", "Tromboembolia pulmonar"] },
+            { date: "2025-07-10", subjects: [], topics: ["Trombosis venosa profunda", "Úlceras por presión", "Paget-Schroetter", "Tromboembolia venosa en obstetricia"] },
+            { date: "2025-07-11", subjects: ["ACLS"], topics: ["Soporte vital básico", "RCP", "Taquicardia ACLS", "Taquicardia supraventricular"] },
+            { date: "2025-07-12", subjects: [], topics: ["Bloqueos AV", "Bradicardia", "Fibrilación auricular", "Fibrilación ventricular"] },
+            { date: "2025-07-13", subjects: ["ATLS"], topics: ["Síndrome de WPW", "PLS (Posición Lateral de Seguridad)", "Ahogamiento", "Politrauma"] },
+            { date: "2025-07-14", subjects: [], topics: ["Tipos de shock", "Choque hipovolémico", "Quemaduras", "Gran quemado"] },
+            { date: "2025-07-15", subjects: [], topics: ["TCE adultos", "TCE pediátrico", "Trauma torácico", "Hemotórax"] },
+            { date: "2025-07-16", subjects: [], topics: ["Neumotórax a tensión", "Taponamiento cardiaco", "Trauma abdominal", "Shock neurogénico"] },
+            { date: "2025-07-17", subjects: [], topics: ["Neumotórax aberto", "Neumotórax simple", "Trauma espinal", "Catéter venoso central"] },
+            { date: "2025-07-18", subjects: [], topics: ["Hipotermia", "Fracturas de cráneo", "Lesión traqueobronquial", "Ruptura diafragmática"] },
+            { date: "2025-07-19", subjects: ["TOXICOLOGÍA"], topics: ["Trauma esplénico", "Trauma obstétrico", "Trauma pélvico", "Manejo de intoxicaciones", "Toxíndromes"] },
+            { date: "2025-07-20", subjects: [], topics: ["Intoxicación por benzodiacepinas", "Intoxicación por organofosforados", "Intoxicación por paracetamol", "Intoxicación por salicilatos"] },
+            { date: "2025-07-21", subjects: [], topics: ["Lactrodectus", "Loxosceles", "Mordedura de serpiente", "Picadura de alacrán"] },
+            { date: "2025-07-22", subjects: [], topics: ["Golpe de calor", "Intoxicación por etanol", "Intoxicación por monóxido de carbono", "Intoxicación por opiáceos"] },
+            { date: "2025-07-23", subjects: [], topics: ["Anafilaxia", "Ingesta de cáusticos", "Intoxicación alimentaria", "Intoxicación por alcoholes"] },
+            { date: "2025-07-24", subjects: [], topics: ["Intoxicación por anfetaminas", "Intoxicación por DMT", "Intoxicación por fentanilo", "Intoxicación por hidrocarburos"] },
+            { date: "2025-07-25", subjects: ["GASTROENTEROLOGÍA"], topics: ["Intoxicación por metales pesados", "Intoxicación por plomo", "Picadura de himenópteros", "Absceso hepático amebiano"] },
+            { date: "2025-07-26", subjects: [], topics: ["Cirrosis hepática", "Insuficiencia hepática", "Ascitis", "Encefalopatía hepática"] },
+            { date: "2025-07-27", subjects: [], topics: ["Hepatitis A", "Hepatitis B", "Hepatitis C", "Pancreatitis aguda"] },
+            { date: "2025-07-28", subjects: [], topics: ["Reflujo ERGE", "Enfermedad ácido péptica", "Síndrome de intestino irritable", "Sangrado TDA"] },
+            { date: "2025-07-29", subjects: [], topics: ["Sangrado TDB", "Várices esofágicas", "EHGNA", "Enfermedad de Crohn"] },
+            { date: "2025-07-30", subjects: [], topics: ["Colitis ulcerativa", "Cáncer gástrico", "Carcinoma hepatocelular", "Absceso hepático piógeno"] },
+            { date: "2025-07-31", subjects: [], topics: ["Hepatitis autoinmune", "Pancreatitis crónica", "Acalasia", "Esófago de Barret"] },
+            { date: "2025-08-01", subjects: [], topics: ["Dispepsia funcional", "Mallory Weiss", "Zollinger-Ellison", "Enfermedad celíaca", "Cáncer de esófago"] },
+            { date: "2025-08-02", subjects: ["CIRUGÍA ABDOMINAL Y COLOPROCTOLOGÍA"], topics: ["Cáncer de páncreas", "Apendicitis aguda", "Apendicitis en el embarazo", "Colecistitis aguda"] },
+            { date: "2025-08-03", subjects: [], topics: ["Coledocolitiasis", "Colelitiasis", "Colangitis aguda", "Hernias"] },
+            { date: "2025-08-04", subjects: [], topics: ["Hernia inguinal", "Oclusión intestinal", "Enfermedad hemorroidal", "Fístula anal"] },
+            { date: "2025-08-05", subjects: [], topics: ["Fisura anal", "Absceso anal", "Enfermedad diverticular", "Cáncer colorrectal"] },
+            { date: "2025-08-06", subjects: [], topics: ["Isquemia intestinal", "Vólvulo de sigmoides", "Heridas quirúrgicas", "Complicaciones post Qx"] },
+            { date: "2025-08-07", subjects: [], topics: ["Colangiocarcinoma", "Fístulas biliointestinales", "Hernia femoral", "Hernia hiatal"] },
+            { date: "2025-08-08", subjects: [], topics: ["Hernia umbilical", "Hernia ventral", "Vólvulo de ciego", "Quiste pilonidal", "Poliposis adenomatosa familiar (PAF)"] },
+            { date: "2025-08-09", subjects: ["CIRUGÍA PEDIÁTRICA"], topics: ["Atresia duodenal", "Atresia esofágica", "Criptorquidia", "Estenosis pilórica"] },
+            { date: "2025-08-10", subjects: [], topics: ["Hernia diafragmática congénita", "Invaginación intestinal", "Nefroblastoma", "Neuroblastoma"] },
+            { date: "2025-08-11", subjects: [], topics: ["Divertículo de Meckel", "Hirschsprung", "Atresia biliar", "Atresia de coanas"] },
+            { date: "2025-08-12", subjects: [], topics: ["Atresia yeyunoileal", "Espina bífida", "Malformaciones rectales", "Malrotación intestinal", "Patología umbilical"] }, 
+            { date: "2025-08-13", subjects: ["GINECOLOGÍA"], topics: ["Fitz-Hugh-Curtis", "Dismenorrea aguda", "Amenorreas primarias", "Amenorreas secundarias", "Sangrado uterino anormal"] },
+            { date: "2025-08-14", subjects: [], topics: ["Adenomiosis", "Anticonceptivos generalidades", "Anticonceptivos GPC", "Anticonceptivos hormonales combinados", "Anticoncepción de emergencia"] },
+            { date: "2025-08-15", subjects: [], topics: ["DIU de cobre", "DIU de levonorgestrel", "Implante subdérmico", "Progestágenos solos", "Lactancia como anticonceptivo"] },
+            { date: "2025-08-16", subjects: [], topics: ["Infertilidad", "Condón", "Vasectomía", "Cistocele e incontinencia", "Endometriosis"] },
+            { date: "2025-08-17", subjects: [], topics: ["Enfermedad pélvica inflamatoria", "Hidrosalpinx", "Hiperplasia endometrial", "Mastitis", "Mastopatía fibroquística"] },
+            { date: "2025-08-18", subjects: [], topics: ["Fibroadenoma", "Papiloma intraductal", "Patología mamaria benigna", "Quiste mamario", "Osteoporosis post menopausia"] },
+            { date: "2025-08-19", subjects: [], topics: ["Insuficiencia ovárica primaria", "Menopausia y climaterio", "Miomatosis uterina", "Oclusión tubaria bilateral OTB", "Ovario poliquístico"] },
+            { date: "2025-08-20", subjects: [], topics: ["Quiste de ovario benigno", "Torsión ovárica", "Vaginitis bacteriana", "Vaginitis infecciosa", "Trichomoniasis"] },
+            { date: "2025-08-21", subjects: ["ONCOGINE"], topics: ["Bartolinitis", "Candidiasis vulvovaginal", "Chlamydia", "Tamizaje cáncer de mama", "Cáncer de mama"] },
+            { date: "2025-08-22", subjects: [], topics: ["Cáncer cérvicouterino", "Cáncer de endometrio", "Cáncer de ovario", "Cáncer de vagina", "Tumores anexiales"] },
+            { date: "2025-08-23", subjects: ["OBSTETRICIA"], topics: ["Control prenatal", "Aloinmunización materna", "Estática fetal", "Tipos de pelvis", "Atención del parto"] },
+            { date: "2025-08-24", subjects: [], topics: ["Manejo activo del parto", "Cesárea", "Parto pretérmino", "Puerperio fisiológico", "Líquido amniótico"] },
+            { date: "2025-08-25", subjects: [], topics: ["Ruptura prematura de membranas", "Corioamnionitis", "Distocias", "Embarazo múltiple", "Endometritis puerperal"] },
+            { date: "2025-08-26", subjects: [], topics: ["Hiperémesis gravídica", "Insuficiencia cervical", "Muerte fetal", "Enfermedades hipertensivas del embarazo", "Preeclampsia sin datos de severidad"] },
+            { date: "2025-08-27", subjects: [], topics: ["Síndrome de HELLP", "Diabetes gestacional", "IVU en el embarazo", "Restricción del crecimiento intrauterino", "Sepsis puerperal"] },
+            { date: "2025-08-28", subjects: ["HEMORRAGIAS OBSTÉTRICAS"], topics: ["Síndrome de Sheehan", "Depresión posparto", "Generalidades de hemorragias", "Hemorragia postparto", "Desgarro perineal"] },
+            { date: "2025-08-29", subjects: [], topics: ["Amenaza de aborto", "Aborto espontáneo", "Acretismo placentario", "Atonía uterina", "Choque hemorrágico en obstetricia"] },
+            { date: "2025-08-30", subjects: [], topics: ["Desprendimiento prematuro de placenta normoinserta", "Embarazo ectópico", "Placenta previa", "Ruptura uterina", "Vasa previa"] },
+            { date: "2025-08-31", subjects: ["NEONATOLOGÍA"], topics: ["Enfermedad trofoblástica gestacional", "APGAR", "Apnea del prematuro", "Asfixia neonatal", "Displasia broncopulmonar"] },
+            { date: "2025-09-01", subjects: [], topics: ["Silverman Anderson", "Síndrome de aspiración de meconio", "Maduración pulmonar", "Síndrome de dificultad respiratoria", "Encefalopatía hipóxica"] },
+            { date: "2025-09-02", subjects: [], topics: ["Enfermedad hemorrágica del recién nacido", "Enterocolitis necrotizante", "Hipoacusia neonatal", "Hipoglucemia neonatal", "Ictericia neonatal"] },
+            { date: "2025-09-03", subjects: [], topics: ["Muerte súbita del lactante", "Prematuro sano", "Reanimación neonatal", "Recién nacido de término", "Sepsis neonatal"] },
+            { date: "2025-09-04", subjects: [], topics: ["Tamiz neonatal", "Taquipnea transitoria del recién nacido", "Lesiones de plexo braquial obstétrico", "Lesiones extracraneales", "Displasia del desarrollo de la cadera DDC"] },
+            { date: "2025-09-05", subjects: ["CONGENITAS"], topics: ["Hirschsprung", "Cardiopatías congénitas", "Tetralogía de Fallot", "Coartación aórtica", "Persistencia del conducto arterioso"] },
+            { date: "2025-09-06", subjects: [], topics: ["Fenilcetonuria", "Fibrosis quística", "Galactosemia clásica", "Storch", "Storch Citomegalovirus"] },
+            { date: "2025-09-07", subjects: [], topics: ["Storch herpes simple", "Storch rubéola congénita", "Storch sífilis congénita", "Storch toxoplasmosis", "Storch varicela congénita"] },
+            { date: "2025-09-08", subjects: ["ESCOLAR"], topics: ["Control de niño sano", "Etapas del crecimiento", "Talla baja", "Alergia alimentaria", "Cuerpo extraño"] },
+            { date: "2025-09-09", subjects: [], topics: ["Dermatitis del pañal", "Estreñimiento funcional", "Hiperplasia adrenal congénita", "Hipotiroidismo congénito", "Maltrato infantil"] },
+            { date: "2025-09-10", subjects: [], topics: ["Mucopolisacaridosis", "Reflujo gastroesofágico del lactante"] },
+            { date: "2025-09-11", subjects: ["NUTRICIÓN PEDIÁTRICA"], topics: ["Alimentación complementaria", "Deficiencia de vitamina A", "Desnutrición pediátrica", "Hipovitaminosis", "Intolerancia a la lactosa", "Lactancia materna"] },
+            { date: "2025-09-12", subjects: [], topics: ["Obesidad en escolares", "Pelagra en niños", "Raquitismo carencial", "Síndrome metabólico en niños"] },
+            { date: "2025-09-13", subjects: ["INFECTOLOGÍA PEDIÁTRICA"], topics: ["Adenitis mesentérica", "Onfalitis", "Exantemáticas Diferencial", "Eritema infeccioso", "Escarlatina", "Exantema súbito"] },
+            { date: "2025-09-14", subjects: [], topics: ["Enfermedad de Kawasaki", "Síndrome mano pie boca", "Rubéola", "Sarampión", "Varicela", "Parotiditis"] },
+            { date: "2025-09-15", subjects: [], topics: ["Bronquiolitis", "Epiglotitis", "Laringotraqueitis CRUP", "Mononucleosis infecciosa", "Tos ferina", "IVU en menores"] },
+            { date: "2025-09-16", subjects: ["VACUNAS"], topics: ["Vacunas generalidades", "Tipos de vacunas", "Vacunación universal", "Aplicación de vacunas", "Vacuna para personal de salud", "Vacunas en el embarazo"] },
+            { date: "2025-09-17", subjects: [], topics: ["Esquema de vacunación", "Bcg", "Hepatitis A", "Hepatitis B", "Hexavalente", "Influenza", "Neumocócica"] },
+            { date: "2025-09-18", subjects: [], topics: ["Rotavirus", "Sabin", "Salmonella", "Dpt", "Srp", "Tétanos", "Varicela", "Vph"] }
+        ];
 
         let userProgress = {};
         const totalTopics = studyPlan.reduce((acc, day) => acc + day.topics.length, 0);
         const ALL_TASK_IDS = ['task-1-1', 'task-1-2', 'task-1-3', 'task-2-1', 'task-2-2', 'task-3-1', 'task-4-1', 'task-5-1', 'task-5-2', 'task-6-1'];
         const motivationalQuotes = [ "La disciplina es el puente entre metas y logros.", "El éxito es la suma de pequeños esfuerzos repetidos día tras día.", "No te detengas hasta que te sientas orgulloso.", "Cree en ti mismo y todo será posible.", "El único modo de hacer un gran trabajo es amar lo que haces.", "La clave del éxito es empezar antes de estar listo.", "Cada día es una nueva oportunidad para cambiar tu vida.", "Si puedes soñarlo, puedes hacerlo.", "La perseverancia no es una carrera larga, son muchas carreras cortas una tras otra.", "El aprendizaje es un tesoro que seguirá a su dueño a todas partes.", "La motivación te pone en marcha, el hábito te mantiene.", "No cuentes los días, haz que los días cuenten.", "El futuro pertenece a quienes creen en la belleza de sus sueños.", "La mejor forma de predecir el futuro es crearlo.", "Un pequeño progreso cada día suma grandes resultados." ];
-
+        
         const calendarContainer = document.getElementById('calendar-container');
         const dayModal = document.getElementById('details-modal'), dayModalOverlay = document.getElementById('modal-overlay'), dayModalTitle = document.getElementById('modal-title'), dayModalTopicsContainer = document.getElementById('modal-topics'), dayModalNotes = document.getElementById('modal-notes'), saveNoteButton = document.getElementById('modal-save-btn');
         const topicModal = document.getElementById('topic-plan-modal'), topicModalOverlay = document.getElementById('topic-plan-overlay'), topicModalTitle = document.getElementById('topic-plan-title'), topicStepCards = topicModal.querySelectorAll('.step-card'), topicTaskCheckboxes = topicModal.querySelectorAll('.task-checkbox'), aciertosInput = document.getElementById('score-aciertos'), reactivosInput = document.getElementById('score-reactivos'), percentageOutput = document.getElementById('score-percentage'), finishTopicButton = document.getElementById('topic-finish-btn');
         const globalScoreBar = document.getElementById('global-score-bar'), globalAdvanceBar = document.getElementById('global-advance-bar');
-        
+
         function loadUserProgress(data) {
-            if (data) {
-                userProgress = data;
-                console.log("Progreso del usuario cargado desde Firestore.");
-            } else {
-                console.log("No se encontró progreso para este usuario. Se creará uno nuevo.");
-                userProgress = {};
-            }
+            if (data) { userProgress = data; console.log("Progreso cargado."); } 
+            else { userProgress = {}; console.log("Progreso nuevo creado."); }
         }
 
         async function saveData(key, value) {
-    if (!currentUser) return;
-    const docRef = db.collection('userProgress').doc(currentUser.uid);
-
-    const dataToUpdate = {};
-    dataToUpdate[key] = value;
-
-    await docRef.update(dataToUpdate).catch((error) => {
-        if (error.code === 'not-found') {
-            console.log("Documento no encontrado, creando uno nuevo...");
-            return docRef.set(dataToUpdate);
+            if (!currentUser) return;
+            const docRef = db.collection('userProgress').doc(currentUser.uid);
+            const dataToUpdate = {};
+            dataToUpdate[key] = value;
+            await docRef.update(dataToUpdate).catch((error) => {
+                if (error.code === 'not-found') { return docRef.set(dataToUpdate); }
+                console.error("Error al actualizar: ", error);
+            });
+            const keys = key.split('.');
+            let current = userProgress;
+            for (let i = 0; i < keys.length - 1; i++) {
+                current = current[keys[i]] = current[keys[i]] || {};
+            }
+            current[keys[keys.length - 1]] = value;
         }
-        console.error("Error al actualizar el documento: ", error);
-    });
-
-    console.log(`Dato guardado en Firestore: { ${key}: "${value}" }`);
-
-    const keys = key.split('.');
-    let current = userProgress;
-    for (let i = 0; i < keys.length - 1; i++) {
-        current[keys[i]] = current[keys[i]] || {};
-        current = current[keys[i]];
-    }
-    current[keys[keys.length - 1]] = value;
-}
 
         function getData(key, defaultValue = null) {
-            const keys = key.split('.');
-            let result = userProgress;
+            const keys = key.split('.'); let result = userProgress;
             for (const k of keys) {
-                if (result && typeof result === 'object' && k in result) {
-                    result = result[k];
-                } else {
-                    return defaultValue;
-                }
+                if (result && typeof result === 'object' && k in result) { result = result[k]; } 
+                else { return defaultValue; }
             }
             return result;
         }
@@ -548,16 +582,44 @@
         function createTopicListItem(topic, dateString) { const topicId = generateTopicId(dateString, topic); const isComplete = isTopicComplete(topicId); const liClass = `topic-item ${isComplete ? 'topic-completed' : ''}`; return `<li class="${liClass}" data-topic-id="${topicId}" data-topic-name="${topic}">${topic}</li>`; }
 
         function populateCalendar() {
-                const daysMap = new Map(studyPlan.map(day => [day.date, day]));
-                const startDate = new Date(studyPlan[0].date + "T00:00:00");
-                const visualEndDate = new Date("2025-09-27T23:59:59"); 
-                const calendarGridEndDate = new Date(visualEndDate.getFullYear(), visualEndDate.getMonth() + 1, 0, 23, 59, 59);
-                let weeks = []; let dateCursor = new Date(startDate); dateCursor.setDate(dateCursor.getDate() - dateCursor.getDay());
-                while (dateCursor <= calendarGridEndDate) { let week = []; for(let i=0; i < 7; i++) { week.push(new Date(dateCursor)); dateCursor.setDate(dateCursor.getDate() + 1); } weeks.push(week); }
-                const monthLayout = new Map(); weeks.forEach((week, weekIndex) => { const firstDayOfWeek = week[0]; const monthName = firstDayOfWeek.toLocaleString('es-ES', { month: 'long' }); if (!monthLayout.has(monthName)) { monthLayout.set(monthName, { startRow: weekIndex + 2, rowSpan: 1 }); } else { monthLayout.get(monthName).rowSpan++; } });
-                calendarContainer.innerHTML = ''; calendarContainer.innerHTML += '<div class="header-cell meta-header">M</div><div class="header-cell meta-header">S</div>'; ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].forEach(day => calendarContainer.innerHTML += `<div class="header-cell day-header">${day}</div>`);
-                monthLayout.forEach((layout, name) => { calendarContainer.innerHTML += `<div class="month-cell" style="grid-row: ${layout.startRow} / span ${layout.rowSpan}">${name}</div>`; });
-                weeks.forEach((week, weekIndex) => { calendarContainer.innerHTML += `<div class="week-cell-container" style="grid-row: ${weekIndex + 2}"><span class="week-number">${weekIndex + 1}</span></div>`; week.forEach(date => { const cell = document.createElement('div'); cell.className = 'day-cell'; const dateString = date.toISOString().split('T')[0]; if (date < startDate || date > visualEndDate) { cell.classList.add('empty'); } else { cell.dataset.date = dateString; cell.innerHTML = `<div class="calendar-day-number">${date.getDate()}</div>`; const dayData = daysMap.get(dateString); if (dayData) { let contentHTML = '<ul>'; if (dayData.subjects && dayData.subjects.length > 0) { contentHTML += `<li><span class="subject-title">${dayData.subjects.join(' / ')}</span></li>`; } contentHTML += dayData.topics.map(topic => createTopicListItem(topic, dateString)).join(''); contentHTML += '</ul>'; cell.innerHTML += `<div class="day-content">${contentHTML}</div>`; } } calendarContainer.appendChild(cell); }); });
+            const daysMap = new Map(studyPlan.map(day => [day.date, day]));
+            const startDate = new Date(studyPlan[0].date + "T00:00:00");
+            const visualEndDate = new Date("2025-09-27T23:59:59"); 
+            const calendarGridEndDate = new Date(visualEndDate.getFullYear(), visualEndDate.getMonth() + 1, 0, 23, 59, 59);
+            let weeks = []; let dateCursor = new Date(startDate); dateCursor.setDate(dateCursor.getDate() - dateCursor.getDay());
+            while (dateCursor <= calendarGridEndDate) { let week = []; for(let i=0; i < 7; i++) { week.push(new Date(dateCursor)); dateCursor.setDate(dateCursor.getDate() + 1); } weeks.push(week); }
+            const monthLayout = new Map(); weeks.forEach((week, weekIndex) => { const firstDayOfWeek = week[0]; const monthName = firstDayOfWeek.toLocaleString('es-ES', { month: 'long' }); if (!monthLayout.has(monthName)) { monthLayout.set(monthName, { startRow: weekIndex + 2, rowSpan: 1 }); } else { monthLayout.get(monthName).rowSpan++; } });
+            calendarContainer.innerHTML = ''; calendarContainer.innerHTML += '<div class="header-cell meta-header">M</div><div class="header-cell meta-header">S</div>'; ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].forEach(day => calendarContainer.innerHTML += `<div class="header-cell day-header">${day}</div>`);
+            monthLayout.forEach((layout, name) => { calendarContainer.innerHTML += `<div class="month-cell" style="grid-row: ${layout.startRow} / span ${layout.rowSpan}">${name}</div>`; });
+            weeks.forEach((week, weekIndex) => {
+                calendarContainer.innerHTML += `<div class="week-cell-container" style="grid-row: ${weekIndex + 2}"><span class="week-number">${weekIndex + 1}</span></div>`;
+                week.forEach(date => {
+                    const cell = document.createElement('div');
+                    cell.className = 'day-cell';
+                    const dateString = date.toISOString().split('T')[0];
+                    if (date < startDate || date > visualEndDate) { cell.classList.add('empty'); }
+                    else {
+                        cell.dataset.date = dateString;
+                        cell.innerHTML = `<div class="calendar-day-number">${date.getDate()}</div>`;
+                        const dayData = daysMap.get(dateString);
+                        if (dayData) {
+                            let contentHTML = '<ul>';
+                            if (dayData.subjects && dayData.subjects.length > 0) {
+                                const subjectTitles = dayData.subjects.map(subject => {
+                                    const score = calculateSubjectScore(subject);
+                                    const scoreText = score !== null ? `<span class="subject-score">(${score}%)</span>` : '';
+                                    return `${subject}${scoreText}`;
+                                }).join(' / ');
+                                contentHTML += `<li><span class="subject-title">${subjectTitles}</span></li>`;
+                            }
+                            contentHTML += dayData.topics.map(topic => createTopicListItem(topic, dateString)).join('');
+                            contentHTML += '</ul>';
+                            cell.innerHTML += `<div class="day-content">${contentHTML}</div>`;
+                        }
+                    }
+                    calendarContainer.appendChild(cell);
+                });
+            });
         }
 
         function showDayModal(dateString) { const dayData = new Map(studyPlan.map(d => [d.date, d])).get(dateString); const date = new Date(dateString + "T00:00:00"); dayModalTitle.textContent = date.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }); let topicsHTML = '<ul>'; if (dayData) { if (dayData.subjects && dayData.subjects.length > 0) { topicsHTML += `<li><span class="subject-title">${dayData.subjects.join(' / ')}</span></li>`; } topicsHTML += dayData.topics.map(topic => createTopicListItem(topic, dateString)).join(''); } topicsHTML += '</ul>'; dayModalTopicsContainer.innerHTML = topicsHTML; dayModalNotes.value = getData(`dayNotes.${dateString}`, ''); dayModal.dataset.currentDate = dateString; dayModalOverlay.classList.add('visible'); dayModal.classList.add('visible'); }
@@ -570,20 +632,54 @@
         function updateScorePercentage() { const aciertos = parseInt(aciertosInput.value) || 0; const reactivos = parseInt(reactivosInput.value) || 0; let percentage = 0; let textColor = '#50E050'; if (reactivos > 0) { percentage = Math.round((aciertos / reactivos) * 100); } if (percentage < 60) textColor = '#ff6b6b'; else if (percentage < 80) textColor = '#ffd54f'; percentageOutput.value = percentage + "%"; percentageOutput.style.color = textColor; }
         function updateStepCardStatus(cardElement) { const tasksInCard = cardElement.querySelectorAll('.task-checkbox'); const allTasksCompleted = Array.from(tasksInCard).every(task => task.checked); cardElement.classList.toggle('completed', allTasksCompleted); }
         function updateAllStepCardsStatus() { topicStepCards.forEach(updateStepCardStatus); }
-        function finishTopicSession() { const topicId = topicModal.dataset.currentTopicId; if (!topicId) return; updateGlobalProgressBars(); const isNowComplete = isTopicComplete(topicId); const topicElements = document.querySelectorAll(`[data-topic-id="${topicId}"]`); topicElements.forEach(el => { el.classList.toggle('topic-completed', isNowComplete); }); closeTopicModal(); }
-        function updateGlobalProgressBars() { let completedTopics = 0; let totalScoreSum = 0; let scoredTopicsCount = 0; const topicData = getData('topicData', {}); studyPlan.forEach(day => { day.topics.forEach(topic => { const topicId = generateTopicId(day.date, topic); if (isTopicComplete(topicId)) { completedTopics++; } const aciertos = parseInt(getData(`topicData.${topicId}.scoreAciertos`)) || 0; const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`)) || 0; if (reactivos > 0) { const score = (aciertos / reactivos) * 100; totalScoreSum += score; scoredTopicsCount++; } }); }); const advancePercentage = totalTopics > 0 ? Math.round((completedTopics / totalTopics) * 100) : 0; globalAdvanceBar.style.width = `${advancePercentage}%`; globalAdvanceBar.textContent = `${advancePercentage}%`; const scorePercentage = scoredTopicsCount > 0 ? Math.round(totalScoreSum / scoredTopicsCount) : 0; globalScoreBar.style.width = `${scorePercentage}%`; globalScoreBar.textContent = `${scorePercentage}%`; }
+        
+        function finishTopicSession() {
+            const topicId = topicModal.dataset.currentTopicId;
+            if (!topicId) return;
+            const isNowComplete = isTopicComplete(topicId);
+            const topicElements = document.querySelectorAll(`[data-topic-id="${topicId}"]`);
+            topicElements.forEach(el => { el.classList.toggle('topic-completed', isNowComplete); });
+            closeTopicModal();
+            // Re-calcular y mostrar todo
+            updateGlobalProgressBars();
+            populateCalendar();
+        }
+
+        function updateGlobalProgressBars() {
+            let completedTopics = 0;
+            studyPlan.forEach(day => {
+                day.topics.forEach(topic => {
+                    const topicId = generateTopicId(day.date, topic);
+                    if (isTopicComplete(topicId)) { completedTopics++; }
+                });
+            });
+            const advancePercentage = totalTopics > 0 ? Math.round((completedTopics / totalTopics) * 100) : 0;
+            globalAdvanceBar.style.width = `${advancePercentage}%`;
+            globalAdvanceBar.textContent = `${advancePercentage}%`;
+            let totalSubjectScoreSum = 0;
+            let subjectsWithScoresCount = 0;
+            const allSubjects = Array.from(subjectToTopicsMap.keys());
+            allSubjects.forEach(subject => {
+                const subjectScore = calculateSubjectScore(subject);
+                if (subjectScore !== null) {
+                    totalSubjectScoreSum += subjectScore;
+                    subjectsWithScoresCount++;
+                }
+            });
+            const scorePercentage = subjectsWithScoresCount > 0 ? Math.round(totalSubjectScoreSum / subjectsWithScoresCount) : 0;
+            globalScoreBar.style.width = `${scorePercentage}%`;
+            globalScoreBar.textContent = `${scorePercentage}%`;
+        }
 
         async function main() {
             displayDailyQuote();
             startCountdown();
-            
+            buildSubjectMap();
             const docRef = db.collection('userProgress').doc(currentUser.uid);
             const doc = await docRef.get();
             loadUserProgress(doc.exists ? doc.data() : null);
-            
             populateCalendar();
             updateGlobalProgressBars();
-            
             calendarContainer.addEventListener('click', e => { const cell = e.target.closest('.day-cell:not(.empty)'); if (cell) showDayModal(cell.dataset.date); });
             dayModalTopicsContainer.addEventListener('click', e => { const topicLi = e.target.closest('.topic-item'); if (topicLi) { const { topicId, topicName } = topicLi.dataset; showTopicPlan(topicId, topicName); } });
             dayModal.querySelector('#modal-close-day').addEventListener('click', closeDayModal); dayModalOverlay.addEventListener('click', closeDayModal);
