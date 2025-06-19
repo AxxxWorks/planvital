@@ -3,19 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Frecuencia Vital - Plan de Estudios Dinámico</title>
+    <title>Frecuencia Vital - Plan de Estudios Integral</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ... (TODO TU CSS VA AQUÍ, NO HA CAMBIADO) ... */
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
+
         :root {
-            --bg-color: #121212; --cell-bg: #1a1a1a; --main-border: #2c2c2c; --text-color: #e0e0e0; --accent-color: #00FF7F;
-            --subject-highlight-color: #ff9800; --meta-bg: #181c25; --meta-header-bg: #101217; --meta-border: #2c3240; --meta-text: #a9bce2;
-            --plan-bg: #1e1e1e; --vfd-green: #50E050; --progress-score-bg: #4caf50; --progress-advance-bg: #ff9800;
-            --text-completed: #777; --bullet-completed: #555; --tag-text-dark: #111; --error-color: #ff6b6b; --warning-color: #ffd54f;
-            --step-1-color: #03dac6; --step-2-color: #ffb74d; --step-3-color: #4fc3f7; --step-4-color: #ce93d8; --step-5-color: #ef9a9a; --step-6-color: #a5d6a7;
+            --bg-color: #121212;
+            --cell-bg: #1a1a1a;
+            --main-border: #2c2c2c;
+            --text-color: #e0e0e0;
+            --accent-color: #00FF7F;
+            --subject-title-color: #ffffff;
+            --subject-highlight-color: #ff9800;
+            --meta-bg: #181c25;
+            --meta-header-bg: #101217;
+            --meta-border: #2c3240;
+            --meta-text: #a9bce2;
+            --plan-bg: #1e1e1e;
+            --vfd-green: #50E050;
+            --progress-score-bg: #4caf50;
+            --progress-advance-bg: #ff9800;
+            --text-completed: #777;
+            --bullet-completed: #555;
+            --tag-text-dark: #111;
+            --error-color: #ff6b6b;
+            --warning-color: #ffd54f;
+            --step-1-color: #03dac6; --step-2-color: #ffb74d; --step-3-color: #4fc3f7;
+            --step-4-color: #ce93d8; --step-5-color: #ef9a9a; --step-6-color: #a5d6a7;
         }
-        body { font-family: 'Source Sans Pro', sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; padding: 20px; overflow-x: hidden; }
+
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
         .main-header { text-align: center; margin-bottom: 25px; padding: 10px 0; }
         .motivational-quote { font-family: 'Orbitron', sans-serif; color: var(--vfd-green); font-size: 1.5em; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; text-shadow: 0 0 4px rgba(80, 224, 80, 0.6), 0 0 8px rgba(80, 224, 80, 0.4); min-height: 1.2em; }
         .countdown-timer-container { display: flex; justify-content: center; align-items: center; gap: 25px; margin-bottom: 25px; }
@@ -30,6 +56,8 @@
         .progress-bar-wrapper label { font-size: 0.85em; color: var(--meta-text); font-weight: 600; }
         .progress-bar-background { width: 100%; background-color: var(--main-border); border-radius: 8px; height: 22px; overflow: hidden; }
         .progress-bar-fill { height: 100%; width: 0%; border-radius: 8px; transition: width 0.5s ease-in-out; text-align: center; line-height: 22px; color: var(--bg-color); font-weight: bold; font-size: 0.8em; }
+        #global-score-bar { background-color: var(--progress-score-bg); }
+        #global-advance-bar { background-color: var(--progress-advance-bg); }
         .calendar-container { display: grid; grid-template-columns: 40px 40px repeat(7, 1fr); gap: 2px; background-color: var(--main-border); margin-top: 25px; }
         .header-cell, .day-header { text-align: center; padding: 12px 5px; font-weight: 600; font-family: 'Orbitron', sans-serif; text-transform: uppercase; font-size: 0.9em; }
         .meta-header { background-color: var(--meta-header-bg); color: var(--meta-text); border-bottom: 2px solid var(--main-border); }
@@ -37,20 +65,17 @@
         .month-cell { grid-column: 1; background-color: var(--meta-bg); color: var(--meta-text); font-family: 'Orbitron', sans-serif; writing-mode: vertical-rl; text-transform: uppercase; letter-spacing: 2px; display: flex; align-items: center; justify-content: center; border-right: 1px solid var(--meta-border); }
         .week-cell-container { grid-column: 2; background-color: var(--meta-bg); position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--meta-border); }
         .week-number { font-family: 'Orbitron', sans-serif; font-size: 1.6em; color: var(--meta-text); }
-        .day-cell { background-color: var(--cell-bg); min-height: 160px; padding: 8px 12px; position: relative; overflow-y: auto; transition: background-color 0.3s; }
-        .day-cell:not(.empty) { cursor: pointer; }
+        .day-cell { background-color: var(--cell-bg); min-height: 160px; padding: 8px 12px; position: relative; overflow-y: auto; cursor: pointer; }
         .day-cell.empty { background-color: var(--bg-color); cursor: default; }
         .calendar-day-number { font-size: 0.9em; font-weight: 600; color: #777; position: absolute; top: 8px; right: 12px; z-index: 1; }
         .day-content ul { list-style-type: none; padding-left: 0; margin: 25px 0 0 0; }
         .day-content li { margin-bottom: 4px; padding-left: 14px; position: relative; font-size: 0.85em; }
         .day-content .subject-title, #modal-topics .subject-title { color: var(--subject-highlight-color); font-weight: 700; display: block; margin-bottom: 6px; text-transform: uppercase; font-size: 1em; text-shadow: 0 0 5px rgba(255, 152, 0, 0.4); }
         .subject-score { color: var(--meta-text); font-size: 0.8em; font-weight: 400; margin-left: 8px; }
-        .topic-item { display: flex; align-items: center; justify-content: space-between; padding: 4px 6px; margin-left: -6px; border-radius: 4px; transition: background-color 0.2s ease, color 0.2s ease; cursor: grab; }
+        .topic-item { display: flex; align-items: center; justify-content: space-between; padding: 4px 6px; margin-left: -6px; border-radius: 4px; transition: background-color 0.2s ease, color 0.2s ease; }
         .topic-item:not(.topic-completed):hover { background-color: var(--meta-bg); color: var(--accent-color); }
         .topic-item::before { content: '■'; position: absolute; left: 0; top: 5px; color: var(--accent-color); font-size: 0.8em; line-height: 1.5; transition: color 0.3s ease; }
         .topic-score { font-size: 0.85em; font-weight: bold; margin-left: 10px; flex-shrink: 0; }
-        .topic-item.dragging { opacity: 0.4; cursor: grabbing; background-color: #333; }
-        .day-cell.drag-over { background-color: #2a3a2a; border: 2px dashed var(--accent-color); }
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px); z-index: 998; display: none; opacity: 0; transition: opacity 0.3s ease; }
         .modal-overlay.visible { display: block; opacity: 1; }
         .modal-container { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: var(--cell-bg); border: 1px solid var(--main-border); border-radius: 12px; box-shadow: 0 5px 25px rgba(0,0,0,0.5); z-index: 1000; width: 90%; max-height: 90vh; display: none; flex-direction: column; transition: transform 0.3s ease, opacity 0.3s ease; }
@@ -157,6 +182,7 @@
         <div class="modal-header"> <h2 id="topic-plan-title"></h2> <span class="modal-close" id="modal-close-topic">×</span> </div>
         <div class="modal-content">
             <div class="study-flow-diagram">
+                <!-- VISTA RÁPIDA -->
                 <div class="step-card step-1">
                     <div class="step-icon-container"><i class="fas fa-binoculars"></i></div>
                     <div class="step-content">
@@ -168,6 +194,7 @@
                         </ul>
                     </div>
                 </div>
+                <!-- CREAR y LEER -->
                 <div class="parallel-steps-container">
                     <div class="step-card step-2">
                         <div class="step-icon-container"><i class="fas fa-magic"></i></div>
@@ -189,6 +216,7 @@
                         </div>
                     </div>
                 </div>
+                <!-- UNIFICAR -->
                 <div class="step-card step-4">
                     <div class="step-icon-container"><i class="fas fa-puzzle-piece"></i></div>
                     <div class="step-content">
@@ -198,6 +226,7 @@
                         </ul>
                     </div>
                 </div>
+                <!-- PRACTICAR -->
                 <div class="step-card step-5">
                     <div class="step-icon-container"><i class="fas fa-tasks"></i></div>
                     <div class="step-content">
@@ -220,6 +249,7 @@
                         </div>
                     </div>
                 </div>
+                <!-- MEMORIZAR -->
                 <div class="step-card step-6">
                     <div class="step-icon-container"><i class="fas fa-head-side-headphones"></i></div>
                     <div class="step-content">
@@ -237,6 +267,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
     <script>
     const firebaseConfig = {
         apiKey: "AIzaSyD4SjKhedm4ZWHed70_sjQgxPokjHvwvUc",
@@ -256,15 +287,18 @@
     let currentUser = null;
     
     auth.onAuthStateChanged(user => {
-        if (user) { currentUser = user; initializeAppLogic(); } 
-        else { window.location.href = 'index.html'; }
+        if (user) {
+            currentUser = user;
+            initializeAppLogic();
+        } else {
+            window.location.href = 'index.html';
+        }
     });
 
     function initializeAppLogic() {
         const subjectToTopicsMap = new Map();
-        const motivationalQuotes = [ "La disciplina es el puente entre metas y logros.", "El éxito es la suma de pequeños esfuerzos repetidos día tras día."];
-        
-        let initialStudyPlan = [
+        const motivationalQuotes = [ "La disciplina es el puente entre metas y logros.", "El éxito es la suma de pequeños esfuerzos repetidos día tras día.", "No te detengas hasta que te sientas orgulloso.", "Cree en ti mismo y todo será posible.", "El único modo de hacer un gran trabajo es amar lo que haces.", "La clave del éxito es empezar antes de estar listo.", "Cada día es una nueva oportunidad para cambiar tu vida.", "Si puedes soñarlo, puedes hacerlo.", "La perseverancia no es una carrera larga, son muchas carreras cortas una tras otra.", "El aprendizaje es un tesoro que seguirá a su dueño a todas partes.", "La motivación te pone en marcha, el hábito te mantiene.", "No cuentes los días, haz que los días cuenten.", "El futuro pertenece a quienes creen en la belleza de sus sueños.", "La mejor forma de predecir el futuro es crearlo.", "Un pequeño progreso cada día suma grandes resultados." ];
+        const studyPlan = [
             { date: "2025-06-18", subjects: ["ENDOCRINOLOGÍA"], topics: ["Dislipidemias", "Hipertiroidismo", "Hipotiroidismo", "Cáncer de tiroides (Enfoque en Papilar)"] },
             { date: "2025-06-19", subjects: [], topics: ["Nódulo tiroideo", "Obesidad en adultos", "Síndrome metabólico", "Enfermedad de Cushing / Síndrome de Cushing"] },
             { date: "2025-06-20", subjects: ["UROLOGÍA"], topics: ["Enfermedad de Addison", "Escroto agudo y Torsión testicular", "Hiperplasia prostática benigna", "Cáncer de próstata"] },
@@ -360,136 +394,301 @@
             { date: "2025-09-18", subjects: [], topics: ["Rotavirus", "Sabin", "Salmonella", "Dpt", "Srp", "Tétanos", "Varicela", "Vph"] }
         ];
 
-        let studyPlan = []; // Esta se llenará con la función de hidratación
         let userProgress = {};
+        const totalTopics = studyPlan.reduce((acc, day) => acc + day.topics.length, 0);
         const ALL_TASK_IDS = ['task-1-1', 'task-1-2', 'task-1-3', 'task-2-1', 'task-2-2', 'task-3-1', 'task-4-1', 'task-5-1', 'task-5-2', 'task-6-1'];
         
         const calendarContainer = document.getElementById('calendar-container');
         const dayModal = document.getElementById('details-modal'), dayModalOverlay = document.getElementById('modal-overlay'), dayModalTitle = document.getElementById('modal-title'), dayModalTopicsContainer = document.getElementById('modal-topics'), dayModalNotes = document.getElementById('modal-notes'), saveNoteButton = document.getElementById('modal-save-btn');
-        const topicModal = document.getElementById('topic-plan-modal'), topicModalOverlay = document.getElementById('topic-plan-overlay'), topicModalTitle = document.getElementById('topic-plan-title');
-        const topicTaskCheckboxes = topicModal.querySelectorAll('.task-checkbox'), aciertosInput = document.getElementById('score-aciertos'), reactivosInput = document.getElementById('score-reactivos'), percentageOutput = document.getElementById('score-percentage'), finishTopicButton = document.getElementById('topic-finish-btn');
+        const topicModal = document.getElementById('topic-plan-modal'), topicModalOverlay = document.getElementById('topic-plan-overlay'), topicModalTitle = document.getElementById('topic-plan-title'), topicStepCards = topicModal.querySelectorAll('.step-card'), topicTaskCheckboxes = topicModal.querySelectorAll('.task-checkbox'), aciertosInput = document.getElementById('score-aciertos'), reactivosInput = document.getElementById('score-reactivos'), percentageOutput = document.getElementById('score-percentage'), finishTopicButton = document.getElementById('topic-finish-btn');
         const globalScoreBar = document.getElementById('global-score-bar'), globalAdvanceBar = document.getElementById('global-advance-bar');
         
-        function getScoreColor(percentage) { /* ...código sin cambios... */ }
-        function displayDailyQuote() { /* ...código sin cambios... */ }
-        function startCountdown() { /* ...código sin cambios... */ }
-        function buildSubjectMap() { /* ...código sin cambios... */ }
-        function calculateSubjectScore(subjectName) { /* ...código sin cambios... */ }
-        function loadUserProgress(data) { if (data) userProgress = data; }
-        
-        async function saveData(key, value) {
-            if (!currentUser) return;
-            const docRef = db.collection('userProgress').doc(currentUser.uid);
-            try { await docRef.update({ [key]: value }); } 
-            catch (error) {
-                if (error.code === 'not-found') { await docRef.set({ [key]: value }); } 
-                else { console.error("Error al guardar:", error); }
-            }
-            const keys = key.split('.');
-            let current = userProgress;
-            for (let i = 0; i < keys.length - 1; i++) { current = current[keys[i]] = current[keys[i]] || {}; }
-            current[keys[keys.length - 1]] = value;
+        function getScoreColor(percentage) {
+            if (percentage < 60) return 'var(--error-color)';
+            if (percentage < 80) return 'var(--warning-color)';
+            return 'var(--vfd-green)';
         }
 
-        function getData(key, defaultValue = null) { /* ...código sin cambios... */ }
-        function isTopicComplete(topicId) { /* ...código sin cambios... */ }
-        function generateTopicId(dateString, topicName) { const cleanTopic = topicName.toLowerCase().replace(/[^a-z0-9]/g, ''); return `topic_${dateString}_${cleanTopic}`; }
-        function createTopicListItem(topic, dateString) { /* ...código sin cambios... */ }
-        function populateCalendar() { /* ...código sin cambios... */ }
-        function updateGlobalProgressBars() { /* ...código sin cambios... */ }
-        function showDayModal(dateString) { /* ...código sin cambios... */ }
-        function closeDayModal() { /* ...código sin cambios... */ }
-        function saveDayNote() { /* ...código sin cambios... */ }
-        function showTopicPlan(topicId, topicName) { /* ...código sin cambios... */ }
-        function closeTopicModal() { /* ...código sin cambios... */ }
-        function loadTopicState(topicId) { /* ...código sin cambios... */ }
-        function saveTopicState(key, value) { /* ...código sin cambios... */ }
-        function updateScorePercentage() { /* ...código sin cambios... */ }
-        function updateStepCardStatus(cardElement) { /* ...código sin cambios... */ }
-        function updateAllStepCardsStatus() { topicTaskCheckboxes.forEach(checkbox => updateStepCardStatus(checkbox.closest('.step-card'))); }
-        function finishTopicSession() { /* ...código sin cambios... */ }
-        
-        function hydrateStudyPlan(savedLayout) {
-            if (!savedLayout) {
-                studyPlan = initialStudyPlan.map(day => ({...day})); // Usar el plan por defecto si no hay nada guardado
-                return;
+        function displayDailyQuote() {
+            const quoteContainer = document.getElementById('motivational-quote-container');
+            if (quoteContainer) {
+                const randomIndex = Math.floor(Math.random() * motivationalQuotes.length);
+                quoteContainer.textContent = motivationalQuotes[randomIndex];
             }
-            // Mapear el plan inicial para fácil acceso
-            const initialPlanMap = new Map(initialStudyPlan.map(day => [day.date, day]));
-            
-            // Reconstruir los temas de cada día según el layout guardado
-            for (const date in savedLayout) {
-                const dayInPlan = initialPlanMap.get(date);
-                if (dayInPlan) {
-                    dayInPlan.topics = savedLayout[date];
+        }
+
+        function startCountdown() {
+            const targetDate = new Date("2025-09-18T08:00:00").getTime();
+            const daysEl = document.getElementById('countdown-days');
+            const hoursEl = document.getElementById('countdown-hours');
+            const minutesEl = document.getElementById('countdown-minutes');
+            const secondsEl = document.getElementById('countdown-seconds');
+            if (!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
+            const interval = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = targetDate - now;
+                if (distance < 0) {
+                    clearInterval(interval);
+                    daysEl.textContent = "000"; hoursEl.textContent = "00"; minutesEl.textContent = "00"; secondsEl.textContent = "00";
+                    return;
                 }
-            }
-            studyPlan = Array.from(initialPlanMap.values());
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                daysEl.textContent = String(days).padStart(3, '0');
+                hoursEl.textContent = String(hours).padStart(2, '0');
+                minutesEl.textContent = String(minutes).padStart(2, '0');
+                secondsEl.textContent = String(seconds).padStart(2, '0');
+            }, 1000);
         }
 
-        async function handleTopicDrop(originalDate, topicName, newDate) {
-            if (originalDate === newDate) return;
-            const originalDay = studyPlan.find(d => d.date === originalDate);
-            const newDay = studyPlan.find(d => d.date === newDate);
-            if (!originalDay || !newDay) return;
-            const topicIndex = originalDay.topics.indexOf(topicName);
-            if (topicIndex > -1) {
-                originalDay.topics.splice(topicIndex, 1);
-                newDay.topics.push(topicName);
-                newDay.topics.sort();
-            }
-
-            // Migrar el progreso del tema
-            const oldTopicId = generateTopicId(originalDate, topicName);
-            const newTopicId = generateTopicId(newDate, topicName);
-            const topicDataToMigrate = getData(`topicData.${oldTopicId}`);
-            const firestoreUpdate = {};
-            if (topicDataToMigrate) {
-                if (!userProgress.topicData) userProgress.topicData = {};
-                userProgress.topicData[newTopicId] = topicDataToMigrate;
-                delete userProgress.topicData[oldTopicId];
-                firestoreUpdate[`topicData.${newTopicId}`] = topicDataToMigrate;
-                firestoreUpdate[`topicData.${oldTopicId}`] = firebase.firestore.FieldValue.delete();
-            }
-
-            // Guardar el nuevo layout de los días afectados
-            firestoreUpdate[`calendarLayout.${originalDate}`] = originalDay.topics;
-            firestoreUpdate[`calendarLayout.${newDate}`] = newDay.topics;
-            
-            await saveDataInBatch(firestoreUpdate);
-
-            buildSubjectMap();
-            populateCalendar();
-            updateGlobalProgressBars();
-        }
-        
-        async function saveDataInBatch(updateObject) {
-            if (!currentUser) return;
-            const docRef = db.collection('userProgress').doc(currentUser.uid);
-            await docRef.update(updateObject).catch(async (error) => {
-                if (error.code === 'not-found') {
-                    await docRef.set(updateObject);
-                } else {
-                    console.error("Error al guardar en batch:", error);
+        function buildSubjectMap() {
+            let lastSubjects = [];
+            studyPlan.forEach(day => {
+                const subjectsForThisDay = day.subjects.length > 0 ? day.subjects : lastSubjects;
+                if(day.subjects.length > 0) {
+                    lastSubjects = day.subjects;
                 }
+                const dayTopicIds = day.topics.map(topicName => generateTopicId(day.date, topicName));
+                subjectsForThisDay.forEach(subjectName => {
+                    if (!subjectToTopicsMap.has(subjectName)) {
+                        subjectToTopicsMap.set(subjectName, []);
+                    }
+                    const currentTopics = subjectToTopicsMap.get(subjectName);
+                    const updatedTopics = new Set([...currentTopics, ...dayTopicIds]);
+                    subjectToTopicsMap.set(subjectName, Array.from(updatedTopics));
+                });
             });
         }
+
+    function calculateSubjectScore(subjectName) {
+    const topicIds = subjectToTopicsMap.get(subjectName);
+    if (!topicIds || topicIds.length === 0) return null;
+    let totalScoreSum = 0;
+    let scoredTopicsCount = 0;
+    topicIds.forEach(topicId => {
+        const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`)) || 0;
+        if (reactivos > 0) {
+            const aciertos = parseInt(getData(`topicData.${topicId}.scoreAciertos`)) || 0;
+            totalScoreSum += (aciertos / reactivos) * 100;
+            scoredTopicsCount++;
+        }
+    });
+    if (scoredTopicsCount > 0) {
+        const average = totalScoreSum / scoredTopicsCount;
+        // MODIFICACIÓN: Añadido .toFixed(2)
+        return average.toFixed(2);
+    }
+    return null;
+}
+
+        function loadUserProgress(data) {
+            if (data) { userProgress = data; } 
+            else { userProgress = {}; }
+        }
+
+async function saveData(key, value) {
+    // 1. Verificación inicial: Si no hay usuario, no hacemos nada.
+    if (!currentUser) {
+        console.error("No se puede guardar: El usuario no está autenticado.");
+        return;
+    }
+    const docRef = db.collection('userProgress').doc(currentUser.uid);
+
+    // 2. Usamos `update` que es el método correcto para modificar campos anidados
+    //    usando la notación de punto.
+    try {
+        await docRef.update({ [key]: value });
+        console.log(`%cDato actualizado en Firestore:`, 'color: lightgreen', { [key]: value });
+    } catch (error) {
+        // 3. Si `update` falla porque el documento no existe, lo creamos con `set`.
+        //    Esto hace el código robusto para el primer guardado de un usuario.
+        if (error.code === 'not-found') {
+            console.warn("El documento no existía. Creándolo por primera vez...");
+            try {
+                await docRef.set({ [key]: value });
+                console.log(`%cDocumento creado y dato guardado:`, 'color: lightblue', { [key]: value });
+            } catch (creationError) {
+                console.error("Error crítico al intentar crear el documento:", creationError);
+            }
+        } else {
+            // 4. Si el error es otro (ej. permisos), lo mostramos en la consola.
+            console.error("Error al guardar en Firestore (que no fue 'not-found'):", error);
+        }
+    }
+
+    // 5. Actualizamos el objeto local `userProgress` para que la UI responda
+    //    al instante sin tener que volver a leer de la base de datos.
+    const keys = key.split('.');
+    let current = userProgress;
+    for (let i = 0; i < keys.length - 1; i++) {
+        current = current[keys[i]] = current[keys[i]] || {};
+    }
+    current[keys[keys.length - 1]] = value;
+}
+
+        function getData(key, defaultValue = null) {
+            const keys = key.split('.');
+            let result = userProgress;
+            for (const k of keys) {
+                if (result && typeof result === 'object' && k in result) { result = result[k]; } 
+                else { return defaultValue; }
+            }
+            return result;
+        }
+
+        function isTopicComplete(topicId) { return ALL_TASK_IDS.every(taskId => getData(`topicData.${topicId}.${taskId}`) === true); }
+        function generateTopicId(dateString, topicName) { const cleanTopic = topicName.toLowerCase().replace(/[^a-z0-9]/g, ''); return `topic_${dateString}_${cleanTopic}`; }
         
+        function createTopicListItem(topic, dateString) {
+    const topicId = generateTopicId(dateString, topic);
+    const isComplete = isTopicComplete(topicId);
+    const liClass = `topic-item ${isComplete ? 'topic-completed' : ''}`;
+    let scoreHTML = '';
+    const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`)) || 0;
+    if (reactivos > 0) {
+        const aciertos = parseInt(getData(`topicData.${topicId}.scoreAciertos`)) || 0;
+        const percentage = (aciertos / reactivos) * 100;
+        const color = getScoreColor(percentage);
+        // MODIFICACIÓN: Añadido .toFixed(2)
+        scoreHTML = `<span class="topic-score" style="color: ${color};">(${percentage.toFixed(2)}%)</span>`;
+    }
+    return `<li class="${liClass}" data-topic-id="${topicId}" data-topic-name="${topic}"><span>${topic}</span>${scoreHTML}</li>`;
+}
+        
+        function populateCalendar() {
+            const daysMap = new Map(studyPlan.map(day => [day.date, day]));
+            const startDate = new Date(studyPlan[0].date + "T00:00:00");
+            const visualEndDate = new Date("2025-09-27T23:59:59"); 
+            const calendarGridEndDate = new Date(visualEndDate.getFullYear(), visualEndDate.getMonth() + 1, 0, 23, 59, 59);
+            let weeks = []; let dateCursor = new Date(startDate); dateCursor.setDate(dateCursor.getDate() - dateCursor.getDay());
+            while (dateCursor <= calendarGridEndDate) { let week = []; for(let i=0; i < 7; i++) { week.push(new Date(dateCursor)); dateCursor.setDate(dateCursor.getDate() + 1); } weeks.push(week); }
+            const monthLayout = new Map(); weeks.forEach((week, weekIndex) => { const firstDayOfWeek = week[0]; const monthName = firstDayOfWeek.toLocaleString('es-ES', { month: 'long' }); if (!monthLayout.has(monthName)) { monthLayout.set(monthName, { startRow: weekIndex + 2, rowSpan: 1 }); } else { monthLayout.get(monthName).rowSpan++; } });
+            calendarContainer.innerHTML = ''; calendarContainer.innerHTML += '<div class="header-cell meta-header">M</div><div class="header-cell meta-header">S</div>'; ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].forEach(day => calendarContainer.innerHTML += `<div class="header-cell day-header">${day}</div>`);
+            monthLayout.forEach((layout, name) => { calendarContainer.innerHTML += `<div class="month-cell" style="grid-row: ${layout.startRow} / span ${layout.rowSpan}">${name}</div>`; });
+            weeks.forEach((week, weekIndex) => {
+                calendarContainer.innerHTML += `<div class="week-cell-container" style="grid-row: ${weekIndex + 2}"><span class="week-number">${weekIndex + 1}</span></div>`;
+                week.forEach(date => {
+                    const cell = document.createElement('div');
+                    cell.className = 'day-cell';
+                    const dateString = date.toISOString().split('T')[0];
+                    if (date < startDate || date > visualEndDate) { cell.classList.add('empty'); }
+                    else {
+                        cell.dataset.date = dateString;
+                        cell.innerHTML = `<div class="calendar-day-number">${date.getDate()}</div>`;
+                        const dayData = daysMap.get(dateString);
+                        if (dayData) {
+                            let contentHTML = '<ul>';
+                            if (dayData.subjects && dayData.subjects.length > 0) {
+                                const subjectTitles = dayData.subjects.map(subject => {
+                                    const score = calculateSubjectScore(subject);
+                                    const scoreText = score !== null ? `<span class="subject-score">(${score}%)</span>` : '';
+                                    return `${subject}${scoreText}`;
+                                }).join(' / ');
+                                contentHTML += `<li><span class="subject-title">${subjectTitles}</span></li>`;
+                            }
+                            contentHTML += dayData.topics.map(topic => createTopicListItem(topic, dateString)).join('');
+                            contentHTML += '</ul>';
+                            cell.innerHTML += `<div class="day-content">${contentHTML}</div>`;
+                        }
+                    }
+                    calendarContainer.appendChild(cell);
+                });
+            });
+        }
+
+   function updateGlobalProgressBars() {
+    // 1. Lógica para la barra de AVANCE (Temas Completados)
+    let completedTopics = 0;
+    studyPlan.forEach(day => {
+        day.topics.forEach(topic => {
+            const topicId = generateTopicId(day.date, topic);
+            if (isTopicComplete(topicId)) {
+                completedTopics++;
+            }
+        });
+    });
+    const advancePercentage = totalTopics > 0 ? (completedTopics / totalTopics) * 100 : 0;
+    
+    // Para el ancho de la barra usamos el número redondeado
+    globalAdvanceBar.style.width = `${Math.round(advancePercentage)}%`;
+    // Para el texto, usamos el número con dos decimales
+    globalAdvanceBar.textContent = `${advancePercentage.toFixed(2)}%`;
+
+    // 2. Lógica para la barra de PUNTUACIÓN (Promedio de Calificaciones)
+    let totalSubjectScoreSum = 0;
+    let subjectsWithScoresCount = 0;
+    const allSubjects = Array.from(subjectToTopicsMap.keys());
+    
+    allSubjects.forEach(subject => {
+        // La función calculateSubjectScore ya devuelve un string con .toFixed(2) o null.
+        // Necesitamos convertirlo de nuevo a número para poder sumarlo.
+        const subjectScoreStr = calculateSubjectScore(subject);
+        if (subjectScoreStr !== null) {
+            totalSubjectScoreSum += parseFloat(subjectScoreStr);
+            subjectsWithScoresCount++;
+        }
+    });
+
+    const scorePercentage = subjectsWithScoresCount > 0 ? totalSubjectScoreSum / subjectsWithScoresCount : 0;
+    
+    // Para el ancho de la barra usamos el número redondeado
+    globalScoreBar.style.width = `${Math.round(scorePercentage)}%`;
+    // Para el texto, usamos el número con dos decimales
+    globalScoreBar.textContent = `${scorePercentage.toFixed(2)}%`;
+}
+
+        function showDayModal(dateString) { const dayData = new Map(studyPlan.map(d => [d.date, d])).get(dateString); const date = new Date(dateString + "T00:00:00"); dayModalTitle.textContent = date.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }); let topicsHTML = '<ul>'; if (dayData) { if (dayData.subjects && dayData.subjects.length > 0) { const subjectTitles = dayData.subjects.map(subject => { const score = calculateSubjectScore(subject); const scoreText = score !== null ? `<span class="subject-score">(${score}%)</span>` : ''; return `${subject}${scoreText}`; }).join(' / '); topicsHTML += `<li><span class="subject-title">${subjectTitles}</span></li>`; } topicsHTML += dayData.topics.map(topic => createTopicListItem(topic, dateString)).join(''); } topicsHTML += '</ul>'; dayModalTopicsContainer.innerHTML = topicsHTML; dayModalNotes.value = getData(`dayNotes.${dateString}`, ''); dayModal.dataset.currentDate = dateString; dayModalOverlay.classList.add('visible'); dayModal.classList.add('visible'); }
+        function closeDayModal() { dayModalOverlay.classList.remove('visible'); dayModal.classList.remove('visible'); }
+        function saveDayNote() { const dateString = dayModal.dataset.currentDate; if (dateString) { saveData(`dayNotes.${dateString}`, dayModalNotes.value); } closeDayModal(); }
+        function showTopicPlan(topicId, topicName) { topicModal.dataset.currentTopicId = topicId; topicModalTitle.textContent = topicName; loadTopicState(topicId); topicModalOverlay.classList.add('visible'); topicModal.classList.add('visible'); }
+        function closeTopicModal() { topicModalOverlay.classList.remove('visible'); topicModal.classList.remove('visible'); }
+        function loadTopicState(topicId) { topicTaskCheckboxes.forEach(checkbox => { checkbox.checked = getData(`topicData.${topicId}.${checkbox.id}`) === true; }); aciertosInput.value = getData(`topicData.${topicId}.scoreAciertos`, ''); reactivosInput.value = getData(`topicData.${topicId}.scoreReactivos`, ''); updateScorePercentage(); updateAllStepCardsStatus(); }
+        function saveTopicState(key, value) { const topicId = topicModal.dataset.currentTopicId; if (topicId) { saveData(`topicData.${topicId}.${key}`, value); } }
+        function updateScorePercentage() {
+            const aciertos = parseInt(aciertosInput.value) || 0;
+            const reactivos = parseInt(reactivosInput.value) || 0;
+            let percentage = 0;
+            if (reactivos > 0) {
+                percentage = (aciertos / reactivos) * 100;
+            }
+            const color = getScoreColor(percentage);
+            percentageOutput.value = percentage.toFixed(2) + "%";
+            percentageOutput.style.color = color;
+        }
+        function updateStepCardStatus(cardElement) { const tasksInCard = cardElement.querySelectorAll('.task-checkbox'); const allTasksCompleted = Array.from(tasksInCard).every(task => task.checked); cardElement.classList.toggle('completed', allTasksCompleted); }
+        function updateAllStepCardsStatus() { topicStepCards.forEach(updateStepCardStatus); }
+        
+        function finishTopicSession() {
+            const topicId = topicModal.dataset.currentTopicId;
+            if (!topicId) return;
+            closeTopicModal();
+            updateGlobalProgressBars();
+            populateCalendar();
+        }
+
         async function main() {
             displayDailyQuote();
             startCountdown();
+            buildSubjectMap();
             const docRef = db.collection('userProgress').doc(currentUser.uid);
             const doc = await docRef.get();
-            loadUserProgress(doc.exists ? doc.data() : {});
-            
-            hydrateStudyPlan(getData('calendarLayout'));
-
-            buildSubjectMap();
+            loadUserProgress(doc.exists ? doc.data() : null);
             populateCalendar();
             updateGlobalProgressBars();
-            
-            // ... (Todos los event listeners sin cambios)
+            calendarContainer.addEventListener('click', e => { const cell = e.target.closest('.day-cell:not(.empty)'); if (cell) showDayModal(cell.dataset.date); });
+            dayModalTopicsContainer.addEventListener('click', e => { const topicLi = e.target.closest('.topic-item'); if (topicLi) { const { topicId, topicName } = topicLi.dataset; showTopicPlan(topicId, topicName); } });
+            dayModal.querySelector('#modal-close-day').addEventListener('click', closeDayModal); dayModalOverlay.addEventListener('click', closeDayModal);
+            topicModal.querySelector('#modal-close-topic').addEventListener('click', closeTopicModal);
+            finishTopicButton.addEventListener('click', finishTopicSession);
+            document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (topicModal.classList.contains('visible')) { closeTopicModal(); } else if (dayModal.classList.contains('visible')) { closeDayModal(); } } });
+            saveNoteButton.addEventListener('click', saveDayNote);
+            topicTaskCheckboxes.forEach(checkbox => { checkbox.addEventListener('change', function() { saveTopicState(this.id, this.checked); updateStepCardStatus(this.closest('.step-card')); }); });
+            aciertosInput.addEventListener('input', () => { saveTopicState('scoreAciertos', aciertosInput.value); updateScorePercentage(); });
+            reactivosInput.addEventListener('input', () => { saveTopicState('scoreReactivos', reactivosInput.value); updateScorePercentage(); });
         }
+
         main();
     }
     </script>
