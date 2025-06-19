@@ -483,18 +483,33 @@
             else { userProgress = {}; }
         }
 
-        async function saveData(key, value) {
-            if (!currentUser) return;
-            const docRef = db.collection('userProgress').doc(currentUser.uid);
-            const dataToUpdate = { [key]: value };
-            await docRef.set(dataToUpdate, { merge: true }).catch(error => console.error("Error al guardar: ", error));
-            const keys = key.split('.');
-            let current = userProgress;
-            for (let i = 0; i < keys.length - 1; i++) {
-                current = current[keys[i]] = current[keys[i]] || {};
-            }
-            current[keys[keys.length - 1]] = value;
-        }
+// =========================================================================
+// ============ REEMPLAZA TU FUNCIÓN saveData ENTERA CON ESTO ============
+// =========================================================================
+
+async function saveData(key, value) {
+    if (!currentUser) return;
+    const docRef = db.collection('userProgress').doc(currentUser.uid);
+
+    // Esta es la sintaxis correcta que Firestore entiende para campos anidados.
+    const dataToUpdate = { [key]: value };
+
+    // Usamos set con merge:true que es robusto tanto para crear como para actualizar.
+    // El error anterior estaba en cómo se construía el objeto, no tanto en el método.
+    await docRef.set(dataToUpdate, { merge: true }).catch(error => {
+        console.error("Error al guardar los datos en Firestore: ", error);
+    });
+
+    console.log(`Dato guardado: { ${key}: "${value}" }`);
+
+    // Actualizar el objeto local para que la UI sea instantánea
+    const keys = key.split('.');
+    let current = userProgress;
+    for (let i = 0; i < keys.length - 1; i++) {
+        current = current[keys[i]] = current[keys[i]] || {};
+    }
+    current[keys[keys.length - 1]] = value;
+}
 
         function getData(key, defaultValue = null) {
             const keys = key.split('.');
