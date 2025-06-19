@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Frecuencia Vital - Plan de Estudios Integral v10.13</title>
+    <title>Frecuencia Vital - Plan de Estudios Integral</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
@@ -15,7 +15,7 @@
             --text-color: #e0e0e0;
             --accent-color: #00FF7F;
             --subject-title-color: #ffffff;
-            --subject-highlight-color: #ff9800; /* Color naranja para resaltar materias */
+            --subject-highlight-color: #ff9800;
             --meta-bg: #181c25;
             --meta-header-bg: #101217;
             --meta-border: #2c3240;
@@ -27,6 +27,8 @@
             --text-completed: #777;
             --bullet-completed: #555;
             --tag-text-dark: #111;
+            --error-color: #ff6b6b;
+            --warning-color: #ffd54f;
             --step-1-color: #03dac6; --step-2-color: #ffb74d; --step-3-color: #4fc3f7;
             --step-4-color: #ce93d8; --step-5-color: #ef9a9a; --step-6-color: #a5d6a7;
         }
@@ -41,45 +43,14 @@
         }
         
         .main-header { text-align: center; margin-bottom: 25px; padding: 10px 0; }
-        .motivational-quote {
-            font-family: 'Orbitron', sans-serif;
-            color: var(--vfd-green);
-            font-size: 1.5em;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 20px;
-            text-shadow: 0 0 4px rgba(80, 224, 80, 0.6), 0 0 8px rgba(80, 224, 80, 0.4);
-            min-height: 1.2em;
-        }
-        .countdown-timer-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 25px;
-            margin-bottom: 25px;
-        }
+        .motivational-quote { font-family: 'Orbitron', sans-serif; color: var(--vfd-green); font-size: 1.5em; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; text-shadow: 0 0 4px rgba(80, 224, 80, 0.6), 0 0 8px rgba(80, 224, 80, 0.4); min-height: 1.2em; }
+        .countdown-timer-container { display: flex; justify-content: center; align-items: center; gap: 25px; margin-bottom: 25px; }
         .countdown-unit { text-align: center; }
-        .countdown-label {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 0.8em;
-            color: var(--vfd-green);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
-            opacity: 0.8;
-        }
-        .countdown-digits {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 4em;
-            color: var(--vfd-green);
-            line-height: 1;
-            text-shadow: 0 0 5px rgba(80, 224, 80, 0.7), 0 0 10px rgba(80, 224, 80, 0.5), 0 0 15px rgba(80, 224, 80, 0.3);
-        }
-
+        .countdown-label { font-family: 'Orbitron', sans-serif; font-size: 0.8em; color: var(--vfd-green); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; opacity: 0.8; }
+        .countdown-digits { font-family: 'Orbitron', sans-serif; font-size: 4em; color: var(--vfd-green); line-height: 1; text-shadow: 0 0 5px rgba(80, 224, 80, 0.7), 0 0 10px rgba(80, 224, 80, 0.5), 0 0 15px rgba(80, 224, 80, 0.3); }
         .topic-item.topic-completed { color: var(--text-completed); font-style: italic; }
         .topic-item.topic-completed:hover { color: var(--text-completed); background-color: transparent; }
         .topic-item.topic-completed::before { color: var(--bullet-completed); }
-
         .global-progress-container { max-width: 900px; margin: 30px auto; display: flex; flex-direction: column; gap: 12px; padding: 0 10px; }
         .progress-bar-wrapper { display: flex; flex-direction: column; gap: 4px; }
         .progress-bar-wrapper label { font-size: 0.85em; color: var(--meta-text); font-weight: 600; }
@@ -99,27 +70,12 @@
         .calendar-day-number { font-size: 0.9em; font-weight: 600; color: #777; position: absolute; top: 8px; right: 12px; z-index: 1; }
         .day-content ul { list-style-type: none; padding-left: 0; margin: 25px 0 0 0; }
         .day-content li { margin-bottom: 4px; padding-left: 14px; position: relative; font-size: 0.85em; }
-        
-        .day-content .subject-title, #modal-topics .subject-title {
-            color: var(--subject-highlight-color);
-            font-weight: 700;
-            display: block;
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            font-size: 1em;
-            text-shadow: 0 0 5px rgba(255, 152, 0, 0.4);
-        }
-
-        .subject-score {
-            color: var(--meta-text);
-            font-size: 0.8em;
-            font-weight: 400;
-            margin-left: 8px;
-        }
-        
-        .topic-item { padding: 4px 6px; margin-left: -6px; border-radius: 4px; transition: background-color 0.2s ease, color 0.2s ease; }
+        .day-content .subject-title, #modal-topics .subject-title { color: var(--subject-highlight-color); font-weight: 700; display: block; margin-bottom: 6px; text-transform: uppercase; font-size: 1em; text-shadow: 0 0 5px rgba(255, 152, 0, 0.4); }
+        .subject-score { color: var(--meta-text); font-size: 0.8em; font-weight: 400; margin-left: 8px; }
+        .topic-item { display: flex; align-items: center; justify-content: space-between; padding: 4px 6px; margin-left: -6px; border-radius: 4px; transition: background-color 0.2s ease, color 0.2s ease; }
         .topic-item:not(.topic-completed):hover { background-color: var(--meta-bg); color: var(--accent-color); }
         .topic-item::before { content: '■'; position: absolute; left: 0; top: 5px; color: var(--accent-color); font-size: 0.8em; line-height: 1.5; transition: color 0.3s ease; }
+        .topic-score { font-size: 0.85em; font-weight: bold; margin-left: 10px; flex-shrink: 0; }
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px); z-index: 998; display: none; opacity: 0; transition: opacity 0.3s ease; }
         .modal-overlay.visible { display: block; opacity: 1; }
         .modal-container { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: var(--cell-bg); border: 1px solid var(--main-border); border-radius: 12px; box-shadow: 0 5px 25px rgba(0,0,0,0.5); z-index: 1000; width: 90%; max-height: 90vh; display: none; flex-direction: column; transition: transform 0.3s ease, opacity 0.3s ease; }
@@ -308,16 +264,11 @@
         </div>
     </div>
 
-    <!-- 1. Carga las librerías de Firebase PRIMERO -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
-    <!-- 2. AHORA carga tu script que las utiliza -->
     <script>
-    // --- SCRIPT CORREGIDO Y COMPLETO PARA planner.html CON FIREBASE ---
-    
-    // 1. Configuración REAL de Firebase (la misma que en login.js)
     const firebaseConfig = {
         apiKey: "AIzaSyD4SjKhedm4ZWHed70_sjQgxPokjHvwvUc",
         authDomain: "frecuencia-vital.firebaseapp.com",
@@ -328,7 +279,6 @@
         measurementId: "G-0C466YCX31"
     };
     
-    // 2. Inicializar Firebase y sus servicios
     if (!firebase.apps.length) {
         firebase.initializeApp(firebaseConfig);
     }
@@ -336,110 +286,18 @@
     const db = firebase.firestore();
     let currentUser = null;
     
-    // --- GUARDIÁN DE AUTENTICACIÓN ---
     auth.onAuthStateChanged(user => {
         if (user) {
-            console.log('Guardián: Acceso permitido para', user.uid);
             currentUser = user;
             initializeAppLogic();
         } else {
-            console.log('Guardián: Acceso denegado. Redirigiendo al login.');
             window.location.href = 'index.html';
         }
     });
-    
-    // --- TODA TU LÓGICA DE LA APLICACIÓN VA DENTRO DE ESTA FUNCIÓN ---
+
     function initializeAppLogic() {
-
         const subjectToTopicsMap = new Map();
-
-        function displayDailyQuote() {
-            const quoteContainer = document.getElementById('motivational-quote-container');
-            if (quoteContainer) {
-                const randomIndex = Math.floor(Math.random() * motivationalQuotes.length);
-                quoteContainer.textContent = motivationalQuotes[randomIndex];
-            }
-        }
-
-        function startCountdown() {
-            const targetDate = new Date("2025-09-18T08:00:00").getTime();
-            const daysEl = document.getElementById('countdown-days');
-            const hoursEl = document.getElementById('countdown-hours');
-            const minutesEl = document.getElementById('countdown-minutes');
-            const secondsEl = document.getElementById('countdown-seconds');
-            if (!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
-            const interval = setInterval(() => {
-                const now = new Date().getTime();
-                const distance = targetDate - now;
-                if (distance < 0) {
-                    clearInterval(interval);
-                    daysEl.textContent = "000";
-                    hoursEl.textContent = "00";
-                    minutesEl.textContent = "00";
-                    secondsEl.textContent = "00";
-                    return;
-                }
-                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                daysEl.textContent = String(days).padStart(3, '0');
-                hoursEl.textContent = String(hours).padStart(2, '0');
-                minutesEl.textContent = String(minutes).padStart(2, '0');
-                secondsEl.textContent = String(seconds).padStart(2, '0');
-            }, 1000);
-        }
-
-        function buildSubjectMap() {
-            studyPlan.forEach(day => {
-                // Generar los IDs de los temas para el día actual
-                const dayTopicIds = day.topics.map(topicName => generateTopicId(day.date, topicName));
-
-                // Asignar los temas a cada materia del día
-                if (day.subjects.length > 0) {
-                    day.subjects.forEach(subjectName => {
-                        if (!subjectToTopicsMap.has(subjectName)) {
-                            subjectToTopicsMap.set(subjectName, []);
-                        }
-                        const currentTopics = subjectToTopicsMap.get(subjectName);
-                        // Usamos un Set para evitar duplicados si un tema aparece bajo la misma materia en diferentes días
-                        const updatedTopics = new Set([...currentTopics, ...dayTopicIds]);
-                        subjectToTopicsMap.set(subjectName, Array.from(updatedTopics));
-                    });
-                } else {
-                    // Si un día no tiene materia asignada, buscamos la materia del día anterior
-                    const currentDayIndex = studyPlan.findIndex(d => d.date === day.date);
-                    if (currentDayIndex > 0) {
-                        const previousDaySubjects = studyPlan[currentDayIndex - 1].subjects;
-                        if (previousDaySubjects.length > 0) {
-                             previousDaySubjects.forEach(subjectName => {
-                                const currentTopics = subjectToTopicsMap.get(subjectName) || [];
-                                const updatedTopics = new Set([...currentTopics, ...dayTopicIds]);
-                                subjectToTopicsMap.set(subjectName, Array.from(updatedTopics));
-                            });
-                        }
-                    }
-                }
-            });
-        }
-
-        function calculateSubjectScore(subjectName) {
-            const topicIds = subjectToTopicsMap.get(subjectName);
-            if (!topicIds || topicIds.length === 0) return null;
-            let totalScoreSum = 0;
-            let scoredTopicsCount = 0;
-            topicIds.forEach(topicId => {
-                const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`)) || 0;
-                if (reactivos > 0) {
-                    const aciertos = parseInt(getData(`topicData.${topicId}.scoreAciertos`)) || 0;
-                    const score = (aciertos / reactivos) * 100;
-                    totalScoreSum += score;
-                    scoredTopicsCount++;
-                }
-            });
-            return scoredTopicsCount > 0 ? Math.round(totalScoreSum / scoredTopicsCount) : null;
-        }
-        
+        const motivationalQuotes = [ "La disciplina es el puente entre metas y logros.", "El éxito es la suma de pequeños esfuerzos repetidos día tras día.", "No te detengas hasta que te sientas orgulloso.", "Cree en ti mismo y todo será posible.", "El único modo de hacer un gran trabajo es amar lo que haces.", "La clave del éxito es empezar antes de estar listo.", "Cada día es una nueva oportunidad para cambiar tu vida.", "Si puedes soñarlo, puedes hacerlo.", "La perseverancia no es una carrera larga, son muchas carreras cortas una tras otra.", "El aprendizaje es un tesoro que seguirá a su dueño a todas partes.", "La motivación te pone en marcha, el hábito te mantiene.", "No cuentes los días, haz que los días cuenten.", "El futuro pertenece a quienes creen en la belleza de sus sueños.", "La mejor forma de predecir el futuro es crearlo.", "Un pequeño progreso cada día suma grandes resultados." ];
         const studyPlan = [
             { date: "2025-06-18", subjects: ["ENDOCRINOLOGÍA"], topics: ["Dislipidemias", "Hipertiroidismo", "Hipotiroidismo", "Cáncer de tiroides (Enfoque en Papilar)"] },
             { date: "2025-06-19", subjects: [], topics: ["Nódulo tiroideo", "Obesidad en adultos", "Síndrome metabólico", "Enfermedad de Cushing / Síndrome de Cushing"] },
@@ -539,27 +397,97 @@
         let userProgress = {};
         const totalTopics = studyPlan.reduce((acc, day) => acc + day.topics.length, 0);
         const ALL_TASK_IDS = ['task-1-1', 'task-1-2', 'task-1-3', 'task-2-1', 'task-2-2', 'task-3-1', 'task-4-1', 'task-5-1', 'task-5-2', 'task-6-1'];
-        const motivationalQuotes = [ "La disciplina es el puente entre metas y logros.", "El éxito es la suma de pequeños esfuerzos repetidos día tras día.", "No te detengas hasta que te sientas orgulloso.", "Cree en ti mismo y todo será posible.", "El único modo de hacer un gran trabajo es amar lo que haces.", "La clave del éxito es empezar antes de estar listo.", "Cada día es una nueva oportunidad para cambiar tu vida.", "Si puedes soñarlo, puedes hacerlo.", "La perseverancia no es una carrera larga, son muchas carreras cortas una tras otra.", "El aprendizaje es un tesoro que seguirá a su dueño a todas partes.", "La motivación te pone en marcha, el hábito te mantiene.", "No cuentes los días, haz que los días cuenten.", "El futuro pertenece a quienes creen en la belleza de sus sueños.", "La mejor forma de predecir el futuro es crearlo.", "Un pequeño progreso cada día suma grandes resultados." ];
         
         const calendarContainer = document.getElementById('calendar-container');
         const dayModal = document.getElementById('details-modal'), dayModalOverlay = document.getElementById('modal-overlay'), dayModalTitle = document.getElementById('modal-title'), dayModalTopicsContainer = document.getElementById('modal-topics'), dayModalNotes = document.getElementById('modal-notes'), saveNoteButton = document.getElementById('modal-save-btn');
         const topicModal = document.getElementById('topic-plan-modal'), topicModalOverlay = document.getElementById('topic-plan-overlay'), topicModalTitle = document.getElementById('topic-plan-title'), topicStepCards = topicModal.querySelectorAll('.step-card'), topicTaskCheckboxes = topicModal.querySelectorAll('.task-checkbox'), aciertosInput = document.getElementById('score-aciertos'), reactivosInput = document.getElementById('score-reactivos'), percentageOutput = document.getElementById('score-percentage'), finishTopicButton = document.getElementById('topic-finish-btn');
         const globalScoreBar = document.getElementById('global-score-bar'), globalAdvanceBar = document.getElementById('global-advance-bar');
+        
+        function getScoreColor(percentage) {
+            if (percentage < 60) return 'var(--error-color)';
+            if (percentage < 80) return 'var(--warning-color)';
+            return 'var(--vfd-green)';
+        }
+
+        function displayDailyQuote() {
+            const quoteContainer = document.getElementById('motivational-quote-container');
+            if (quoteContainer) {
+                const randomIndex = Math.floor(Math.random() * motivationalQuotes.length);
+                quoteContainer.textContent = motivationalQuotes[randomIndex];
+            }
+        }
+
+        function startCountdown() {
+            const targetDate = new Date("2025-09-18T08:00:00").getTime();
+            const daysEl = document.getElementById('countdown-days');
+            const hoursEl = document.getElementById('countdown-hours');
+            const minutesEl = document.getElementById('countdown-minutes');
+            const secondsEl = document.getElementById('countdown-seconds');
+            if (!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
+            const interval = setInterval(() => {
+                const now = new Date().getTime();
+                const distance = targetDate - now;
+                if (distance < 0) {
+                    clearInterval(interval);
+                    daysEl.textContent = "000"; hoursEl.textContent = "00"; minutesEl.textContent = "00"; secondsEl.textContent = "00";
+                    return;
+                }
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                daysEl.textContent = String(days).padStart(3, '0');
+                hoursEl.textContent = String(hours).padStart(2, '0');
+                minutesEl.textContent = String(minutes).padStart(2, '0');
+                secondsEl.textContent = String(seconds).padStart(2, '0');
+            }, 1000);
+        }
+
+        function buildSubjectMap() {
+            let lastSubjects = [];
+            studyPlan.forEach(day => {
+                const subjectsForThisDay = day.subjects.length > 0 ? day.subjects : lastSubjects;
+                if(day.subjects.length > 0) {
+                    lastSubjects = day.subjects;
+                }
+                const dayTopicIds = day.topics.map(topicName => generateTopicId(day.date, topicName));
+                subjectsForThisDay.forEach(subjectName => {
+                    if (!subjectToTopicsMap.has(subjectName)) {
+                        subjectToTopicsMap.set(subjectName, []);
+                    }
+                    const currentTopics = subjectToTopicsMap.get(subjectName);
+                    const updatedTopics = new Set([...currentTopics, ...dayTopicIds]);
+                    subjectToTopicsMap.set(subjectName, Array.from(updatedTopics));
+                });
+            });
+        }
+
+        function calculateSubjectScore(subjectName) {
+            const topicIds = subjectToTopicsMap.get(subjectName);
+            if (!topicIds || topicIds.length === 0) return null;
+            let totalScoreSum = 0;
+            let scoredTopicsCount = 0;
+            topicIds.forEach(topicId => {
+                const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`)) || 0;
+                if (reactivos > 0) {
+                    const aciertos = parseInt(getData(`topicData.${topicId}.scoreAciertos`)) || 0;
+                    totalScoreSum += (aciertos / reactivos) * 100;
+                    scoredTopicsCount++;
+                }
+            });
+            return scoredTopicsCount > 0 ? Math.round(totalScoreSum / scoredTopicsCount) : null;
+        }
 
         function loadUserProgress(data) {
-            if (data) { userProgress = data; console.log("Progreso cargado."); } 
-            else { userProgress = {}; console.log("Progreso nuevo creado."); }
+            if (data) { userProgress = data; } 
+            else { userProgress = {}; }
         }
 
         async function saveData(key, value) {
             if (!currentUser) return;
             const docRef = db.collection('userProgress').doc(currentUser.uid);
-            const dataToUpdate = {};
-            dataToUpdate[key] = value;
-            await docRef.update(dataToUpdate).catch((error) => {
-                if (error.code === 'not-found') { return docRef.set(dataToUpdate); }
-                console.error("Error al actualizar: ", error);
-            });
+            const dataToUpdate = { [key]: value };
+            await docRef.set(dataToUpdate, { merge: true }).catch(error => console.error("Error al guardar: ", error));
             const keys = key.split('.');
             let current = userProgress;
             for (let i = 0; i < keys.length - 1; i++) {
@@ -569,7 +497,8 @@
         }
 
         function getData(key, defaultValue = null) {
-            const keys = key.split('.'); let result = userProgress;
+            const keys = key.split('.');
+            let result = userProgress;
             for (const k of keys) {
                 if (result && typeof result === 'object' && k in result) { result = result[k]; } 
                 else { return defaultValue; }
@@ -579,8 +508,22 @@
 
         function isTopicComplete(topicId) { return ALL_TASK_IDS.every(taskId => getData(`topicData.${topicId}.${taskId}`) === true); }
         function generateTopicId(dateString, topicName) { const cleanTopic = topicName.toLowerCase().replace(/[^a-z0-9]/g, ''); return `topic_${dateString}_${cleanTopic}`; }
-        function createTopicListItem(topic, dateString) { const topicId = generateTopicId(dateString, topic); const isComplete = isTopicComplete(topicId); const liClass = `topic-item ${isComplete ? 'topic-completed' : ''}`; return `<li class="${liClass}" data-topic-id="${topicId}" data-topic-name="${topic}">${topic}</li>`; }
-
+        
+        function createTopicListItem(topic, dateString) {
+            const topicId = generateTopicId(dateString, topic);
+            const isComplete = isTopicComplete(topicId);
+            const liClass = `topic-item ${isComplete ? 'topic-completed' : ''}`;
+            let scoreHTML = '';
+            const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`)) || 0;
+            if (reactivos > 0) {
+                const aciertos = parseInt(getData(`topicData.${topicId}.scoreAciertos`)) || 0;
+                const percentage = Math.round((aciertos / reactivos) * 100);
+                const color = getScoreColor(percentage);
+                scoreHTML = `<span class="topic-score" style="color: ${color};">(${percentage}%)</span>`;
+            }
+            return `<li class="${liClass}" data-topic-id="${topicId}" data-topic-name="${topic}"><span>${topic}</span>${scoreHTML}</li>`;
+        }
+        
         function populateCalendar() {
             const daysMap = new Map(studyPlan.map(day => [day.date, day]));
             const startDate = new Date(studyPlan[0].date + "T00:00:00");
@@ -622,29 +565,6 @@
             });
         }
 
-        function showDayModal(dateString) { const dayData = new Map(studyPlan.map(d => [d.date, d])).get(dateString); const date = new Date(dateString + "T00:00:00"); dayModalTitle.textContent = date.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }); let topicsHTML = '<ul>'; if (dayData) { if (dayData.subjects && dayData.subjects.length > 0) { topicsHTML += `<li><span class="subject-title">${dayData.subjects.join(' / ')}</span></li>`; } topicsHTML += dayData.topics.map(topic => createTopicListItem(topic, dateString)).join(''); } topicsHTML += '</ul>'; dayModalTopicsContainer.innerHTML = topicsHTML; dayModalNotes.value = getData(`dayNotes.${dateString}`, ''); dayModal.dataset.currentDate = dateString; dayModalOverlay.classList.add('visible'); dayModal.classList.add('visible'); }
-        function closeDayModal() { dayModalOverlay.classList.remove('visible'); dayModal.classList.remove('visible'); }
-        function saveDayNote() { const dateString = dayModal.dataset.currentDate; if (dateString) { saveData(`dayNotes.${dateString}`, dayModalNotes.value); } closeDayModal(); }
-        function showTopicPlan(topicId, topicName) { topicModal.dataset.currentTopicId = topicId; topicModalTitle.textContent = topicName; loadTopicState(topicId); topicModalOverlay.classList.add('visible'); topicModal.classList.add('visible'); }
-        function closeTopicModal() { topicModalOverlay.classList.remove('visible'); topicModal.classList.remove('visible'); }
-        function loadTopicState(topicId) { topicTaskCheckboxes.forEach(checkbox => { checkbox.checked = getData(`topicData.${topicId}.${checkbox.id}`) === true; }); aciertosInput.value = getData(`topicData.${topicId}.scoreAciertos`, ''); reactivosInput.value = getData(`topicData.${topicId}.scoreReactivos`, ''); updateScorePercentage(); updateAllStepCardsStatus(); }
-        function saveTopicState(key, value) { const topicId = topicModal.dataset.currentTopicId; if (topicId) { saveData(`topicData.${topicId}.${key}`, value); } }
-        function updateScorePercentage() { const aciertos = parseInt(aciertosInput.value) || 0; const reactivos = parseInt(reactivosInput.value) || 0; let percentage = 0; let textColor = '#50E050'; if (reactivos > 0) { percentage = Math.round((aciertos / reactivos) * 100); } if (percentage < 60) textColor = '#ff6b6b'; else if (percentage < 80) textColor = '#ffd54f'; percentageOutput.value = percentage + "%"; percentageOutput.style.color = textColor; }
-        function updateStepCardStatus(cardElement) { const tasksInCard = cardElement.querySelectorAll('.task-checkbox'); const allTasksCompleted = Array.from(tasksInCard).every(task => task.checked); cardElement.classList.toggle('completed', allTasksCompleted); }
-        function updateAllStepCardsStatus() { topicStepCards.forEach(updateStepCardStatus); }
-        
-        function finishTopicSession() {
-            const topicId = topicModal.dataset.currentTopicId;
-            if (!topicId) return;
-            const isNowComplete = isTopicComplete(topicId);
-            const topicElements = document.querySelectorAll(`[data-topic-id="${topicId}"]`);
-            topicElements.forEach(el => { el.classList.toggle('topic-completed', isNowComplete); });
-            closeTopicModal();
-            // Re-calcular y mostrar todo
-            updateGlobalProgressBars();
-            populateCalendar();
-        }
-
         function updateGlobalProgressBars() {
             let completedTopics = 0;
             studyPlan.forEach(day => {
@@ -669,6 +589,25 @@
             const scorePercentage = subjectsWithScoresCount > 0 ? Math.round(totalSubjectScoreSum / subjectsWithScoresCount) : 0;
             globalScoreBar.style.width = `${scorePercentage}%`;
             globalScoreBar.textContent = `${scorePercentage}%`;
+        }
+
+        function showDayModal(dateString) { const dayData = new Map(studyPlan.map(d => [d.date, d])).get(dateString); const date = new Date(dateString + "T00:00:00"); dayModalTitle.textContent = date.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }); let topicsHTML = '<ul>'; if (dayData) { if (dayData.subjects && dayData.subjects.length > 0) { const subjectTitles = dayData.subjects.map(subject => { const score = calculateSubjectScore(subject); const scoreText = score !== null ? `<span class="subject-score">(${score}%)</span>` : ''; return `${subject}${scoreText}`; }).join(' / '); topicsHTML += `<li><span class="subject-title">${subjectTitles}</span></li>`; } topicsHTML += dayData.topics.map(topic => createTopicListItem(topic, dateString)).join(''); } topicsHTML += '</ul>'; dayModalTopicsContainer.innerHTML = topicsHTML; dayModalNotes.value = getData(`dayNotes.${dateString}`, ''); dayModal.dataset.currentDate = dateString; dayModalOverlay.classList.add('visible'); dayModal.classList.add('visible'); }
+        function closeDayModal() { dayModalOverlay.classList.remove('visible'); dayModal.classList.remove('visible'); }
+        function saveDayNote() { const dateString = dayModal.dataset.currentDate; if (dateString) { saveData(`dayNotes.${dateString}`, dayModalNotes.value); } closeDayModal(); }
+        function showTopicPlan(topicId, topicName) { topicModal.dataset.currentTopicId = topicId; topicModalTitle.textContent = topicName; loadTopicState(topicId); topicModalOverlay.classList.add('visible'); topicModal.classList.add('visible'); }
+        function closeTopicModal() { topicModalOverlay.classList.remove('visible'); topicModal.classList.remove('visible'); }
+        function loadTopicState(topicId) { topicTaskCheckboxes.forEach(checkbox => { checkbox.checked = getData(`topicData.${topicId}.${checkbox.id}`) === true; }); aciertosInput.value = getData(`topicData.${topicId}.scoreAciertos`, ''); reactivosInput.value = getData(`topicData.${topicId}.scoreReactivos`, ''); updateScorePercentage(); updateAllStepCardsStatus(); }
+        function saveTopicState(key, value) { const topicId = topicModal.dataset.currentTopicId; if (topicId) { saveData(`topicData.${topicId}.${key}`, value); } }
+        function updateScorePercentage() { const aciertos = parseInt(aciertosInput.value) || 0; const reactivos = parseInt(reactivosInput.value) || 0; let percentage = 0; if (reactivos > 0) { percentage = Math.round((aciertos / reactivos) * 100); } const color = getScoreColor(percentage); percentageOutput.value = percentage + "%"; percentageOutput.style.color = color; }
+        function updateStepCardStatus(cardElement) { const tasksInCard = cardElement.querySelectorAll('.task-checkbox'); const allTasksCompleted = Array.from(tasksInCard).every(task => task.checked); cardElement.classList.toggle('completed', allTasksCompleted); }
+        function updateAllStepCardsStatus() { topicStepCards.forEach(updateStepCardStatus); }
+        
+        function finishTopicSession() {
+            const topicId = topicModal.dataset.currentTopicId;
+            if (!topicId) return;
+            closeTopicModal();
+            updateGlobalProgressBars();
+            populateCalendar();
         }
 
         async function main() {
