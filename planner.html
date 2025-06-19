@@ -3,694 +3,1410 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Frecuencia Vital - Plan de Estudios Integral</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Hiperprolactinemia - ENDOCRINO</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
-
+        /*--------------------------------------------------*/
+        /*                 ESTILOS GLOBALES                 */
+        /*--------------------------------------------------*/
         :root {
-            --bg-color: #121212;
-            --cell-bg: #1a1a1a;
-            --main-border: #2c2c2c;
-            --text-color: #e0e0e0;
-            --accent-color: #00FF7F;
-            --subject-title-color: #ffffff;
-            --subject-highlight-color: #ff9800;
-            --meta-bg: #181c25;
-            --meta-header-bg: #101217;
-            --meta-border: #2c3240;
-            --meta-text: #a9bce2;
-            --plan-bg: #1e1e1e;
-            --vfd-green: #50E050;
-            --progress-score-bg: #4caf50;
-            --progress-advance-bg: #ff9800;
-            --text-completed: #777;
-            --bullet-completed: #555;
-            --tag-text-dark: #111;
-            --error-color: #ff6b6b;
-            --warning-color: #ffd54f;
-            --step-1-color: #03dac6; --step-2-color: #ffb74d; --step-3-color: #4fc3f7;
-            --step-4-color: #ce93d8; --step-5-color: #ef9a9a; --step-6-color: #a5d6a7;
+            --color-teal-dark: #004d40;
+            --color-teal-medium: #00796b;
+            --color-teal-light: #4db6ac;
+            --color-teal-bg: #e0f2f1;
+            --color-text-primary: #212121;
+            --color-text-secondary: #5f6368;
+            --color-bg-primary: #ffffff;
+            --color-bg-secondary: #f8f9fa;
+            --color-accent-gold: #ffab00;
+            --color-accent-gold-bg: #fff8e1;
+            --color-warning-red: #d32f2f;
+            --color-warning-red-bg: #ffebee;
+            --color-info-blue: #1976d2;
+            --color-info-blue-bg: #e3f2fd;
+            --color-border: #e0e0e0;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 6px 16px rgba(0, 0, 0, 0.12);
+            --border-radius: 12px;
+        }
+
+        html.dark-mode {
+            --color-teal-dark: #4db6ac;
+            --color-teal-medium: #26a69a;
+            --color-teal-light: #00796b;
+            --color-teal-bg: #1e2a29;
+            --color-text-primary: #e0e0e0;
+            --color-text-secondary: #9e9e9e;
+            --color-bg-primary: #121212;
+            --color-bg-secondary: #1e1e1e;
+            --color-accent-gold: #ffd600;
+            --color-accent-gold-bg: #3c2f00;
+            --color-warning-red: #ef5350;
+            --color-warning-red-bg: #3c1f1f;
+            --color-info-blue: #64b5f6;
+            --color-info-blue-bg: #1e3a57;
+            --color-border: #424242;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            --shadow-hover: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
-            font-family: 'Source Sans Pro', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-            overflow-x: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--color-bg-primary);
+            color: var(--color-text-primary);
+            line-height: 1.7;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--color-bg-secondary);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--color-teal-medium), var(--color-teal-dark));
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--color-teal-light);
+        }
+
+        /*--------------------------------------------------*/
+        /*                ESTILOS DE CABECERA               */
+        /*--------------------------------------------------*/
+        .main-header {
+            background-color: var(--color-bg-secondary);
+            padding: 1rem 2rem;
+            border-bottom: 1px solid var(--color-border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            background-color: rgba(255,255,255,0.7);
         }
         
-        .main-header { text-align: center; margin-bottom: 25px; padding: 10px 0; }
-        .motivational-quote { font-family: 'Orbitron', sans-serif; color: var(--vfd-green); font-size: 1.5em; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; text-shadow: 0 0 4px rgba(80, 224, 80, 0.6), 0 0 8px rgba(80, 224, 80, 0.4); min-height: 1.2em; }
-        .countdown-timer-container { display: flex; justify-content: center; align-items: center; gap: 25px; margin-bottom: 25px; }
-        .countdown-unit { text-align: center; }
-        .countdown-label { font-family: 'Orbitron', sans-serif; font-size: 0.8em; color: var(--vfd-green); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; opacity: 0.8; }
-        .countdown-digits { font-family: 'Orbitron', sans-serif; font-size: 4em; color: var(--vfd-green); line-height: 1; text-shadow: 0 0 5px rgba(80, 224, 80, 0.7), 0 0 10px rgba(80, 224, 80, 0.5), 0 0 15px rgba(80, 224, 80, 0.3); }
-        .topic-item.topic-completed { color: var(--text-completed); font-style: italic; }
-        .topic-item.topic-completed:hover { color: var(--text-completed); background-color: transparent; }
-        .topic-item.topic-completed::before { color: var(--bullet-completed); }
-        .global-progress-container { max-width: 900px; margin: 30px auto; display: flex; flex-direction: column; gap: 12px; padding: 0 10px; }
-        .progress-bar-wrapper { display: flex; flex-direction: column; gap: 4px; }
-        .progress-bar-wrapper label { font-size: 0.85em; color: var(--meta-text); font-weight: 600; }
-        .progress-bar-background { width: 100%; background-color: var(--main-border); border-radius: 8px; height: 22px; overflow: hidden; }
-        .progress-bar-fill { height: 100%; width: 0%; border-radius: 8px; transition: width 0.5s ease-in-out; text-align: center; line-height: 22px; color: var(--bg-color); font-weight: bold; font-size: 0.8em; }
-        #global-score-bar { background-color: var(--progress-score-bg); }
-        #global-advance-bar { background-color: var(--progress-advance-bg); }
-        .calendar-container { display: grid; grid-template-columns: 40px 40px repeat(7, 1fr); gap: 2px; background-color: var(--main-border); margin-top: 25px; }
-        .header-cell, .day-header { text-align: center; padding: 12px 5px; font-weight: 600; font-family: 'Orbitron', sans-serif; text-transform: uppercase; font-size: 0.9em; }
-        .meta-header { background-color: var(--meta-header-bg); color: var(--meta-text); border-bottom: 2px solid var(--main-border); }
-        .day-header { background-color: var(--cell-bg); color: var(--accent-color); border-bottom: 2px solid var(--main-border); }
-        .month-cell { grid-column: 1; background-color: var(--meta-bg); color: var(--meta-text); font-family: 'Orbitron', sans-serif; writing-mode: vertical-rl; text-transform: uppercase; letter-spacing: 2px; display: flex; align-items: center; justify-content: center; border-right: 1px solid var(--meta-border); }
-        .week-cell-container { grid-column: 2; background-color: var(--meta-bg); position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--meta-border); }
-        .week-number { font-family: 'Orbitron', sans-serif; font-size: 1.6em; color: var(--meta-text); }
-        .day-cell { background-color: var(--cell-bg); min-height: 160px; padding: 8px 12px; position: relative; overflow-y: auto; cursor: pointer; }
-        .day-cell.empty { background-color: var(--bg-color); cursor: default; }
-        .calendar-day-number { font-size: 0.9em; font-weight: 600; color: #777; position: absolute; top: 8px; right: 12px; z-index: 1; }
-        .day-content ul { list-style-type: none; padding-left: 0; margin: 25px 0 0 0; }
-        .day-content li { margin-bottom: 4px; padding-left: 14px; position: relative; font-size: 0.85em; }
-        .day-content .subject-title, #modal-topics .subject-title { color: var(--subject-highlight-color); font-weight: 700; display: block; margin-bottom: 6px; text-transform: uppercase; font-size: 1em; text-shadow: 0 0 5px rgba(255, 152, 0, 0.4); }
-        .subject-score { color: var(--meta-text); font-size: 0.8em; font-weight: 400; margin-left: 8px; }
-        .topic-item { display: flex; align-items: center; justify-content: space-between; padding: 4px 6px; margin-left: -6px; border-radius: 4px; transition: background-color 0.2s ease, color 0.2s ease; }
-        .topic-item:not(.topic-completed):hover { background-color: var(--meta-bg); color: var(--accent-color); }
-        .topic-item::before { content: '■'; position: absolute; left: 0; top: 5px; color: var(--accent-color); font-size: 0.8em; line-height: 1.5; transition: color 0.3s ease; }
-        .topic-score { font-size: 0.85em; font-weight: bold; margin-left: 10px; flex-shrink: 0; }
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px); z-index: 998; display: none; opacity: 0; transition: opacity 0.3s ease; }
-        .modal-overlay.visible { display: block; opacity: 1; }
-        .modal-container { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: var(--cell-bg); border: 1px solid var(--main-border); border-radius: 12px; box-shadow: 0 5px 25px rgba(0,0,0,0.5); z-index: 1000; width: 90%; max-height: 90vh; display: none; flex-direction: column; transition: transform 0.3s ease, opacity 0.3s ease; }
-        .modal-container.visible { display: flex; }
-        .modal-header { padding: 15px 25px; border-bottom: 1px solid var(--main-border); display: flex; justify-content: space-between; align-items: center; }
-        .modal-header h2 { margin: 0; font-family: 'Orbitron', sans-serif; font-size: 1.5em; }
-        .modal-close { font-size: 2em; color: #888; cursor: pointer; line-height: 1; transition: color 0.2s; }
-        .modal-close:hover { color: var(--text-color); }
-        .modal-content { padding: 25px; overflow-y: auto; }
-        #details-modal { max-width: 650px; z-index: 1000; }
-        #details-modal .modal-header h2 { color: var(--accent-color); }
-        #modal-notes { width: 100%; box-sizing: border-box; min-height: 120px; background-color: #2c2c2c; border: 1px solid var(--main-border); color: var(--text-color); padding: 10px; resize: vertical; border-radius: 4px; }
-        #modal-save-btn { width: 100%; padding: 12px; margin-top: 10px; background-color: var(--accent-color); color: var(--bg-color); border: none; cursor: pointer; font-family: 'Orbitron', sans-serif; font-size: 1em; border-radius: 4px; transition: background-color 0.2s, transform 0.1s; }
-        #modal-save-btn:hover { background-color: #39ff94; }
-        #modal-save-btn:active { transform: scale(0.98); }
-        #topic-plan-modal { max-width: 900px; z-index: 1001; background-color: var(--bg-color); }
-        #topic-plan-modal .modal-header h2 { color: var(--vfd-green); font-size: 1.3em; }
-        #topic-plan-modal .modal-content { padding: 15px 25px; }
-        #topic-plan-modal .step-card { background-color: var(--plan-bg); border-left-width: 5px; }
-        .study-flow-diagram { display: flex; flex-direction: column; gap: 15px; width: 100%; }
-        .step-card { border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.3); padding: 12px 18px; display: flex; align-items: flex-start; transition: opacity 0.3s ease, border-left-color 0.3s ease; border-left-style: solid; }
-        .step-card.completed { border-left-color: #505050 !important; opacity: 0.65; }
-        .step-card.completed .step-icon-container, .step-card.completed .step-title, .step-card.completed .step-details li { color: #909090 !important; }
-        .step-card.completed .step-number { background-color: #383838 !important; color: #787878 !important; }
-        .step-icon-container { font-size: 1.8em; margin-right: 15px; padding-top: 2px; min-width: 35px; text-align: center; }
-        .step-content { flex-grow: 1; }
-        .step-title { font-size: 1.2em; font-weight: 600; margin: 0 0 10px 0; display: flex; align-items: center; color: var(--plan-text-light); }
-        .step-title .subtitle { font-size: 0.7em; color: #999; margin-left: 8px; font-weight: 400; text-transform: none; }
-        .step-number { color: #101010; border-radius: 50%; width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.7em; font-weight: bold; margin-right: 8px; flex-shrink: 0; }
-        .step-details { list-style: none; padding-left: 0; margin: 0; }
-        .step-details li { margin-bottom: 8px; font-size: 0.9em; line-height: 1.4; display: flex; align-items: center; color: var(--plan-text-medium); }
-        .step-details li label { display: flex; align-items: center; cursor: pointer; width: 100%; }
-        .step-details li .task-icon { margin-right: 10px; width: 16px; text-align: center; }
-        .task-checkbox { margin-right: 10px; accent-color: var(--vfd-green); transform: scale(1.1); }
-        .task-text { transition: text-decoration 0.3s ease, color 0.3s ease; }
-        input[type="checkbox"]:checked + label .task-text { text-decoration: line-through; color: #6a6a6a; }
-        .optional-tag { font-size: 0.8em; color: #888; margin-left: 5px; font-style: italic; }
-        .tool-tag { padding: 2px 8px; border-radius: 12px; font-size: 0.75em; font-weight: 600; margin-left: 8px; border: 1px solid; }
-        .tag-madera { background-color: #c8e6c9; color: var(--tag-text-dark); border-color: #a5d6a7; }
-        .tag-ia { background-color: #bbdefb; color: var(--tag-text-dark); border-color: #90caf9; }
-        .tag-genspark { background-color: #ffecb3; color: var(--tag-text-dark); border-color: #ffe082; }
-        .tag-notebooklm { background-color: #d1c4e9; color: var(--tag-text-dark); border-color: #b39ddb; }
-        .step-1 { border-left-color: var(--step-1-color); } .step-1 .step-icon-container { color: var(--step-1-color); } .step-1 .step-number { background-color: var(--step-1-color); }
-        .step-2 { border-left-color: var(--step-2-color); } .step-2 .step-icon-container { color: var(--step-2-color); } .step-2 .step-number { background-color: var(--step-2-color); }
-        .step-3 { border-left-color: var(--step-3-color); } .step-3 .step-icon-container { color: var(--step-3-color); } .step-3 .step-number { background-color: var(--step-3-color); }
-        .step-4 { border-left-color: var(--step-4-color); } .step-4 .step-icon-container { color: var(--step-4-color); } .step-4 .step-number { background-color: var(--step-4-color); }
-        .step-5 { border-left-color: var(--step-5-color); } .step-5 .step-icon-container { color: var(--step-5-color); } .step-5 .step-number { background-color: var(--step-5-color); }
-        .step-6 { border-left-color: var(--step-6-color); } .step-6 .step-icon-container { color: var(--step-6-color); } .step-6 .step-number { background-color: var(--step-6-color); }
-        .parallel-steps-container { display: flex; gap: 15px; }
-        .parallel-steps-container .step-card { flex: 1; }
-        .practice-step-layout { display: flex; flex-direction: row; gap: 15px; width: 100%; }
-        .practice-tasks-column { flex: 2; }
-        .practice-score-column { flex: 1; }
-        .practice-score-column h3 { font-size: 0.9em; color: #ccc; margin: 0 0 8px 0; font-weight: 500; text-transform: uppercase; }
-        .score-inputs-row { display: flex; gap: 8px; }
-        .score-input-group { flex-grow: 1; }
-        .score-input-group label { font-size: 0.75em; color: #bbb; }
-        .score-input-group input { font-family: 'Source Sans Pro', sans-serif; background-color: #2a2a2a; color: #e0e0e0; border: 1px solid #444; border-radius: 4px; padding: 5px 8px; font-size: 0.9em; width: 100%; box-sizing: border-box; text-align: center; }
-        .score-input-group input[type=number]::-webkit-inner-spin-button, .score-input-group input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-        .score-input-group input[type=number] { -moz-appearance: textfield; }
-        .percentage-output { font-weight: bold; background-color: var(--plan-bg) !important; cursor: default; }
-        .topic-modal-footer { margin-top: 25px; padding-top: 15px; border-top: 1px solid var(--main-border); text-align: right; }
-        .topic-finish-btn { background-color: var(--vfd-green); color: var(--bg-color); border: none; border-radius: 6px; padding: 12px 25px; font-family: 'Orbitron', sans-serif; font-size: 1em; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: background-color 0.2s ease, transform 0.2s ease; }
-        .topic-finish-btn:hover { background-color: #76ff76; transform: translateY(-2px); }
+        html.dark-mode .main-header {
+             background-color: rgba(30,30,30,0.7);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
         
-        @media (max-width: 768px) { .motivational-quote { font-size: 1.2em; } .countdown-digits { font-size: 3em; } .countdown-timer-container { gap: 15px; } .parallel-steps-container, .practice-step-layout { flex-direction: column; } .day-cell { min-height: 120px; } }
-        @media (max-width: 600px) { .motivational-quote { font-size: 1em; letter-spacing: 1px; } .countdown-digits { font-size: 2.2em; } .countdown-label { font-size: 0.6em; } .countdown-timer-container { gap: 10px; } body { padding: 10px; } .calendar-container { grid-template-columns: 30px 30px repeat(7, 1fr); } .modal-content { padding: 15px; } .step-card { flex-direction: column; } .step-icon-container { text-align: left; margin-bottom: 5px;} }
+        .title-block h1 {
+            font-size: 2rem;
+            color: var(--color-teal-dark);
+            font-weight: 800;
+        }
+        .title-block h2 {
+            font-size: 1rem;
+            color: var(--color-text-secondary);
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .theme-switcher {
+            background: var(--color-bg-primary);
+            border: 1px solid var(--color-border);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        .theme-switcher:hover {
+            transform: translateY(-2px) rotate(15deg);
+            box-shadow: var(--shadow-hover);
+        }
+        .theme-switcher svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--color-text-primary);
+        }
+
+        /*--------------------------------------------------*/
+        /*                    NAVEGACIÓN                    */
+        /*--------------------------------------------------*/
+        nav {
+            background-color: var(--color-teal-dark);
+            padding: 0.5rem 2rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 86px; /* Ajustar según altura del header */
+            z-index: 999;
+        }
+        
+        nav ul {
+            list-style-type: none;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        nav a {
+            color: var(--color-teal-bg);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            display: block;
+        }
+        
+        nav a:hover, nav a.active {
+            background-color: var(--color-teal-bg);
+            color: var(--color-teal-dark);
+        }
+
+        /*--------------------------------------------------*/
+        /*                 CONTENIDO PRINCIPAL              */
+        /*--------------------------------------------------*/
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .content-section {
+            display: none;
+            animation: slideIn 0.5s ease-in-out;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        h3 {
+            font-size: 1.8rem;
+            color: var(--color-teal-medium);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--color-teal-bg);
+        }
+        
+        h4 {
+            font-size: 1.4rem;
+            color: var(--color-teal-dark);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        p, li {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--color-text-secondary);
+        }
+        html.dark-mode p, html.dark-mode li {
+            color: var(--color-text-secondary);
+        }
+
+        strong, b {
+            color: var(--color-text-primary);
+            font-weight: 600;
+        }
+
+        ul {
+            list-style-position: inside;
+            padding-left: 1rem;
+        }
+
+        .highlight {
+            background-color: var(--color-info-blue-bg);
+            color: var(--color-info-blue);
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+        html.dark-mode .highlight {
+             color: var(--color-bg-primary);
+        }
+
+        .warning-box {
+            background-color: var(--color-warning-red-bg);
+            border-left: 5px solid var(--color-warning-red);
+            padding: 1rem 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+        .warning-box strong {
+            color: var(--color-warning-red);
+        }
+        
+        .bibliography-container {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid var(--color-teal-bg);
+            font-style: italic;
+            color: var(--color-text-secondary);
+        }
+        .bibliography-container h4 {
+            font-style: normal;
+            color: var(--color-teal-medium);
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+        }
+
+
+        /*--------------------------------------------------*/
+        /*            ELEMENTOS DIDÁCTICOS (PERLAS)         */
+        /*--------------------------------------------------*/
+        .didactic-card {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--color-border);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .didactic-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .didactic-card .card-title {
+            display: flex;
+            align-items: center;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .didactic-card .card-title svg {
+            margin-right: 0.75rem;
+            width: 28px;
+            height: 28px;
+        }
+
+        .perla-enarm {
+            background-color: var(--color-accent-gold-bg);
+            border-left: 5px solid var(--color-accent-gold);
+        }
+        .perla-enarm .card-title {
+            color: var(--color-accent-gold);
+        }
+        .perla-enarm .card-title svg {
+            fill: var(--color-accent-gold);
+        }
+
+        .pregunta-segura {
+            background-color: var(--color-warning-red-bg);
+            border-left: 5px solid var(--color-warning-red);
+        }
+        .pregunta-segura .card-title {
+            color: var(--color-warning-red);
+        }
+        .pregunta-segura .card-title svg {
+            fill: var(--color-warning-red);
+        }
+
+        /*--------------------------------------------------*/
+        /*              SECCIÓN PRESENTACIÓN                */
+        /*--------------------------------------------------*/
+        .presentation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .presentation-card {
+            background-color: var(--color-bg-secondary);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+        .presentation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        .presentation-card h4 {
+            color: var(--color-teal-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0;
+        }
+        .presentation-card svg {
+            width: 24px; height: 24px;
+            fill: var(--color-teal-medium);
+        }
+
+        /* Flowchart */
+        .flowchart {
+            padding: 2rem;
+            background: var(--color-bg-secondary);
+            border-radius: var(--border-radius);
+            margin: 2rem 0;
+            text-align: center;
+        }
+        .flowchart h4 { margin-top: 0;}
+        .flow-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .flow-node {
+            background: var(--color-bg-primary);
+            border: 2px solid var(--color-teal-medium);
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            margin: 0.5rem 0;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            width: 80%;
+            max-width: 500px;
+        }
+        .flow-node:hover {
+            background-color: var(--color-teal-bg);
+            border-color: var(--color-teal-dark);
+            transform: scale(1.02);
+        }
+        .flow-node.decision {
+            border-radius: 30px;
+            border-color: var(--color-accent-gold);
+            background-color: var(--color-accent-gold-bg);
+        }
+        .flow-node.action {
+            border-style: dashed;
+            border-color: var(--color-info-blue);
+            background-color: var(--color-info-blue-bg);
+        }
+        .flow-node.end {
+             background-color: var(--color-warning-red-bg);
+             border-color: var(--color-warning-red);
+        }
+        .flow-node .details {
+            display: none;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--color-border);
+            text-align: left;
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+        }
+        .flow-node.active .details {
+            display: block;
+        }
+        .flow-arrow {
+            width: 2px;
+            height: 30px;
+            background: var(--color-teal-medium);
+            position: relative;
+            margin: 0.2rem 0;
+        }
+        .flow-arrow::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 8px solid var(--color-teal-medium);
+        }
+        .flow-split {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+        }
+        .flow-path {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 45%;
+        }
+        .path-label {
+            font-weight: 600;
+            color: var(--color-teal-dark);
+            margin: 0.5rem;
+        }
+        
+        /* Tabla Comparativa */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            box-shadow: var(--shadow);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+        .comparison-table th, .comparison-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--color-border);
+        }
+        .comparison-table th {
+            background-color: var(--color-teal-dark);
+            color: var(--color-bg-primary);
+            font-size: 1.1rem;
+        }
+        .comparison-table tbody tr:nth-child(even) {
+            background-color: var(--color-bg-secondary);
+        }
+        .comparison-table tbody tr:hover {
+            background-color: var(--color-teal-bg);
+        }
+        .comparison-table td strong {
+            font-size: 1.2rem;
+            color: var(--color-teal-dark);
+        }
+        html.dark-mode .comparison-table td strong {
+             color: var(--color-teal-light);
+        }
+        
+        /* Mnemotecnias */
+        .mnemonic-box {
+            background: linear-gradient(135deg, var(--color-info-blue-bg), var(--color-teal-bg));
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            text-align: center;
+            margin: 2rem 0;
+            border: 2px dashed var(--color-teal-medium);
+        }
+        .mnemonic-box h4 {
+            margin-top: 0;
+            color: var(--color-teal-dark);
+        }
+        .mnemonic-box p {
+            font-size: 1.2rem;
+            font-style: italic;
+        }
+
+        /*--------------------------------------------------*/
+        /*             SIMULADOR CASOS CLÍNICOS             */
+        /*--------------------------------------------------*/
+        .case-container {
+            background-color: var(--color-bg-secondary);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+        .case-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-teal-dark);
+            margin-bottom: 1rem;
+        }
+        .case-description {
+            margin-bottom: 1.5rem;
+        }
+        .question-block {
+            margin-top: 1.5rem;
+            border-top: 1px solid var(--color-border);
+            padding-top: 1.5rem;
+        }
+        .question-text {
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        .difficulty-tag {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+            color: #fff;
+        }
+        .tag-baja { background-color: #4caf50; }
+        .tag-media { background-color: #ffc107; color: var(--color-text-primary); }
+        .tag-alta { background-color: #f44336; }
+
+        .options-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .options-list li {
+            margin-bottom: 0.8rem;
+        }
+        .options-list label {
+            display: block;
+            padding: 0.8rem 1rem;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .options-list label:hover {
+            background-color: var(--color-teal-bg);
+            border-color: var(--color-teal-medium);
+        }
+        .options-list input[type="radio"] {
+            margin-right: 10px;
+            accent-color: var(--color-teal-medium);
+        }
+
+        #evaluate-btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #fff;
+            background-color: var(--color-teal-medium);
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 2rem;
+        }
+        #evaluate-btn:hover {
+            background-color: var(--color-teal-dark);
+            box-shadow: var(--shadow-hover);
+        }
+
+        #results-section {
+            display: none;
+            text-align: center;
+        }
+        #results-summary {
+            background-color: var(--color-bg-secondary);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+        }
+        #score-display {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        #percentage-display {
+            font-size: 3rem;
+            font-weight: 800;
+            margin: 1rem 0;
+        }
+        .score-red { color: #d32f2f; }
+        .score-yellow { color: #ffa000; }
+        .score-green { color: #388e3c; }
+
+        .analysis-section { display: none; }
+        .analysis-block {
+            text-align: left;
+            margin-bottom: 2rem;
+        }
+        .analysis-title {
+            font-size: 1.5rem;
+            color: var(--color-teal-dark);
+            margin-bottom: 1.5rem;
+        }
+        .feedback-box {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+        .feedback-box h5 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        .feedback-correct {
+            background-color: #e8f5e9;
+            border-left: 5px solid #4caf50;
+        }
+        html.dark-mode .feedback-correct {
+            background-color: #1c331d;
+        }
+        .feedback-incorrect {
+            background-color: #ffebee;
+            border-left: 5px solid #f44336;
+        }
+        html.dark-mode .feedback-incorrect {
+            background-color: #3e2723;
+        }
+        .case-highlight {
+            background-color: var(--color-accent-gold-bg);
+            font-weight: 600;
+        }
+
+        /*--------------------------------------------------*/
+        /*                      FOOTER                      */
+        /*--------------------------------------------------*/
+        .main-footer {
+            background-color: var(--color-teal-dark);
+            color: var(--color-bg-primary);
+            padding: 2rem;
+            margin-top: 4rem;
+            text-align: center;
+        }
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+        }
+        .footer-links a {
+            color: var(--color-bg-primary);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--color-teal-medium);
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+        .footer-links a:hover {
+            background-color: var(--color-teal-medium);
+            transform: translateY(-2px);
+        }
+        .footer-copyright {
+            font-size: 0.9rem;
+            color: var(--color-teal-bg);
+        }
+
+        /*--------------------------------------------------*/
+        /*                   RESPONSIVIDAD                  */
+        /*--------------------------------------------------*/
+        @media (max-width: 1024px) {
+            .title-block h1 { font-size: 1.8rem; }
+            .title-block h2 { font-size: 0.9rem; }
+            nav { top: 80px; }
+        }
+
+        @media (max-width: 768px) {
+            .header-container { flex-direction: column; gap: 1rem; }
+            nav { position: static; }
+            nav ul { flex-direction: column; text-align: center; }
+            main { padding: 0 1rem; margin-top: 1rem;}
+            h3 { font-size: 1.6rem; }
+            .flow-split { flex-direction: column; align-items: center; }
+            .flow-path { width: 80%; }
+        }
+
+        @media (max-width: 480px) {
+            .title-block h1 { font-size: 1.5rem; }
+            .main-header { padding: 1rem; }
+            .footer-links { flex-direction: column; align-items: stretch; }
+            .footer-links a { text-align: center; }
+        }
     </style>
 </head>
 <body>
+
     <header class="main-header">
-        <div id="motivational-quote-container" class="motivational-quote"></div>
-        <div class="countdown-timer-container">
-            <div class="countdown-unit"> <div class="countdown-label">Days</div> <div class="countdown-digits" id="countdown-days">000</div> </div>
-            <div class="countdown-unit"> <div class="countdown-label">Hours</div> <div class="countdown-digits" id="countdown-hours">00</div> </div>
-            <div class="countdown-unit"> <div class="countdown-label">Minutes</div> <div class="countdown-digits" id="countdown-minutes">00</div> </div>
-            <div class="countdown-unit"> <div class="countdown-label">Seconds</div> <div class="countdown-digits" id="countdown-seconds">00</div> </div>
-        </div>
-        <div class="global-progress-container">
-            <div class="progress-bar-wrapper">
-                <label id="global-score-label">Puntuación Global (Promedio de Calificaciones)</label>
-                <div class="progress-bar-background">
-                    <div class="progress-bar-fill" id="global-score-bar" role="progressbar" aria-labelledby="global-score-label">0%</div>
-                </div>
+        <div class="header-container">
+            <div class="title-block">
+                <h1>Hiperprolactinemia - ENDOCRINOLOGÍA</h1>
+                <h2>FRECUENCIA VITAL</h2>
             </div>
-            <div class="progress-bar-wrapper">
-                <label id="global-advance-label">Avance Global (Temas Completados)</label>
-                <div class="progress-bar-background">
-                    <div class="progress-bar-fill" id="global-advance-bar" role="progressbar" aria-labelledby="global-advance-label">0%</div>
-                </div>
-            </div>
+            <button class="theme-switcher" id="theme-switcher" title="Cambiar tema">
+                <svg id="theme-icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM12 9c1.65 0 3 1.35 3 3s-1.35 3-3 3-3-1.35-3-3 1.35-3 3-3zm0-7c.55 0 1 .45 1 1v2c0 .55-.45 1-1 1s-1-.45-1-1V3c0-.55.45-1 1-1zm0 18c.55 0 1 .45 1 1v2c0 .55-.45 1-1 1s-1-.45-1-1v-2c0-.55.45-1 1-1zm-8-9c.55 0 1 .45 1 1h2c0 .55-.45 1-1 1s-1-.45-1-1H4c-.55 0-1-.45-1-1s.45-1 1-1zm14 0c.55 0 1 .45 1 1h2c0 .55-.45 1-1 1s-1-.45-1-1h-2c-.55 0-1-.45-1-1s.45-1 1-1zm-8.92 5.5l1.41 1.41c.2.2.45.29.71.29s.51-.1.71-.29l1.41-1.41c.39-.39.39-1.02 0-1.41s-1.02-.39-1.41 0L12 15.17l-1.08-1.08c-.39-.39-1.02-.39-1.41 0s-.39 1.02 0 1.41zM5.91 5.91L7.33 7.33c.39.39 1.02.39 1.41 0s.39-1.02 0-1.41L7.33 4.5c-.2-.2-.45-.29-.71-.29s-.51.1-.71.29c-.39.39-.39 1.02 0 1.41zm12.18 0c.39.39 1.02.39 1.41 0s.39-1.02 0-1.41l-1.41-1.41c-.4-.4-1.03-.4-1.42 0s-.4 1.02 0 1.41l1.42 1.42z"/></svg>
+                <svg id="theme-icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="display: none;"><path d="M11.1 2.05c-.34.03-.68.1-.99.22C6.27 3.63 4 7.67 4 12c0 4.41 3.59 8 8 8 3.53 0 6.5-2.29 7.55-5.36.09-.27.14-.55.14-.84 0-.39-.07-.77-.2-1.12-.45-1.21-1.23-2.2-2.22-2.98-.38-.29-.78-.54-1.2-.74-1.26-.61-2.68-.94-4.17-.94-.09 0-.17 0-.26.01M12 4c1.86 0 3.57.57 5 1.56-.51.27-1 .61-1.45 1.01-.44.4-.82.87-1.12 1.39-.56.97-.83 2.08-.83 3.24 0 2.21 1.79 4 4 4 .79 0 1.53-.23 2.17-.65.25.88.35 1.8.35 2.75 0 3.31-2.69 6-6 6s-6-2.69-6-6c0-3.83 2.95-6.94 6.75-7.44.42-.08.84-.12 1.25-.12z"/></svg>
+            </button>
         </div>
     </header>
 
-    <div class="calendar-container" id="calendar-container"></div>
+    <nav id="main-nav">
+        <ul>
+            <li><a href="#introduccion" class="nav-link active">Introducción</a></li>
+            <li><a href="#resumen" class="nav-link">Resumen</a></li>
+            <li><a href="#presentacion" class="nav-link">Presentación</a></li>
+            <li><a href="#casos-clinicos" class="nav-link">Casos Clínicos</a></li>
+        </ul>
+    </nav>
 
-    <div class="modal-overlay" id="modal-overlay"></div>
-    <div class="modal-container" id="details-modal">
-        <div class="modal-header"> <h2 id="modal-title"></h2> <span class="modal-close" id="modal-close-day">×</span> </div>
-        <div class="modal-content"> <div id="modal-topics"></div> <div class="notes-section" style="margin-top: 20px;"> <h3>Mis Anotaciones del Día</h3> <textarea id="modal-notes" placeholder="Escribe aquí tus notas generales para este día..."></textarea> <button id="modal-save-btn">Guardar Nota</button> </div> </div>
-    </div>
-    <div class="modal-overlay" id="topic-plan-overlay"></div>
-    <div class="modal-container" id="topic-plan-modal">
-        <div class="modal-header"> <h2 id="topic-plan-title"></h2> <span class="modal-close" id="modal-close-topic">×</span> </div>
-        <div class="modal-content">
-            <div class="study-flow-diagram">
-                <!-- VISTA RÁPIDA -->
-                <div class="step-card step-1">
-                    <div class="step-icon-container"><i class="fas fa-binoculars"></i></div>
-                    <div class="step-content">
-                        <h2 class="step-title"><span class="step-number">1</span>VISTA RÁPIDA</h2>
-                        <ul class="step-details">
-                            <li><label><input type="checkbox" class="task-checkbox" id="task-1-1"><i class="fas fa-list-ul task-icon"></i><span class="task-text">Índice</span><span class="tool-tag tag-madera">MADERA</span></label></li>
-                            <li><label><input type="checkbox" class="task-checkbox" id="task-1-2"><i class="fas fa-download task-icon"></i><span class="task-text">Descargar guías</span><span class="optional-tag">* opcional</span></label></li>
-                            <li><label><input type="checkbox" class="task-checkbox" id="task-1-3"><i class="fas fa-brain task-icon"></i><span class="task-text">CREA resúmenes + casos con IA (5min)</span><span class="tool-tag tag-ia">IAGOOGLE</span></label></li>
-                        </ul>
-                    </div>
+    <main>
+        <section id="introduccion" class="content-section active">
+            <h3>Introducción Clave para el ENARM</h3>
+            
+            <h4>¿Por qué es crucial dominar la Hiperprolactinemia para el ENARM?</h4>
+            <p>¡Sencillo! Porque es un tema <strong>camaleónico</strong>. La hiperprolactinemia no vive aislada en Endocrinología; es la invitada frecuente en casos clínicos de Ginecología (la clásica paciente con amenorrea e infertilidad), Psiquiatría (el paciente con esquizofrenia y efectos secundarios de su tratamiento), Medicina Interna (asociada a insuficiencia renal o hepática) y hasta Neurocirugía (cuando la cefalea y los problemas visuales entran en escena).</p>
+            <p>Dominar este tema te da puntos en múltiples áreas del examen. Es una de las endocrinopatías más comunes y su algoritmo diagnóstico es una pregunta casi garantizada en alguna de sus formas.</p>
+
+            <h4>¿Cómo se pregunta este tema en el ENARM?</h4>
+            <p>Olvídense de preguntas directas. El ENARM les presentará una viñeta clínica y les preguntará por el <strong>siguiente paso</strong>. Las preguntas clave son:</p>
+            <ul>
+                <li>"¿Cuál es el <span class="highlight">estudio inicial más apropiado</span>?" (Siempre pensando en descartar embarazo y checar la TSH).</li>
+                <li>"Ante estos hallazgos, ¿cuál es el <span class="highlight">diagnóstico más probable</span>?" (Donde el nivel exacto de prolactina es la pista principal).</li>
+                <li>"¿Qué <span class="highlight">estudio de imagen es el de elección</span>?" (Spoiler: es la Resonancia Magnética).</li>
+                <li>"¿Cuál es el <span class="highlight">tratamiento de primera línea</span>?" (Aquí piensan en agonistas dopaminérgicos).</li>
+                <li>"¿Cuál es el <span class="highlight">mecanismo de acción del fármaco</span> que está causando el cuadro?" (Clásico en pacientes psiquiátricos).</li>
+            </ul>
+
+            <div class="perla-enarm didactic-card">
+                 <div class="card-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-2h2v2h-2zm0-4V7h2v6h-2z"/></svg>
+                    <span>Consejo de Oro para los Casos Clínicos</span>
                 </div>
-                <!-- CREAR y LEER -->
-                <div class="parallel-steps-container">
-                    <div class="step-card step-2">
-                        <div class="step-icon-container"><i class="fas fa-magic"></i></div>
-                        <div class="step-content">
-                            <h2 class="step-title"><span class="step-number">2</span>CREAR</h2>
-                            <ul class="step-details">
-                                <li><label><input type="checkbox" class="task-checkbox" id="task-2-1"><i class="fas fa-chalkboard-teacher task-icon"></i><span class="task-text">Presentación</span><span class="tool-tag tag-genspark">Genspark</span></label></li>
-                                <li><label><input type="checkbox" class="task-checkbox" id="task-2-2"><i class="fas fa-microphone-alt task-icon"></i><span class="task-text">Podcast MP3</span><span class="tool-tag tag-notebooklm">NOTEBOOKLM</span></label></li>
-                            </ul>
+                <p>¡Lean la <strong>lista de medicamentos</strong> del paciente TRES VECES! La causa farmacológica es extremadamente frecuente. Si ven <span class="highlight">risperidona, haloperidol, metoclopramida o verapamilo</span>, sus alarmas deben sonar. Luego, miren el valor exacto de la prolactina. No es lo mismo 50 ng/mL que 500 ng/mL. El número les grita la etiología más probable.</p>
+            </div>
+
+            <h4>Algoritmo Mental Esencial:</h4>
+            <ol>
+                <li><strong>¿Fisiológico?</strong> -> ¿Está embarazada? ¿Está lactando?</li>
+                <li><strong>¿Farmacológico?</strong> -> ¡Revisar la lista de medicamentos!</li>
+                <li><strong>¿Patológico?</strong> -> Medir <span class="highlight">Prolactina y TSH</span>. Si la TSH está alta, es un hipotiroidismo primario. Si la TSH está normal y la prolactina alta, ahora sí, pensamos en un tumor.</li>
+                <li><strong>¿Qué tan alta está la Prolactina?</strong> -> <span class="highlight">>100 ng/mL</span> nos obliga a buscar un adenoma con una Resonancia Magnética.</li>
+            </ol>
+            <p>Si memorizan este camino, tienen el 80% del tema ganado. ¡Vamos al resumen!</p>
+        </section>
+
+        <section id="resumen" class="content-section">
+            <h3>MEGA Resumen Enfocado en ENARM - Hiperprolactinemia (GPC IMSS-644-13)</h3>
+            <p><strong>Definición:</strong> Elevación persistente de los niveles de prolactina (PRL) por arriba del valor normal, que habitualmente es <strong>≥ 20-25 ng/mL</strong>.</p>
+            
+            <h4>1. Causas Principales de Hiperprolactinemia</h4>
+            
+            <h5>A) Causas Fisiológicas</h5>
+            <ul>
+                <li><strong>Embarazo:</strong> ¡LA NÚMERO UNO! Siempre descartarlo con una prueba de embarazo.</li>
+                <li><strong>Lactancia:</strong> Estímulo potentísimo por succión del pezón.</li>
+                <li><strong>Otros:</strong> Estrés, sueño, ejercicio, coito, estimulación del pezón.</li>
+            </ul>
+            <div class="perla-enarm didactic-card">
+                 <div class="card-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                    <span>PERLA ENARM</span>
+                </div>
+                <p>Las causas fisiológicas raramente elevan la prolactina > 40 ng/mL (excepto embarazo y lactancia).</p>
+            </div>
+            
+            <h5>B) Causas Farmacológicas (¡La más frecuente no tumoral!)</h5>
+            <p><strong>Mecanismo principal:</strong> Bloqueo de receptores de dopamina (D2).</p>
+            <ul>
+                <li><strong>Antipsicóticos:</strong> ¡LOS REYES! <span class="highlight">Risperidona</span> y paliperidona (los que más), haloperidol.</li>
+                <li><strong>Antieméticos/Procinéticos:</strong> <span class="highlight">Metoclopramida</span>, domperidona.</li>
+                <li><strong>Antihipertensivos:</strong> Verapamilo, metildopa.</li>
+                <li><strong>Otros:</strong> Antidepresivos (Tricíclicos, ISRS), Opiáceos.</li>
+            </ul>
+             <div class="perla-enarm didactic-card">
+                 <div class="card-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                    <span>PERLA ENARM</span>
+                </div>
+                <p>Los fármacos suelen elevar la prolactina a niveles de <strong>25-150 ng/mL</strong>. Niveles >200 ng/mL son muy raros y deben hacer sospechar otra causa.</p>
+            </div>
+
+            <h5>C) Causas Patológicas</h5>
+            <ul>
+                <li><strong>Prolactinoma:</strong> ¡LA CAUSA PATOLÓGICA MÁS COMÚN! (40% de tumores hipofisarios funcionales).
+                    <ul>
+                        <li><strong>Microprolactinoma (< 1 cm):</strong> Más común en mujeres. PRL 100-200 ng/mL.</li>
+                        <li><strong>Macroprolactinoma (> 1 cm):</strong> Más común en hombres. PRL > 200-250 ng/mL.</li>
+                    </ul>
+                </li>
+                <li><strong>Otras Lesiones (Efecto de Tallo):</strong> Craneofaringioma, meningioma. Comprimen el tallo, impiden el paso de dopamina. PRL típicamente < 150 ng/mL.</li>
+                <li><strong>Enfermedades Sistémicas:</strong>
+                    <ul>
+                        <li><strong>Hipotiroidismo Primario:</strong> ¡CLÁSICO DEL ENARM! El aumento de TRH estimula la PRL.</li>
+                        <li><strong>Insuficiencia Renal Crónica:</strong> Disminución del aclaramiento de PRL.</li>
+                        <li><strong>Cirrosis Hepática.</strong></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h4>2. Manifestaciones Clínicas</h4>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>Manifestación</th>
+                        <th>Mujeres (Premenopáusicas)</th>
+                        <th>Hombres</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Hipogonadismo</strong></td>
+                        <td>Oligomenorrea/Amenorrea, Infertilidad, Disminución de libido, Dispareunia</td>
+                        <td>Disminución de libido, Disfunción eréctil, Infertilidad</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Galactorrea</strong></td>
+                        <td>Presente en 30-80%</td>
+                        <td>Muy rara</td>
+                    </tr>
+                     <tr>
+                        <td><strong>Otros</strong></td>
+                        <td>Diagnóstico más temprano por síntomas evidentes</td>
+                        <td>Ginecomastia, diagnóstico tardío</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h5>Efecto de Masa (Típico de Macroprolactinomas):</h5>
+            <ul>
+                <li><strong>Cefalea</strong></li>
+                <li><strong>Alteraciones Visuales:</strong> ¡La clásica <span class="highlight">hemianopsia bitemporal</span> por compresión del quiasma óptico!</li>
+                <li><strong>Parálisis de pares craneales (III, IV, VI)</strong></li>
+            </ul>
+            
+            <h4>3. Evaluación Diagnóstica</h4>
+            <ol>
+                <li><strong>Historia Clínica y Exploración Física.</strong></li>
+                <li><strong>Laboratorios Esenciales Iniciales:</strong>
+                    <ul>
+                        <li>Medición de <strong>Prolactina Sérica</strong>.</li>
+                        <li><strong>Prueba de Embarazo (β-HCG):</strong> ¡OBLIGATORIA!</li>
+                        <li><strong>TSH y T4 Libre:</strong> Para descartar hipotiroidismo primario.</li>
+                    </ul>
+                </li>
+            </ol>
+            
+            <div class="pregunta-segura didactic-card">
+                 <div class="card-title">
+                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2V7h2v7z"/></svg>
+                     <span>PREGUNTA SEGURA: Interpretación de Niveles de PRL</span>
+                </div>
+                <ul>
+                    <li><strong>PRL 25-100 ng/mL:</strong> Universo de posibilidades (Fármacos, hipotiroidismo, estrés, idiopática, microprolactinoma).</li>
+                    <li><strong>PRL 100-250 ng/mL:</strong> Altamente sugestivo de <strong>microprolactinoma</strong>.</li>
+                    <li><strong>PRL > 250 ng/mL:</strong> Prácticamente diagnóstico de <strong>macroprolactinoma</strong>.</li>
+                </ul>
+            </div>
+            
+            <h4>Estudios de Imagen: ¿Cuándo y Cuál?</h4>
+            <p><strong>Indicación:</strong> PRL > 100 ng/mL persistente, o cualquier síntoma neurológico/visual.</p>
+            <p><strong>Estudio de Elección:</strong> <span class="highlight">Resonancia Magnética de silla turca con gadolinio.</span></p>
+
+            <div class="warning-box">
+                <strong>Situaciones Especiales (Alta Dificultad):</strong>
+                <ul>
+                    <li><strong>Efecto Gancho (Hook Effect):</strong> Macroprolactinoma gigante con PRL falsamente baja. Sospechar con masa grande y PRL < 200. Se resuelve diluyendo la muestra.</li>
+                    <li><strong>Macroprolactinemia:</strong> Paciente asintomático con PRL elevada. PRL unida a IgG (inactiva). Se confirma con precipitación con PEG.</li>
+                </ul>
+            </div>
+
+            <h4>4. Criterios de Referencia</h4>
+            <p><strong>A Endocrinología:</strong> Todo paciente con adenoma, PRL >100, hipogonadismo sintomático.</p>
+            <p><strong>A Neurocirugía (URGENTE):</strong> Datos de cráneo hipertensivo, alteraciones campimétricas, parálisis de nervios craneales, o apoplejía hipofisaria.</p>
+
+            <div class="bibliography-container">
+                <h4>Bibliografía</h4>
+                <p>Guía de Práctica Clínica IMSS-644-13: Diagnóstico de Hiperprolactinemia. México: Instituto Mexicano del Seguro Social; 2013.</p>
+            </div>
+
+        </section>
+
+        <section id="presentacion" class="content-section">
+            <h3>Presentación Interactiva: Hiperprolactinemia para el ENARM</h3>
+            
+            <div class="pregunta-segura didactic-card">
+                <div class="card-title">
+                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2V7h2v7z"/></svg>
+                     <span>¿Por qué es un tema RENTABLE para el examen?</span>
+                </div>
+                <p>Es la <strong>endocrinopatía hipofisaria más común</strong> y se presenta en casos de Ginecología, Psiquiatría y Medicina Interna. Saber el algoritmo diagnóstico te asegura puntos en múltiples especialidades. El ENARM ama preguntar "cuál es el siguiente paso".</p>
+            </div>
+
+            <div class="presentation-grid">
+                <div class="presentation-card">
+                    <h4>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 3C7.58 3 4 4.79 4 7v6c0 2.21 3.58 4 8 4s8-1.79 8-4V7c0-2.21-3.58-4-8-4zm0 2c3.31 0 6 1.34 6 3s-2.69 3-6 3-6-1.34-6-3 2.69-3 6-3zm0 10c-3.31 0-6-1.34-6-3v-1.55c1.16.69 2.51 1.1 4 1.32V15H8v-2h2.05c-.03-.17-.05-.33-.05-.5 0-.28.04-.55.11-.81l-2.07-1.19-.83 1.44-1.73-1 .83-1.44-2.12-1.22.99-1.71 2.12 1.22.83-1.44 1.73 1-.83 1.44L12 10.5l.42-.24.83-1.44 1.73 1-.83 1.44 2.12 1.22.99 1.71-2.12-1.22-.83 1.44-1.73-1 .83-1.44-1.64-.94c.07.26.11.53.11.81 0 .17-.02.33-.05.5H16v2h-4v-1.23c1.49-.21 2.84-.62 4-1.32V13c0 1.66-2.69 3-6 3z"/></svg>
+                        Fisiopatología
+                    </h4>
+                    <p>La <strong>Dopamina</strong> producida en el hipotálamo es el <strong>FRENO</strong> de la prolactina. Cualquier cosa que interrumpa este freno (fármacos, tumores que comprimen el tallo) causa hiperprolactinemia.</p>
+                </div>
+                 <div class="presentation-card">
+                    <h4>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-8.5 15H8v-2.5h2.5V18zm0-4.5H8V11h2.5v2.5zm0-4.5H8V6.5h2.5V9zm4.5 9H12v-2.5h2.5V18zm0-4.5H12V11h2.5v2.5zm0-4.5H12V6.5h2.5V9z"/></svg>
+                        Manifestaciones Clave
+                    </h4>
+                    <p><strong>Hipogonadismo Hipogonadotrópico.</strong> La PRL alta inhibe la GnRH, causando:<br>• <strong>Mujeres:</strong> Amenorrea + Galactorrea.<br>• <strong>Hombres:</strong> Disminución de libido + Disfunción Eréctil.</p>
+                </div>
+            </div>
+
+            <div class="flowchart">
+                <h4>Flujograma de Diagnóstico Interactivo (Haz clic en los pasos)</h4>
+                <div class="flow-container">
+                    <div class="flow-node" onclick="this.classList.toggle('active')">
+                        <strong>Paciente con sospecha</strong> (Amenorrea, Galactorrea, ↓ Libido)
+                        <div class="details">Paso inicial: historia clínica detallada, buscando fármacos y síntomas de otras patologías.</div>
+                    </div>
+                    <div class="flow-arrow"></div>
+                    <div class="flow-node action" onclick="this.classList.toggle('active')">
+                        <strong>PASO 1: Descartar Causas Obvias</strong>
+                        <div class="details">Solicitar: <br>1. Prueba de Embarazo (β-HCG).<br>2. Niveles de Prolactina (PRL).<br>3. TSH y T4 Libre.</div>
+                    </div>
+                    <div class="flow-arrow"></div>
+                    <div class="flow-node decision" onclick="this.classList.toggle('active')">
+                        <strong>¿TSH elevada?</strong>
+                        <div class="details">Una TSH alta con T4L baja confirma Hipotiroidismo Primario. La TRH elevada estimula secundariamente la prolactina.</div>
+                    </div>
+                    <div class="flow-split">
+                        <div class="flow-path">
+                            <div class="path-label">SÍ</div>
+                            <div class="flow-arrow"></div>
+                            <div class="flow-node end"><strong>Diagnóstico: Hipotiroidismo Primario.</strong> Tratar con Levotiroxina.</div>
                         </div>
-                    </div>
-                    <div class="step-card step-3">
-                        <div class="step-icon-container"><i class="fas fa-book-reader"></i></div>
-                        <div class="step-content">
-                            <h2 class="step-title"><span class="step-number">3</span>LEER</h2>
-                            <ul class="step-details">
-                                <li><label><input type="checkbox" class="task-checkbox" id="task-3-1"><i class="fas fa-file-alt task-icon"></i><span class="task-text">Leer Resumen</span></label></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <!-- UNIFICAR -->
-                <div class="step-card step-4">
-                    <div class="step-icon-container"><i class="fas fa-puzzle-piece"></i></div>
-                    <div class="step-content">
-                        <h2 class="step-title"><span class="step-number">4</span>UNIFICAR<span class="subtitle">(resumen + presentación + simular + enlaces)</span></h2>
-                        <ul class="step-details">
-                            <li><label><input type="checkbox" class="task-checkbox" id="task-4-1"><i class="fas fa-code task-icon"></i><span class="task-text">HTML</span><span class="tool-tag tag-ia">IAGOOGLE</span></label></li>
-                        </ul>
-                    </div>
-                </div>
-                <!-- PRACTICAR -->
-                <div class="step-card step-5">
-                    <div class="step-icon-container"><i class="fas fa-tasks"></i></div>
-                    <div class="step-content">
-                        <h2 class="step-title"><span class="step-number">5</span>PRACTICAR</h2>
-                        <div class="practice-step-layout">
-                            <div class="practice-tasks-column">
-                                <ul class="step-details">
-                                    <li><label><input type="checkbox" class="task-checkbox" id="task-5-1"><i class="fas fa-notes-medical task-icon"></i><span class="task-text">Realiza CASOS CLÍNICOS</span></label></li>
-                                    <li><label><input type="checkbox" class="task-checkbox" id="task-5-2"><i class="fas fa-redo-alt task-icon"></i><span class="task-text">Repasar</span><span class="tool-tag tag-genspark">GENSPARK</span><span class="tool-tag tag-madera">MADERAS</span></label></li>
-                                </ul>
+                        <div class="flow-path">
+                            <div class="path-label">NO</div>
+                            <div class="flow-arrow"></div>
+                            <div class="flow-node decision" onclick="this.classList.toggle('active')">
+                                <strong>Interpretar Nivel de PRL</strong>
+                                <div class="details">
+                                    • <strong>PRL 25-100:</strong> Sospechar fármacos, estrés, idiopática. Suspender fármaco sospechoso si es posible y repetir en 3 días.
+                                    <br>• <strong>PRL > 100:</strong> Alta sospecha de Prolactinoma.
+                                </div>
                             </div>
-                            <div class="practice-score-column">
-                                <h3>PUNTUACIÓN</h3>
-                                <div class="score-inputs-row">
-                                    <div class="score-input-group"><label for="score-aciertos">Aciertos:</label><input type="number" id="score-aciertos" min="0"></div>
-                                    <div class="score-input-group"><label for="score-reactivos">Reactivos:</label><input type="number" id="score-reactivos" min="0"></div>
-                                    <div class="score-input-group"><label for="score-percentage">%:</label><input type="text" id="score-percentage" class="percentage-output" readonly value="0%"></div>
+                            <div class="flow-arrow"></div>
+                             <div class="flow-node action" onclick="this.classList.toggle('active')">
+                                <strong>PASO 2: Realizar Imagen</strong> (Solo si PRL > 100 o clínica neurológica)
+                                <div class="details">Estudio de elección: <strong>Resonancia Magnética de silla turca con gadolinio.</strong> Es la más sensible para adenomas.</div>
+                            </div>
+                            <div class="flow-arrow"></div>
+                            <div class="flow-node decision" onclick="this.classList.toggle('active')">
+                                <strong>¿Se observa Macroadenoma (>1cm) con PRL < 200?</strong>
+                                <div class="details">Puede ser un adenoma no funcionante con efecto de tallo (comprime y eleva moderadamente la PRL) o un macroprolactinoma con "efecto gancho".</div>
+                            </div>
+                             <div class="flow-split">
+                                <div class="flow-path">
+                                    <div class="path-label">SÍ</div>
+                                    <div class="flow-arrow"></div>
+                                    <div class="flow-node end"><strong>Considerar Efecto Gancho</strong> (diluir muestra 1:100) o <strong>Adenoma No Funcionante</strong> (tratamiento es Qx).</div>
+                                </div>
+                                <div class="flow-path">
+                                    <div class="path-label">NO</div>
+                                    <div class="flow-arrow"></div>
+                                    <div class="flow-node end"><strong>Diagnóstico: Prolactinoma.</strong> Iniciar tratamiento médico.</div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- MEMORIZAR -->
-                <div class="step-card step-6">
-                    <div class="step-icon-container"><i class="fas fa-head-side-headphones"></i></div>
-                    <div class="step-content">
-                        <h2 class="step-title"><span class="step-number">6</span>MEMORIZAR</h2>
-                        <ul class="step-details">
-                            <li><label><input type="checkbox" class="task-checkbox" id="task-6-1"><i class="fas fa-headphones-alt task-icon"></i><span class="task-text">Escuchar MP3</span></label></li>
+            </div>
+            
+            <div class="perla-enarm didactic-card">
+                 <div class="card-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                    <span>PERLA ENARM: TRATAMIENTO DE ELECCIÓN</span>
+                </div>
+                <p>El tratamiento de <strong>PRIMERA LÍNEA</strong> para <strong>TODOS</strong> los prolactinomas (micro y macro sintomáticos) es <strong>MÉDICO</strong>.</p>
+                <ul>
+                    <li><strong>1ª Elección: Cabergolina.</strong> Más eficaz, vida media larga (2 dosis/semana), menos efectos secundarios.</li>
+                    <li><strong>2ª Elección: Bromocriptina.</strong> Menos eficaz, vida media corta (requiere dosis diarias), más náuseas. Es de elección si la paciente busca embarazo inminente por su mayor perfil de seguridad estudiado.</li>
+                </ul>
+                <p><strong>La cirugía (transesfenoidal) se reserva para:</strong> Resistencia/intolerancia a fármacos, apoplejía hipofisaria, o compresión quiasmática que no mejora con tratamiento médico.</p>
+            </div>
+
+            <div class="mnemonic-box">
+                <h4>Mnemotecnia de Causas (Las "4 P")</h4>
+                <p><strong>P</strong>rolactinoma (tumor)<br><strong>P</strong>harmaceuticals (fármacos, ej. risperidona)<br><strong>P</strong>hysiological (embarazo, lactancia)<br><strong>P</strong>athology (IRC, Hipotiroidismo Primario)</p>
+            </div>
+
+        </section>
+
+        <section id="casos-clinicos" class="content-section">
+            <h3>Simulador de Casos Clínicos Estilo ENARM</h3>
+            <form id="quiz-form">
+                <!-- CASO 1 -->
+                <div class="case-container">
+                    <h4 class="case-title">Caso Clínico 1</h4>
+                    <p class="case-description">Una mujer de 28 años, nuligesta, acude a consulta por presentar amenorrea de 8 meses de evolución y secreción láctea bilateral espontánea desde hace 3 meses. Niega consumo de fármacos, drogas o herbolaria. A la exploración física, se corrobora la galactorrea a la expresión. El resto de la exploración es normal, incluyendo campos visuales por confrontación. Se solicita una prueba de embarazo que resulta negativa y estudios de laboratorio que reportan: TSH 2.1 mU/L (normal) y Prolactina sérica de 130 ng/mL.</p>
+                    
+                    <div class="question-block">
+                        <p class="question-text">1. Según la Guía de Práctica Clínica, el nivel de prolactina de esta paciente es más sugestivo de: <span class="difficulty-tag tag-baja">Baja</span></p>
+                        <ul class="options-list">
+                            <li><label><input type="radio" name="case1_q1" value="a"> a) Una causa fisiológica como estrés.</label></li>
+                            <li><label><input type="radio" name="case1_q1" value="b"> b) Un efecto secundario farmacológico no declarado.</label></li>
+                            <li><label><input type="radio" name="case1_q1" value="c"> c) Un microprolactinoma.</label></li>
+                            <li><label><input type="radio" name="case1_q1" value="d"> d) Un macroprolactinoma.</label></li>
+                        </ul>
+                    </div>
+                    <div class="question-block">
+                        <p class="question-text">2. Considerando el cuadro clínico y los resultados de laboratorio, ¿cuál es el siguiente paso diagnóstico de elección para esta paciente? <span class="difficulty-tag tag-media">Media</span></p>
+                         <ul class="options-list">
+                            <li><label><input type="radio" name="case1_q2" value="a"> a) Realizar una tomografía computarizada de cráneo simple.</label></li>
+                            <li><label><input type="radio" name="case1_q2" value="b"> b) Repetir la medición de prolactina en 6 meses.</label></li>
+                            <li><label><input type="radio" name="case1_q2" value="c"> c) Iniciar tratamiento empírico con cabergolina.</label></li>
+                            <li><label><input type="radio" name="case1_q2" value="d"> d) Realizar una resonancia magnética de silla turca con gadolinio.</label></li>
+                        </ul>
+                    </div>
+                    <div class="question-block">
+                        <p class="question-text">3. Si en la resonancia magnética se encontrara un adenoma de 8 mm que capta contraste de forma heterogénea y la paciente desea embarazarse, ¿cuál sería la conducta terapéutica más adecuada para restaurar la fertilidad? <span class="difficulty-tag tag-alta">Alta</span></p>
+                        <ul class="options-list">
+                            <li><label><input type="radio" name="case1_q3" value="a"> a) Referir a neurocirugía para resección transesfenoidal del tumor.</label></li>
+                            <li><label><input type="radio" name="case1_q3" value="b"> b) Iniciar tratamiento con un agonista dopaminérgico como la cabergolina.</label></li>
+                            <li><label><input type="radio" name="case1_q3" value="c"> c) Administrar anticonceptivos orales para regularizar los ciclos.</label></li>
+                            <li><label><input type="radio" name="case1_q3" value="d"> d) Indicar técnicas de reproducción asistida de alta complejidad.</label></li>
                         </ul>
                     </div>
                 </div>
-            </div>
-            <div class="topic-modal-footer"> <button id="topic-finish-btn" class="topic-finish-btn">Terminar Tema</button> </div>
-        </div>
-    </div>
 
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+                <!-- CASO 2 -->
+                <div class="case-container">
+                    <h4 class="case-title">Caso Clínico 2</h4>
+                    <p class="case-description">Un hombre de 52 años es enviado a endocrinología por su médico familiar. Refiere un cuadro de 2 años de evolución caracterizado por cefalea fronto-temporal opresiva, casi diaria, y una notable disminución de la libido. En el último año, ha notado "ver borroso por los lados". En el interrogatorio dirigido, menciona disfunción eréctil. A la exploración física, destaca una agudeza visual disminuida y, en la campimetría por confrontación, se detecta un evidente defecto en los campos temporales de ambos ojos. Los laboratorios reportan una Prolactina de 950 ng/mL.</p>
+                    
+                    <div class="question-block">
+                        <p class="question-text">1. El defecto visual descrito en el paciente ("ver borroso por los lados") es clínicamente conocido como: <span class="difficulty-tag tag-baja">Baja</span></p>
+                        <ul class="options-list">
+                            <li><label><input type="radio" name="case2_q1" value="a"> a) Cuadrantanopsia homónima.</label></li>
+                            <li><label><input type="radio" name="case2_q1" value="b"> b) Hemianopsia bitemporal.</label></li>
+                            <li><label><input type="radio" name="case2_q1" value="c"> c) Amaurosis fugaz.</label></li>
+                            <li><label><input type="radio" name="case2_q1" value="d"> d) Escotoma central.</label></li>
+                        </ul>
+                    </div>
+                    <div class="question-block">
+                        <p class="question-text">2. Basado en la presentación clínica y el nivel extremadamente elevado de prolactina, ¿cuál es el diagnóstico más certero? <span class="difficulty-tag tag-media">Media</span></p>
+                         <ul class="options-list">
+                            <li><label><input type="radio" name="case2_q2" value="a"> a) Hiperprolactinemia idiopática severa.</label></li>
+                            <li><label><input type="radio" name="case2_q2" value="b"> b) Craneofaringioma con efecto de tallo.</label></li>
+                            <li><label><input type="radio" name="case2_q2" value="c"> c) Macroprolactinoma hipofisario.</label></li>
+                            <li><label><input type="radio" name="case2_q2" value="d"> d) Hipotiroidismo primario descompensado.</label></li>
+                        </ul>
+                    </div>
+                    <div class="question-block">
+                        <p class="question-text">3. ¿Cuál es la justificación principal para referir a este paciente de manera urgente a Neurocirugía, además de a Endocrinología? <span class="difficulty-tag tag-alta">Alta</span></p>
+                        <ul class="options-list">
+                            <li><label><input type="radio" name="case2_q3" value="a"> a) El nivel de prolactina superior a 500 ng/mL.</label></li>
+                            <li><label><input type="radio" name="case2_q3" value="b"> b) La presencia de cefalea crónica.</label></li>
+                            <li><label><input type="radio" name="case2_q3" value="c"> c) La disfunción eréctil refractaria.</label></li>
+                            <li><label><input type="radio" name="case2_q3" value="d"> d) La evidencia de compresión del quiasma óptico.</label></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- CASO 3 -->
+                <div class="case-container">
+                    <h4 class="case-title">Clinical Case 3</h4>
+                    <p class="case-description">A 42-year-old male with a known history of chronic kidney disease (CKD) stage 4 is evaluated for gynecomastia and low libido. He is not on any medications known to cause hyperprolactinemia besides his standard CKD regimen. He denies headaches or visual disturbances. Physical examination confirms bilateral, non-tender gynecomastia without galactorrhea. Laboratory tests show a serum Prolactin level of 85 ng/mL. His TSH is normal. A pituitary MRI is performed due to persistent symptoms and shows a 1.2 cm sellar mass.</p>
+                    
+                    <div class="question-block">
+                        <p class="question-text">1. What are the two most likely contributing factors to this patient's hyperprolactinemia? <span class="difficulty-tag tag-baja">Baja</span></p>
+                        <ul class="options-list">
+                            <li><label><input type="radio" name="case3_q1" value="a"> a) Stress and idiopathic causes.</label></li>
+                            <li><label><input type="radio" name="case3_q1" value="b"> b) Chronic kidney disease and a non-functioning pituitary adenoma.</label></li>
+                            <li><label><input type="radio" name="case3_q1" value="c"> c) Undisclosed use of antipsychotics and gynecomastia.</label></li>
+                            <li><label><input type="radio" name="case3_q1" value="d"> d) A prolactin-secreting macroadenoma.</label></li>
+                        </ul>
+                    </div>
+                    <div class="question-block">
+                        <p class="question-text">2. The prolactin level of 85 ng/mL in the presence of a 1.2 cm sellar mass is most consistent with which mechanism? <span class="difficulty-tag tag-media">Media</span></p>
+                         <ul class="options-list">
+                            <li><label><input type="radio" name="case3_q2" value="a"> a) A true prolactin-secreting macroadenoma with a partially misleading lab value.</label></li>
+                            <li><label><input type="radio" name="case3_q2" value="b"> b) The "hook effect" from a giant prolactinoma.</label></li>
+                            <li><label><input type="radio" name="case3_q2" value="c"> c) Pituitary stalk compression by a non-functioning adenoma.</label></li>
+                            <li><label><input type="radio" name="case3_q2" value="d"> d) Co-secretion of prolactin and growth hormone.</label></li>
+                        </ul>
+                    </div>
+                    <div class="question-block">
+                        <p class="question-text">3. If a repeat, diluted prolactin sample rules out the "hook effect," what is the most critical implication for this patient's treatment plan? <span class="difficulty-tag tag-alta">Alta</span></p>
+                        <ul class="options-list">
+                            <li><label><input type="radio" name="case3_q3" value="a"> a) The patient will likely not respond to dopamine agonist therapy and should be scheduled for surgery.</label></li>
+                            <li><label><input type="radio" name="case3_q3" value="b"> b) The gynecomastia is primarily due to his CKD and will resolve with dialysis.</label></li>
+                            <li><label><input type="radio" name="case3_q3" value="c"> c) The treatment should focus on managing the chronic kidney disease, as it is the sole cause.</label></li>
+                            <li><label><input type="radio" name="case3_q3" value="d"> d) The patient's primary diagnosis is a non-functioning adenoma, making him a potential candidate for surgical resection.</label></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <button type="submit" id="evaluate-btn">Evaluar Respuestas</button>
+            </form>
+
+            <div id="results-section">
+                <div id="results-summary">
+                    <h3>Resultados del Simulador</h3>
+                    <div id="score-display"></div>
+                    <div id="percentage-display"></div>
+                </div>
+
+                <div class="analysis-section">
+                    <h3 class="analysis-title">Análisis Detallado</h3>
+                    <!-- Análisis Caso 1 -->
+                    <div id="analysis-case1" class="analysis-block case-container">
+                        <h4 class="case-title">Análisis del Caso Clínico 1</h4>
+                        <p>Una mujer de 28 años, nuligesta, acude a consulta por presentar <span class="case-highlight">amenorrea de 8 meses de evolución</span> y <span class="case-highlight">secreción láctea bilateral espontánea</span> desde hace 3 meses. <span class="case-highlight">Niega consumo de fármacos</span>. <span class="case-highlight">Prueba de embarazo negativa</span>. <span class="case-highlight">TSH normal</span>. Prolactina sérica de <span class="case-highlight">130 ng/mL</span>.</p>
+                        <div id="analysis_case1_q1"></div>
+                        <div id="analysis_case1_q2"></div>
+                        <div id="analysis_case1_q3"></div>
+                    </div>
+                    <!-- Análisis Caso 2 -->
+                    <div id="analysis-case2" class="analysis-block case-container">
+                        <h4 class="case-title">Análisis del Caso Clínico 2</h4>
+                        <p>Un hombre de 52 años... refiere <span class="case-highlight">cefalea</span>... <span class="case-highlight">disminución de la libido</span>. ...<span class="case-highlight">"ver borroso por los lados"</span>. ...un evidente <span class="case-highlight">defecto en los campos temporales de ambos ojos</span>. Los laboratorios reportan una Prolactina de <span class="case-highlight">950 ng/mL</span>.</p>
+                        <div id="analysis_case2_q1"></div>
+                        <div id="analysis_case2_q2"></div>
+                        <div id="analysis_case2_q3"></div>
+                    </div>
+                    <!-- Análisis Caso 3 -->
+                    <div id="analysis-case3" class="analysis-block case-container">
+                         <h4 class="case-title">Analysis of Clinical Case 3</h4>
+                         <p>A 42-year-old male with <span class="case-highlight">chronic kidney disease (CKD) stage 4</span> is evaluated for <span class="case-highlight">gynecomastia and low libido</span>... serum Prolactin level of <span class="case-highlight">85 ng/mL</span>. ...pituitary MRI ...shows a <span class="case-highlight">1.2 cm sellar mass</span>.</p>
+                        <div id="analysis_case3_q1"></div>
+                        <div id="analysis_case3_q2"></div>
+                        <div id="analysis_case3_q3"></div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <footer class="main-footer">
+        <div class="footer-container">
+            <div class="footer-links">
+                <a href="https://axxxworks.github.io/planvital/planner.html" target="_blank">Calendario</a>
+                <a href="https://www.youtube.com/@FrecuenciaVital-GPC" target="_blank">RADIO F.V.</a>
+                <a href="https://4uuvfwh5r4.space.minimax.io/" target="_blank">WEB Frecuencia Vital</a>
+                <a href="https://wa.me/524921921740" target="_blank">CONTACTO F.V.</a>
+                <a href="mailto:axxxguias@gmail.com">CORREO F.V.</a>
+            </div>
+            <div class="footer-copyright">
+                © 2024 Frecuencia Vital. Interfaz didáctica para la preparación médica de alto rendimiento.
+            </div>
+        </div>
+    </footer>
 
     <script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyD4SjKhedm4ZWHed70_sjQgxPokjHvwvUc",
-        authDomain: "frecuencia-vital.firebaseapp.com",
-        projectId: "frecuencia-vital",
-        storageBucket: "frecuencia-vital.appspot.com",
-        messagingSenderId: "492064882273",
-        appId: "1:492064882273:web:46ad9f9a66126bfdb53420",
-        measurementId: "G-0C466YCX31"
-    };
-    
-    if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
-    }
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-    let currentUser = null;
-    
-    auth.onAuthStateChanged(user => {
-        if (user) {
-            currentUser = user;
-            initializeAppLogic();
-        } else {
-            window.location.href = 'index.html';
-        }
-    });
-
-    function initializeAppLogic() {
-        const subjectToTopicsMap = new Map();
-        const motivationalQuotes = [ "La disciplina es el puente entre metas y logros.", "El éxito es la suma de pequeños esfuerzos repetidos día tras día.", "No te detengas hasta que te sientas orgulloso.", "Cree en ti mismo y todo será posible.", "El único modo de hacer un gran trabajo es amar lo que haces.", "La clave del éxito es empezar antes de estar listo.", "Cada día es una nueva oportunidad para cambiar tu vida.", "Si puedes soñarlo, puedes hacerlo.", "La perseverancia no es una carrera larga, son muchas carreras cortas una tras otra.", "El aprendizaje es un tesoro que seguirá a su dueño a todas partes.", "La motivación te pone en marcha, el hábito te mantiene.", "No cuentes los días, haz que los días cuenten.", "El futuro pertenece a quienes creen en la belleza de sus sueños.", "La mejor forma de predecir el futuro es crearlo.", "Un pequeño progreso cada día suma grandes resultados." ];
-        const studyPlan = [
-            { date: "2025-06-18", subjects: ["ENDOCRINOLOGÍA"], topics: ["Dislipidemias", "Hipertiroidismo", "Hipotiroidismo", "Cáncer de tiroides (Enfoque en Papilar)"] },
-            { date: "2025-06-19", subjects: [], topics: ["Nódulo tiroideo", "Obesidad en adultos", "Síndrome metabólico", "Enfermedad de Cushing / Síndrome de Cushing"] },
-            { date: "2025-06-20", subjects: ["UROLOGÍA"], topics: ["Enfermedad de Addison", "Escroto agudo y Torsión testicular", "Hiperplasia prostática benigna", "Cáncer de próstata"] },
-            { date: "2025-06-21", subjects: [], topics: ["Pielonefritis aguda", "Infección de tracto urinario", "Urolitiasis", "Cáncer testicular"] },
-            { date: "2025-06-22", subjects: ["ORL"], topics: ["Disfunción eréctil", "Faringoamigdalitis", "Epistaxis", "Rinosinusitis aguda"] },
-            { date: "2025-06-23", subjects: [], topics: ["Otitis externa aguda", "VPPB", "Mastoiditis aguda", "Parálisis de Bell"] },
-            { date: "2025-06-24", subjects: ["OFTALMOLOGÍA"], topics: ["Catarata", "Conjuntivitis", "Glaucoma de ángulo aberto", "Glaucoma de ángulo cerrado"] },
-            { date: "2025-06-25", subjects: [], topics: ["Ojo rojo", "Retinopatía diabética", "Trauma ocular", "Desprendimiento de retina"] },
-            { date: "2025-06-26", subjects: ["TYO"], topics: ["Osteoartritis", "Osteomielitis", "Fracturas expuestas", "Esguince cervical", "Lumbalgia"] },
-            { date: "2025-06-27", subjects: [], topics: ["Síndrome de hombro doloroso", "Luxación glenohumeral", "Fractura de clavícula", "Fractura de radio distal"] },
-            { date: "2025-06-28", subjects: [], topics: ["Fractura de cadera", "Lesiones de rodilla", "Esguince de tobillo", "Fractura de tobillo"] },
-            { date: "2025-06-29", subjects: [], topics: ["Osteosarcoma", "Sarcoma de Ewing", "Hernia de disco", "Túnel del carpo"] },
-            { date: "2025-06-30", subjects: [], topics: ["Epifisiolistesis femoral", "Legg-Calvé-Perthes", "Embolia grasa", "Tumores óseos malignos"] },
-            { date: "2025-07-01", subjects: [], topics: ["Costilla cervical", "Fractura de húmero proximal", "Luxación de codo", "Codo de niñera"] },
-            { date: "2025-07-02", subjects: [], topics: ["Fracturas de codo", "Fracturas de antebrazo", "Lesiones fisiarias", "Luxación coxofemoral", "Fractura de diáfisis de tibia"] },
-            { date: "2025-07-03", subjects: ["CARDIOLOGÍA"], topics: ["Rotura de talón de Aquiles", "Pie equino varo", "Pie plano", "Pericarditis"] },
-            { date: "2025-07-04", subjects: [], topics: ["Endocarditis infecciosa", "Estenosis aórtica", "Insuficiencia aórtica", "Estenosis mitral"] },
-            { date: "2025-07-05", subjects: [], topics: ["Insuficiencia mitral", "Fiebre reumática", "Hipertensión arterial sistémica", "Crisis hipertensivas"] },
-            { date: "2025-07-06", subjects: [], topics: ["Insuficiencia cardíaca aguda", "Insuficiencia cardíaca crónica", "Infarto agudo de miocardio", "Disección aórtica"] },
-            { date: "2025-07-07", subjects: [], topics: ["Cor pulmonar crónico", "Edema pulmonar", "Hipotensión ortostática", "Aneurisma aórtico abdominal"] },
-            { date: "2025-07-08", subjects: [], topics: ["Enfermedad coronaria", "Otras valvulopatías", "Hipertensión pulmonar", "Rehabilitación cardíaca"] },
-            { date: "2025-07-09", subjects: ["ANGIOLOGÍA"], topics: ["Enfermedad arterial periférica", "Insuficiencia venosa", "Pie diabético", "Tromboembolia pulmonar"] },
-            { date: "2025-07-10", subjects: [], topics: ["Trombosis venosa profunda", "Úlceras por presión", "Paget-Schroetter", "Tromboembolia venosa en obstetricia"] },
-            { date: "2025-07-11", subjects: ["ACLS"], topics: ["Soporte vital básico", "RCP", "Taquicardia ACLS", "Taquicardia supraventricular"] },
-            { date: "2025-07-12", subjects: [], topics: ["Bloqueos AV", "Bradicardia", "Fibrilación auricular", "Fibrilación ventricular"] },
-            { date: "2025-07-13", subjects: ["ATLS"], topics: ["Síndrome de WPW", "PLS (Posición Lateral de Seguridad)", "Ahogamiento", "Politrauma"] },
-            { date: "2025-07-14", subjects: [], topics: ["Tipos de shock", "Choque hipovolémico", "Quemaduras", "Gran quemado"] },
-            { date: "2025-07-15", subjects: [], topics: ["TCE adultos", "TCE pediátrico", "Trauma torácico", "Hemotórax"] },
-            { date: "2025-07-16", subjects: [], topics: ["Neumotórax a tensión", "Taponamiento cardiaco", "Trauma abdominal", "Shock neurogénico"] },
-            { date: "2025-07-17", subjects: [], topics: ["Neumotórax aberto", "Neumotórax simple", "Trauma espinal", "Catéter venoso central"] },
-            { date: "2025-07-18", subjects: [], topics: ["Hipotermia", "Fracturas de cráneo", "Lesión traqueobronquial", "Ruptura diafragmática"] },
-            { date: "2025-07-19", subjects: ["TOXICOLOGÍA"], topics: ["Trauma esplénico", "Trauma obstétrico", "Trauma pélvico", "Manejo de intoxicaciones", "Toxíndromes"] },
-            { date: "2025-07-20", subjects: [], topics: ["Intoxicación por benzodiacepinas", "Intoxicación por organofosforados", "Intoxicación por paracetamol", "Intoxicación por salicilatos"] },
-            { date: "2025-07-21", subjects: [], topics: ["Lactrodectus", "Loxosceles", "Mordedura de serpiente", "Picadura de alacrán"] },
-            { date: "2025-07-22", subjects: [], topics: ["Golpe de calor", "Intoxicación por etanol", "Intoxicación por monóxido de carbono", "Intoxicación por opiáceos"] },
-            { date: "2025-07-23", subjects: [], topics: ["Anafilaxia", "Ingesta de cáusticos", "Intoxicación alimentaria", "Intoxicación por alcoholes"] },
-            { date: "2025-07-24", subjects: [], topics: ["Intoxicación por anfetaminas", "Intoxicación por DMT", "Intoxicación por fentanilo", "Intoxicación por hidrocarburos"] },
-            { date: "2025-07-25", subjects: ["GASTROENTEROLOGÍA"], topics: ["Intoxicación por metales pesados", "Intoxicación por plomo", "Picadura de himenópteros", "Absceso hepático amebiano"] },
-            { date: "2025-07-26", subjects: [], topics: ["Cirrosis hepática", "Insuficiencia hepática", "Ascitis", "Encefalopatía hepática"] },
-            { date: "2025-07-27", subjects: [], topics: ["Hepatitis A", "Hepatitis B", "Hepatitis C", "Pancreatitis aguda"] },
-            { date: "2025-07-28", subjects: [], topics: ["Reflujo ERGE", "Enfermedad ácido péptica", "Síndrome de intestino irritable", "Sangrado TDA"] },
-            { date: "2025-07-29", subjects: [], topics: ["Sangrado TDB", "Várices esofágicas", "EHGNA", "Enfermedad de Crohn"] },
-            { date: "2025-07-30", subjects: [], topics: ["Colitis ulcerativa", "Cáncer gástrico", "Carcinoma hepatocelular", "Absceso hepático piógeno"] },
-            { date: "2025-07-31", subjects: [], topics: ["Hepatitis autoinmune", "Pancreatitis crónica", "Acalasia", "Esófago de Barret"] },
-            { date: "2025-08-01", subjects: [], topics: ["Dispepsia funcional", "Mallory Weiss", "Zollinger-Ellison", "Enfermedad celíaca", "Cáncer de esófago"] },
-            { date: "2025-08-02", subjects: ["CIRUGÍA ABDOMINAL Y COLOPROCTOLOGÍA"], topics: ["Cáncer de páncreas", "Apendicitis aguda", "Apendicitis en el embarazo", "Colecistitis aguda"] },
-            { date: "2025-08-03", subjects: [], topics: ["Coledocolitiasis", "Colelitiasis", "Colangitis aguda", "Hernias"] },
-            { date: "2025-08-04", subjects: [], topics: ["Hernia inguinal", "Oclusión intestinal", "Enfermedad hemorroidal", "Fístula anal"] },
-            { date: "2025-08-05", subjects: [], topics: ["Fisura anal", "Absceso anal", "Enfermedad diverticular", "Cáncer colorrectal"] },
-            { date: "2025-08-06", subjects: [], topics: ["Isquemia intestinal", "Vólvulo de sigmoides", "Heridas quirúrgicas", "Complicaciones post Qx"] },
-            { date: "2025-08-07", subjects: [], topics: ["Colangiocarcinoma", "Fístulas biliointestinales", "Hernia femoral", "Hernia hiatal"] },
-            { date: "2025-08-08", subjects: [], topics: ["Hernia umbilical", "Hernia ventral", "Vólvulo de ciego", "Quiste pilonidal", "Poliposis adenomatosa familiar (PAF)"] },
-            { date: "2025-08-09", subjects: ["CIRUGÍA PEDIÁTRICA"], topics: ["Atresia duodenal", "Atresia esofágica", "Criptorquidia", "Estenosis pilórica"] },
-            { date: "2025-08-10", subjects: [], topics: ["Hernia diafragmática congénita", "Invaginación intestinal", "Nefroblastoma", "Neuroblastoma"] },
-            { date: "2025-08-11", subjects: [], topics: ["Divertículo de Meckel", "Hirschsprung", "Atresia biliar", "Atresia de coanas"] },
-            { date: "2025-08-12", subjects: [], topics: ["Atresia yeyunoileal", "Espina bífida", "Malformaciones rectales", "Malrotación intestinal", "Patología umbilical"] }, 
-            { date: "2025-08-13", subjects: ["GINECOLOGÍA"], topics: ["Fitz-Hugh-Curtis", "Dismenorrea aguda", "Amenorreas primarias", "Amenorreas secundarias", "Sangrado uterino anormal"] },
-            { date: "2025-08-14", subjects: [], topics: ["Adenomiosis", "Anticonceptivos generalidades", "Anticonceptivos GPC", "Anticonceptivos hormonales combinados", "Anticoncepción de emergencia"] },
-            { date: "2025-08-15", subjects: [], topics: ["DIU de cobre", "DIU de levonorgestrel", "Implante subdérmico", "Progestágenos solos", "Lactancia como anticonceptivo"] },
-            { date: "2025-08-16", subjects: [], topics: ["Infertilidad", "Condón", "Vasectomía", "Cistocele e incontinencia", "Endometriosis"] },
-            { date: "2025-08-17", subjects: [], topics: ["Enfermedad pélvica inflamatoria", "Hidrosalpinx", "Hiperplasia endometrial", "Mastitis", "Mastopatía fibroquística"] },
-            { date: "2025-08-18", subjects: [], topics: ["Fibroadenoma", "Papiloma intraductal", "Patología mamaria benigna", "Quiste mamario", "Osteoporosis post menopausia"] },
-            { date: "2025-08-19", subjects: [], topics: ["Insuficiencia ovárica primaria", "Menopausia y climaterio", "Miomatosis uterina", "Oclusión tubaria bilateral OTB", "Ovario poliquístico"] },
-            { date: "2025-08-20", subjects: [], topics: ["Quiste de ovario benigno", "Torsión ovárica", "Vaginitis bacteriana", "Vaginitis infecciosa", "Trichomoniasis"] },
-            { date: "2025-08-21", subjects: ["ONCOGINE"], topics: ["Bartolinitis", "Candidiasis vulvovaginal", "Chlamydia", "Tamizaje cáncer de mama", "Cáncer de mama"] },
-            { date: "2025-08-22", subjects: [], topics: ["Cáncer cérvicouterino", "Cáncer de endometrio", "Cáncer de ovario", "Cáncer de vagina", "Tumores anexiales"] },
-            { date: "2025-08-23", subjects: ["OBSTETRICIA"], topics: ["Control prenatal", "Aloinmunización materna", "Estática fetal", "Tipos de pelvis", "Atención del parto"] },
-            { date: "2025-08-24", subjects: [], topics: ["Manejo activo del parto", "Cesárea", "Parto pretérmino", "Puerperio fisiológico", "Líquido amniótico"] },
-            { date: "2025-08-25", subjects: [], topics: ["Ruptura prematura de membranas", "Corioamnionitis", "Distocias", "Embarazo múltiple", "Endometritis puerperal"] },
-            { date: "2025-08-26", subjects: [], topics: ["Hiperémesis gravídica", "Insuficiencia cervical", "Muerte fetal", "Enfermedades hipertensivas del embarazo", "Preeclampsia sin datos de severidad"] },
-            { date: "2025-08-27", subjects: [], topics: ["Síndrome de HELLP", "Diabetes gestacional", "IVU en el embarazo", "Restricción del crecimiento intrauterino", "Sepsis puerperal"] },
-            { date: "2025-08-28", subjects: ["HEMORRAGIAS OBSTÉTRICAS"], topics: ["Síndrome de Sheehan", "Depresión posparto", "Generalidades de hemorragias", "Hemorragia postparto", "Desgarro perineal"] },
-            { date: "2025-08-29", subjects: [], topics: ["Amenaza de aborto", "Aborto espontáneo", "Acretismo placentario", "Atonía uterina", "Choque hemorrágico en obstetricia"] },
-            { date: "2025-08-30", subjects: [], topics: ["Desprendimiento prematuro de placenta normoinserta", "Embarazo ectópico", "Placenta previa", "Ruptura uterina", "Vasa previa"] },
-            { date: "2025-08-31", subjects: ["NEONATOLOGÍA"], topics: ["Enfermedad trofoblástica gestacional", "APGAR", "Apnea del prematuro", "Asfixia neonatal", "Displasia broncopulmonar"] },
-            { date: "2025-09-01", subjects: [], topics: ["Silverman Anderson", "Síndrome de aspiración de meconio", "Maduración pulmonar", "Síndrome de dificultad respiratoria", "Encefalopatía hipóxica"] },
-            { date: "2025-09-02", subjects: [], topics: ["Enfermedad hemorrágica del recién nacido", "Enterocolitis necrotizante", "Hipoacusia neonatal", "Hipoglucemia neonatal", "Ictericia neonatal"] },
-            { date: "2025-09-03", subjects: [], topics: ["Muerte súbita del lactante", "Prematuro sano", "Reanimación neonatal", "Recién nacido de término", "Sepsis neonatal"] },
-            { date: "2025-09-04", subjects: [], topics: ["Tamiz neonatal", "Taquipnea transitoria del recién nacido", "Lesiones de plexo braquial obstétrico", "Lesiones extracraneales", "Displasia del desarrollo de la cadera DDC"] },
-            { date: "2025-09-05", subjects: ["CONGENITAS"], topics: ["Hirschsprung", "Cardiopatías congénitas", "Tetralogía de Fallot", "Coartación aórtica", "Persistencia del conducto arterioso"] },
-            { date: "2025-09-06", subjects: [], topics: ["Fenilcetonuria", "Fibrosis quística", "Galactosemia clásica", "Storch", "Storch Citomegalovirus"] },
-            { date: "2025-09-07", subjects: [], topics: ["Storch herpes simple", "Storch rubéola congénita", "Storch sífilis congénita", "Storch toxoplasmosis", "Storch varicela congénita"] },
-            { date: "2025-09-08", subjects: ["ESCOLAR"], topics: ["Control de niño sano", "Etapas del crecimiento", "Talla baja", "Alergia alimentaria", "Cuerpo extraño"] },
-            { date: "2025-09-09", subjects: [], topics: ["Dermatitis del pañal", "Estreñimiento funcional", "Hiperplasia adrenal congénita", "Hipotiroidismo congénito", "Maltrato infantil"] },
-            { date: "2025-09-10", subjects: [], topics: ["Mucopolisacaridosis", "Reflujo gastroesofágico del lactante"] },
-            { date: "2025-09-11", subjects: ["NUTRICIÓN PEDIÁTRICA"], topics: ["Alimentación complementaria", "Deficiencia de vitamina A", "Desnutrición pediátrica", "Hipovitaminosis", "Intolerancia a la lactosa", "Lactancia materna"] },
-            { date: "2025-09-12", subjects: [], topics: ["Obesidad en escolares", "Pelagra en niños", "Raquitismo carencial", "Síndrome metabólico en niños"] },
-            { date: "2025-09-13", subjects: ["INFECTOLOGÍA PEDIÁTRICA"], topics: ["Adenitis mesentérica", "Onfalitis", "Exantemáticas Diferencial", "Eritema infeccioso", "Escarlatina", "Exantema súbito"] },
-            { date: "2025-09-14", subjects: [], topics: ["Enfermedad de Kawasaki", "Síndrome mano pie boca", "Rubéola", "Sarampión", "Varicela", "Parotiditis"] },
-            { date: "2025-09-15", subjects: [], topics: ["Bronquiolitis", "Epiglotitis", "Laringotraqueitis CRUP", "Mononucleosis infecciosa", "Tos ferina", "IVU en menores"] },
-            { date: "2025-09-16", subjects: ["VACUNAS"], topics: ["Vacunas generalidades", "Tipos de vacunas", "Vacunación universal", "Aplicación de vacunas", "Vacuna para personal de salud", "Vacunas en el embarazo"] },
-            { date: "2025-09-17", subjects: [], topics: ["Esquema de vacunación", "Bcg", "Hepatitis A", "Hepatitis B", "Hexavalente", "Influenza", "Neumocócica"] },
-            { date: "2025-09-18", subjects: [], topics: ["Rotavirus", "Sabin", "Salmonella", "Dpt", "Srp", "Tétanos", "Varicela", "Vph"] }
-        ];
-
-        let userProgress = {};
-        const totalTopics = studyPlan.reduce((acc, day) => acc + day.topics.length, 0);
-        const ALL_TASK_IDS = ['task-1-1', 'task-1-2', 'task-1-3', 'task-2-1', 'task-2-2', 'task-3-1', 'task-4-1', 'task-5-1', 'task-5-2', 'task-6-1'];
+    document.addEventListener('DOMContentLoaded', function() {
         
-        const calendarContainer = document.getElementById('calendar-container');
-        const dayModal = document.getElementById('details-modal'), dayModalOverlay = document.getElementById('modal-overlay'), dayModalTitle = document.getElementById('modal-title'), dayModalTopicsContainer = document.getElementById('modal-topics'), dayModalNotes = document.getElementById('modal-notes'), saveNoteButton = document.getElementById('modal-save-btn');
-        const topicModal = document.getElementById('topic-plan-modal'), topicModalOverlay = document.getElementById('topic-plan-overlay'), topicModalTitle = document.getElementById('topic-plan-title'), topicStepCards = topicModal.querySelectorAll('.step-card'), topicTaskCheckboxes = topicModal.querySelectorAll('.task-checkbox'), aciertosInput = document.getElementById('score-aciertos'), reactivosInput = document.getElementById('score-reactivos'), percentageOutput = document.getElementById('score-percentage'), finishTopicButton = document.getElementById('topic-finish-btn');
-        const globalScoreBar = document.getElementById('global-score-bar'), globalAdvanceBar = document.getElementById('global-advance-bar');
-        
-        function getScoreColor(percentage) {
-            if (percentage < 60) return 'var(--error-color)';
-            if (percentage < 80) return 'var(--warning-color)';
-            return 'var(--vfd-green)';
-        }
+        //-------------------------------------------//
+        // LÓGICA DE NAVEGACIÓN POR PESTAÑAS
+        //-------------------------------------------//
+        const navLinks = document.querySelectorAll('.nav-link');
+        const contentSections = document.querySelectorAll('.content-section');
 
-        function displayDailyQuote() {
-            const quoteContainer = document.getElementById('motivational-quote-container');
-            if (quoteContainer) {
-                const randomIndex = Math.floor(Math.random() * motivationalQuotes.length);
-                quoteContainer.textContent = motivationalQuotes[randomIndex];
-            }
-        }
+        document.getElementById('main-nav').addEventListener('click', function(e) {
+            if (e.target.tagName === 'A') {
+                e.preventDefault();
+                const targetId = e.target.getAttribute('href').substring(1);
 
-        function startCountdown() {
-            const targetDate = new Date("2025-09-18T08:00:00").getTime();
-            const daysEl = document.getElementById('countdown-days');
-            const hoursEl = document.getElementById('countdown-hours');
-            const minutesEl = document.getElementById('countdown-minutes');
-            const secondsEl = document.getElementById('countdown-seconds');
-            if (!daysEl || !hoursEl || !minutesEl || !secondsEl) return;
-            const interval = setInterval(() => {
-                const now = new Date().getTime();
-                const distance = targetDate - now;
-                if (distance < 0) {
-                    clearInterval(interval);
-                    daysEl.textContent = "000"; hoursEl.textContent = "00"; minutesEl.textContent = "00"; secondsEl.textContent = "00";
-                    return;
-                }
-                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                daysEl.textContent = String(days).padStart(3, '0');
-                hoursEl.textContent = String(hours).padStart(2, '0');
-                minutesEl.textContent = String(minutes).padStart(2, '0');
-                secondsEl.textContent = String(seconds).padStart(2, '0');
-            }, 1000);
-        }
-
-        function buildSubjectMap() {
-            let lastSubjects = [];
-            studyPlan.forEach(day => {
-                const subjectsForThisDay = day.subjects.length > 0 ? day.subjects : lastSubjects;
-                if(day.subjects.length > 0) {
-                    lastSubjects = day.subjects;
-                }
-                const dayTopicIds = day.topics.map(topicName => generateTopicId(day.date, topicName));
-                subjectsForThisDay.forEach(subjectName => {
-                    if (!subjectToTopicsMap.has(subjectName)) {
-                        subjectToTopicsMap.set(subjectName, []);
-                    }
-                    const currentTopics = subjectToTopicsMap.get(subjectName);
-                    const updatedTopics = new Set([...currentTopics, ...dayTopicIds]);
-                    subjectToTopicsMap.set(subjectName, Array.from(updatedTopics));
+                contentSections.forEach(section => {
+                    section.classList.remove('active');
                 });
-            });
-        }
 
-    function calculateSubjectScore(subjectName) {
-    const topicIds = subjectToTopicsMap.get(subjectName);
-    if (!topicIds || topicIds.length === 0) return null;
-    let totalScoreSum = 0;
-    let scoredTopicsCount = 0;
-    topicIds.forEach(topicId => {
-        const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`)) || 0;
-        if (reactivos > 0) {
-            const aciertos = parseInt(getData(`topicData.${topicId}.scoreAciertos`)) || 0;
-            totalScoreSum += (aciertos / reactivos) * 100;
-            scoredTopicsCount++;
-        }
-    });
-    if (scoredTopicsCount > 0) {
-        const average = totalScoreSum / scoredTopicsCount;
-        // MODIFICACIÓN: Añadido .toFixed(2)
-        return average.toFixed(2);
-    }
-    return null;
-}
+                document.getElementById(targetId).classList.add('active');
 
-        function loadUserProgress(data) {
-            if (data) { userProgress = data; } 
-            else { userProgress = {}; }
-        }
-
-async function saveData(key, value) {
-    // 1. Verificación inicial: Si no hay usuario, no hacemos nada.
-    if (!currentUser) {
-        console.error("No se puede guardar: El usuario no está autenticado.");
-        return;
-    }
-    const docRef = db.collection('userProgress').doc(currentUser.uid);
-
-    // 2. Usamos `update` que es el método correcto para modificar campos anidados
-    //    usando la notación de punto.
-    try {
-        await docRef.update({ [key]: value });
-        console.log(`%cDato actualizado en Firestore:`, 'color: lightgreen', { [key]: value });
-    } catch (error) {
-        // 3. Si `update` falla porque el documento no existe, lo creamos con `set`.
-        //    Esto hace el código robusto para el primer guardado de un usuario.
-        if (error.code === 'not-found') {
-            console.warn("El documento no existía. Creándolo por primera vez...");
-            try {
-                await docRef.set({ [key]: value });
-                console.log(`%cDocumento creado y dato guardado:`, 'color: lightblue', { [key]: value });
-            } catch (creationError) {
-                console.error("Error crítico al intentar crear el documento:", creationError);
-            }
-        } else {
-            // 4. Si el error es otro (ej. permisos), lo mostramos en la consola.
-            console.error("Error al guardar en Firestore (que no fue 'not-found'):", error);
-        }
-    }
-
-    // 5. Actualizamos el objeto local `userProgress` para que la UI responda
-    //    al instante sin tener que volver a leer de la base de datos.
-    const keys = key.split('.');
-    let current = userProgress;
-    for (let i = 0; i < keys.length - 1; i++) {
-        current = current[keys[i]] = current[keys[i]] || {};
-    }
-    current[keys[keys.length - 1]] = value;
-}
-
-        function getData(key, defaultValue = null) {
-            const keys = key.split('.');
-            let result = userProgress;
-            for (const k of keys) {
-                if (result && typeof result === 'object' && k in result) { result = result[k]; } 
-                else { return defaultValue; }
-            }
-            return result;
-        }
-
-        function isTopicComplete(topicId) { return ALL_TASK_IDS.every(taskId => getData(`topicData.${topicId}.${taskId}`) === true); }
-        function generateTopicId(dateString, topicName) { const cleanTopic = topicName.toLowerCase().replace(/[^a-z0-9]/g, ''); return `topic_${dateString}_${cleanTopic}`; }
-        
-        function createTopicListItem(topic, dateString) {
-    const topicId = generateTopicId(dateString, topic);
-    const isComplete = isTopicComplete(topicId);
-    const liClass = `topic-item ${isComplete ? 'topic-completed' : ''}`;
-    let scoreHTML = '';
-    const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`)) || 0;
-    if (reactivos > 0) {
-        const aciertos = parseInt(getData(`topicData.${topicId}.scoreAciertos`)) || 0;
-        const percentage = (aciertos / reactivos) * 100;
-        const color = getScoreColor(percentage);
-        // MODIFICACIÓN: Añadido .toFixed(2)
-        scoreHTML = `<span class="topic-score" style="color: ${color};">(${percentage.toFixed(2)}%)</span>`;
-    }
-    return `<li class="${liClass}" data-topic-id="${topicId}" data-topic-name="${topic}"><span>${topic}</span>${scoreHTML}</li>`;
-}
-        
-        function populateCalendar() {
-            const daysMap = new Map(studyPlan.map(day => [day.date, day]));
-            const startDate = new Date(studyPlan[0].date + "T00:00:00");
-            const visualEndDate = new Date("2025-09-27T23:59:59"); 
-            const calendarGridEndDate = new Date(visualEndDate.getFullYear(), visualEndDate.getMonth() + 1, 0, 23, 59, 59);
-            let weeks = []; let dateCursor = new Date(startDate); dateCursor.setDate(dateCursor.getDate() - dateCursor.getDay());
-            while (dateCursor <= calendarGridEndDate) { let week = []; for(let i=0; i < 7; i++) { week.push(new Date(dateCursor)); dateCursor.setDate(dateCursor.getDate() + 1); } weeks.push(week); }
-            const monthLayout = new Map(); weeks.forEach((week, weekIndex) => { const firstDayOfWeek = week[0]; const monthName = firstDayOfWeek.toLocaleString('es-ES', { month: 'long' }); if (!monthLayout.has(monthName)) { monthLayout.set(monthName, { startRow: weekIndex + 2, rowSpan: 1 }); } else { monthLayout.get(monthName).rowSpan++; } });
-            calendarContainer.innerHTML = ''; calendarContainer.innerHTML += '<div class="header-cell meta-header">M</div><div class="header-cell meta-header">S</div>'; ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].forEach(day => calendarContainer.innerHTML += `<div class="header-cell day-header">${day}</div>`);
-            monthLayout.forEach((layout, name) => { calendarContainer.innerHTML += `<div class="month-cell" style="grid-row: ${layout.startRow} / span ${layout.rowSpan}">${name}</div>`; });
-            weeks.forEach((week, weekIndex) => {
-                calendarContainer.innerHTML += `<div class="week-cell-container" style="grid-row: ${weekIndex + 2}"><span class="week-number">${weekIndex + 1}</span></div>`;
-                week.forEach(date => {
-                    const cell = document.createElement('div');
-                    cell.className = 'day-cell';
-                    const dateString = date.toISOString().split('T')[0];
-                    if (date < startDate || date > visualEndDate) { cell.classList.add('empty'); }
-                    else {
-                        cell.dataset.date = dateString;
-                        cell.innerHTML = `<div class="calendar-day-number">${date.getDate()}</div>`;
-                        const dayData = daysMap.get(dateString);
-                        if (dayData) {
-                            let contentHTML = '<ul>';
-                            if (dayData.subjects && dayData.subjects.length > 0) {
-                                const subjectTitles = dayData.subjects.map(subject => {
-                                    const score = calculateSubjectScore(subject);
-                                    const scoreText = score !== null ? `<span class="subject-score">(${score}%)</span>` : '';
-                                    return `${subject}${scoreText}`;
-                                }).join(' / ');
-                                contentHTML += `<li><span class="subject-title">${subjectTitles}</span></li>`;
-                            }
-                            contentHTML += dayData.topics.map(topic => createTopicListItem(topic, dateString)).join('');
-                            contentHTML += '</ul>';
-                            cell.innerHTML += `<div class="day-content">${contentHTML}</div>`;
-                        }
-                    }
-                    calendarContainer.appendChild(cell);
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
                 });
-            });
-        }
-
-   function updateGlobalProgressBars() {
-    // 1. Lógica para la barra de AVANCE (Temas Completados)
-    let completedTopics = 0;
-    studyPlan.forEach(day => {
-        day.topics.forEach(topic => {
-            const topicId = generateTopicId(day.date, topic);
-            if (isTopicComplete(topicId)) {
-                completedTopics++;
+                e.target.classList.add('active');
             }
         });
-    });
-    const advancePercentage = totalTopics > 0 ? (completedTopics / totalTopics) * 100 : 0;
-    
-    // Para el ancho de la barra usamos el número redondeado
-    globalAdvanceBar.style.width = `${Math.round(advancePercentage)}%`;
-    // Para el texto, usamos el número con dos decimales
-    globalAdvanceBar.textContent = `${advancePercentage.toFixed(2)}%`;
 
-    // 2. Lógica para la barra de PUNTUACIÓN (Promedio de Calificaciones)
-    let totalSubjectScoreSum = 0;
-    let subjectsWithScoresCount = 0;
-    const allSubjects = Array.from(subjectToTopicsMap.keys());
-    
-    allSubjects.forEach(subject => {
-        // La función calculateSubjectScore ya devuelve un string con .toFixed(2) o null.
-        // Necesitamos convertirlo de nuevo a número para poder sumarlo.
-        const subjectScoreStr = calculateSubjectScore(subject);
-        if (subjectScoreStr !== null) {
-            totalSubjectScoreSum += parseFloat(subjectScoreStr);
-            subjectsWithScoresCount++;
+        //-------------------------------------------//
+        // LÓGICA DEL CAMBIADOR DE TEMA (DARK MODE)
+        //-------------------------------------------//
+        const themeSwitcher = document.getElementById('theme-switcher');
+        const themeIconSun = document.getElementById('theme-icon-sun');
+        const themeIconMoon = document.getElementById('theme-icon-moon');
+        const html = document.documentElement;
+
+        // Cargar tema guardado
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme === 'dark') {
+            html.classList.add('dark-mode');
+            themeIconSun.style.display = 'none';
+            themeIconMoon.style.display = 'block';
         }
-    });
 
-    const scorePercentage = subjectsWithScoresCount > 0 ? totalSubjectScoreSum / subjectsWithScoresCount : 0;
-    
-    // Para el ancho de la barra usamos el número redondeado
-    globalScoreBar.style.width = `${Math.round(scorePercentage)}%`;
-    // Para el texto, usamos el número con dos decimales
-    globalScoreBar.textContent = `${scorePercentage.toFixed(2)}%`;
-}
-
-        function showDayModal(dateString) { const dayData = new Map(studyPlan.map(d => [d.date, d])).get(dateString); const date = new Date(dateString + "T00:00:00"); dayModalTitle.textContent = date.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }); let topicsHTML = '<ul>'; if (dayData) { if (dayData.subjects && dayData.subjects.length > 0) { const subjectTitles = dayData.subjects.map(subject => { const score = calculateSubjectScore(subject); const scoreText = score !== null ? `<span class="subject-score">(${score}%)</span>` : ''; return `${subject}${scoreText}`; }).join(' / '); topicsHTML += `<li><span class="subject-title">${subjectTitles}</span></li>`; } topicsHTML += dayData.topics.map(topic => createTopicListItem(topic, dateString)).join(''); } topicsHTML += '</ul>'; dayModalTopicsContainer.innerHTML = topicsHTML; dayModalNotes.value = getData(`dayNotes.${dateString}`, ''); dayModal.dataset.currentDate = dateString; dayModalOverlay.classList.add('visible'); dayModal.classList.add('visible'); }
-        function closeDayModal() { dayModalOverlay.classList.remove('visible'); dayModal.classList.remove('visible'); }
-        function saveDayNote() { const dateString = dayModal.dataset.currentDate; if (dateString) { saveData(`dayNotes.${dateString}`, dayModalNotes.value); } closeDayModal(); }
-        function showTopicPlan(topicId, topicName) { topicModal.dataset.currentTopicId = topicId; topicModalTitle.textContent = topicName; loadTopicState(topicId); topicModalOverlay.classList.add('visible'); topicModal.classList.add('visible'); }
-        function closeTopicModal() { topicModalOverlay.classList.remove('visible'); topicModal.classList.remove('visible'); }
-        function loadTopicState(topicId) { topicTaskCheckboxes.forEach(checkbox => { checkbox.checked = getData(`topicData.${topicId}.${checkbox.id}`) === true; }); aciertosInput.value = getData(`topicData.${topicId}.scoreAciertos`, ''); reactivosInput.value = getData(`topicData.${topicId}.scoreReactivos`, ''); updateScorePercentage(); updateAllStepCardsStatus(); }
-        function saveTopicState(key, value) { const topicId = topicModal.dataset.currentTopicId; if (topicId) { saveData(`topicData.${topicId}.${key}`, value); } }
-        function updateScorePercentage() {
-            const aciertos = parseInt(aciertosInput.value) || 0;
-            const reactivos = parseInt(reactivosInput.value) || 0;
-            let percentage = 0;
-            if (reactivos > 0) {
-                percentage = (aciertos / reactivos) * 100;
+        themeSwitcher.addEventListener('click', function() {
+            html.classList.toggle('dark-mode');
+            if (html.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+                themeIconSun.style.display = 'none';
+                themeIconMoon.style.display = 'block';
+            } else {
+                localStorage.setItem('theme', 'light');
+                themeIconSun.style.display = 'block';
+                themeIconMoon.style.display = 'none';
             }
-            const color = getScoreColor(percentage);
-            percentageOutput.value = percentage.toFixed(2) + "%";
-            percentageOutput.style.color = color;
-        }
-        function updateStepCardStatus(cardElement) { const tasksInCard = cardElement.querySelectorAll('.task-checkbox'); const allTasksCompleted = Array.from(tasksInCard).every(task => task.checked); cardElement.classList.toggle('completed', allTasksCompleted); }
-        function updateAllStepCardsStatus() { topicStepCards.forEach(updateStepCardStatus); }
-        
-        function finishTopicSession() {
-            const topicId = topicModal.dataset.currentTopicId;
-            if (!topicId) return;
-            closeTopicModal();
-            updateGlobalProgressBars();
-            populateCalendar();
-        }
+        });
 
-        async function main() {
-            displayDailyQuote();
-            startCountdown();
-            buildSubjectMap();
-            const docRef = db.collection('userProgress').doc(currentUser.uid);
-            const doc = await docRef.get();
-            loadUserProgress(doc.exists ? doc.data() : null);
-            populateCalendar();
-            updateGlobalProgressBars();
-            calendarContainer.addEventListener('click', e => { const cell = e.target.closest('.day-cell:not(.empty)'); if (cell) showDayModal(cell.dataset.date); });
-            dayModalTopicsContainer.addEventListener('click', e => { const topicLi = e.target.closest('.topic-item'); if (topicLi) { const { topicId, topicName } = topicLi.dataset; showTopicPlan(topicId, topicName); } });
-            dayModal.querySelector('#modal-close-day').addEventListener('click', closeDayModal); dayModalOverlay.addEventListener('click', closeDayModal);
-            topicModal.querySelector('#modal-close-topic').addEventListener('click', closeTopicModal);
-            finishTopicButton.addEventListener('click', finishTopicSession);
-            document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (topicModal.classList.contains('visible')) { closeTopicModal(); } else if (dayModal.classList.contains('visible')) { closeDayModal(); } } });
-            saveNoteButton.addEventListener('click', saveDayNote);
-            topicTaskCheckboxes.forEach(checkbox => { checkbox.addEventListener('change', function() { saveTopicState(this.id, this.checked); updateStepCardStatus(this.closest('.step-card')); }); });
-            aciertosInput.addEventListener('input', () => { saveTopicState('scoreAciertos', aciertosInput.value); updateScorePercentage(); });
-            reactivosInput.addEventListener('input', () => { saveTopicState('scoreReactivos', reactivosInput.value); updateScorePercentage(); });
-        }
+        //-------------------------------------------//
+        // LÓGICA DEL SIMULADOR DE CASOS CLÍNICOS
+        //-------------------------------------------//
+        const quizForm = document.getElementById('quiz-form');
 
-        main();
-    }
+        const answers = {
+            case1: { q1: 'c', q2: 'd', q3: 'b' },
+            case2: { q1: 'b', q2: 'c', q3: 'd' },
+            case3: { q1: 'b', q2: 'c', q3: 'd' }
+        };
+
+        const rationales = {
+            case1_q1: {
+                correct: "La GPC establece una fuerte correlación entre el nivel de prolactina y la etiología. Un nivel >100 ng/mL, como los 130 ng/mL de la paciente, en ausencia de embarazo o hipotiroidismo, es altamente sugestivo de un prolactinoma. Dado que no hay síntomas de efecto de masa, lo más probable es que se trate de un microadenoma.",
+                distractors: {
+                    a: "Incorrecto. Las causas fisiológicas raramente elevan la PRL por encima de 40-50 ng/mL.",
+                    b: "Incorrecto. Aunque es una posibilidad, la paciente lo niega y el nivel >100 hace más probable la causa tumoral.",
+                    d: "Incorrecto. Los macroprolactinomas típicamente se asocian con niveles de PRL >250 ng/mL."
+                }
+            },
+            case1_q2: {
+                correct: "La GPC es clara: ante un nivel de prolactina persistentemente >100 ng/mL con otras causas descartadas, está indicado realizar un estudio de imagen. El estudio de elección por su alta sensibilidad es la resonancia magnética con gadolinio.",
+                distractors: {
+                    a: "Incorrecto. La TC es menos sensible que la RM para lesiones hipofisarias pequeñas.",
+                    b: "Incorrecto. Esta conducta expectante podría ser válida para elevaciones leves (<100 ng/mL), pero no con 130 ng/mL.",
+                    c: "Incorrecto. No se debe iniciar tratamiento sin tener un diagnóstico estructural confirmado."
+                }
+            },
+            case1_q3: {
+                correct: "El tratamiento de primera línea para los prolactinomas es médico, con agonistas dopaminérgicos. Estos fármacos normalizan la PRL, restaurando la ovulación y permitiendo el embarazo.",
+                distractors: {
+                    a: "Incorrecto. La cirugía no es el tratamiento de primera línea para un microprolactinoma.",
+                    c: "Incorrecto. Esto enmascararía el problema y no trataría la causa de la anovulación.",
+                    d: "Incorrecto. Se debe tratar la causa médica primero, ya que la mayoría de las pacientes recuperan la fertilidad."
+                }
+            },
+            case2_q1: {
+                correct: "La pérdida de los campos visuales temporales en ambos ojos es la definición clásica de hemianopsia bitemporal, causada por la compresión del quiasma óptico.",
+                distractors: {
+                    a: "Incorrecto. Afecta el mismo cuadrante en ambos ojos y sugiere una lesión retroquiasmática.",
+                    c: "Incorrecto. Es una pérdida visual monocular y transitoria, usualmente de origen vascular.",
+                    d: "Incorrecto. Es un punto ciego en el centro del campo visual."
+                }
+            },
+            case2_q2: {
+                correct: "La combinación de hipogonadismo, efecto de masa (cefalea, hemianopsia bitemporal) y una PRL >250 ng/mL (en este caso, 950 ng/mL) es patognomónica de un macroprolactinoma.",
+                 distractors: {
+                    a: "Incorrecto. 'Idiopático' es un diagnóstico de exclusión, y aquí hay una causa tumoral evidente.",
+                    b: "Incorrecto. La hiperprolactinemia por efecto de tallo suele ser leve a moderada (<150 ng/mL).",
+                    d: "Incorrecto. El hipotiroidismo primario causa elevación leve-moderada y no un efecto de masa directo."
+                }
+            },
+             case2_q3: {
+                correct: "Según la GPC, la presencia de alteraciones campimétricas o cualquier déficit neurológico secundario a la masa es una indicación de referencia urgente a Neurocirugía por la amenaza a la visión.",
+                 distractors: {
+                    a: "Incorrecto. El nivel de PRL por sí solo es criterio para Endocrinología, no la urgencia neuroquirúrgica.",
+                    b: "Incorrecto. La cefalea no tiene el mismo grado de urgencia que un déficit visual progresivo.",
+                    c: "Incorrecto. Este es un síntoma del hipogonadismo y es manejado por Endocrinología."
+                }
+            },
+             case3_q1: {
+                correct: "The patient has two clear reasons: CKD (decreased clearance) and a 1.2 cm macroadenoma. The low prolactin level for this tumor size suggests it's a non-functioning adenoma causing stalk compression.",
+                 distractors: {
+                    a: "Incorrecto. There are two much more prominent pathological explanations.",
+                    c: "Incorrecto. The vignette states he is not on such medications, and gynecomastia is a symptom.",
+                    d: "Incorrecto. A true prolactin-secreting macroadenoma would produce PRL levels well over 200 ng/mL."
+                }
+            },
+             case3_q2: {
+                correct: "This is a classic 'disconnection hyperprolactinemia'. A non-functioning adenoma compresses the pituitary stalk, blocking inhibitory dopamine. This results in mild-to-moderate elevation of prolactin (typically <150 ng/mL), fitting the patient's value of 85 ng/mL.",
+                 distractors: {
+                    a: "Incorrecto. The discrepancy is too large.",
+                    b: "Incorrecto. The hook effect is seen with giant tumors and this tumor is not giant.",
+                    d: "Incorrecto. This would be an acromegaly presentation, which is not suggested."
+                }
+            },
+            case3_q3: {
+                correct: "Ruling out the hook effect confirms the level is accurate. This confirms the tumor is non-functioning, which does not respond to dopamine agonists. Therefore, the primary treatment is surgical resection.",
+                 distractors: {
+                    a: "Incorrecto. 'd' is better because it states the correct underlying diagnosis, which is the reason for the treatment difference.",
+                    b: "Incorrecto. The macroadenoma is a major pathological finding that cannot be ignored.",
+                    c: "Incorrecto. This ignores the significant finding of a macroadenoma on MRI."
+                }
+            }
+        };
+
+        quizForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let score = 0;
+            const totalQuestions = 9;
+
+            // Loop through cases and questions
+            for (const caseKey in answers) { // case1, case2, case3
+                for (const qKey in answers[caseKey]) { // q1, q2, q3
+                    const questionName = `${caseKey}_${qKey}`;
+                    const selectedOption = document.querySelector(`input[name="${questionName}"]:checked`);
+                    const analysisContainer = document.getElementById(`analysis_${questionName}`);
+                    
+                    if (!selectedOption) {
+                        analysisContainer.innerHTML = `<p class="question-text">Pregunta no respondida.</p>`;
+                        continue;
+                    }
+                    
+                    const userAnswer = selectedOption.value;
+                    const correctAnswer = answers[caseKey][qKey];
+                    const isCorrect = userAnswer === correctAnswer;
+                    const rationaleData = rationales[questionName];
+
+                    let feedbackHTML = `
+                        <p class="question-text">${document.querySelector(`input[name="${questionName}"]`).closest('.question-block').querySelector('.question-text').innerHTML}</p>
+                        <p>Tu respuesta: <strong>Opción ${userAnswer.toUpperCase()}</strong> - ${isCorrect ? '<span style="color: green; font-weight: bold;">Correcta</span>' : '<span style="color: red; font-weight: bold;">Incorrecta</span>'}</p>
+                    `;
+                    
+                    if(isCorrect) {
+                        score++;
+                        feedbackHTML += `
+                            <div class="feedback-box feedback-correct">
+                                <h5>Justificación</h5>
+                                <p>${rationaleData.correct}</p>
+                            </div>
+                        `;
+                    } else {
+                        feedbackHTML += `
+                            <div class="feedback-box feedback-correct">
+                                <h5>Respuesta Correcta: Opción ${correctAnswer.toUpperCase()}</h5>
+                                <p>${rationaleData.correct}</p>
+                            </div>
+                            <div class="feedback-box feedback-incorrect">
+                                <h5>Análisis de Distractores</h5>
+                                <ul>
+                                    ${Object.entries(rationaleData.distractors).map(([key, value]) => `<li><strong>Opción ${key.toUpperCase()}:</strong> ${value}</li>`).join('')}
+                                </ul>
+                            </div>
+                        `;
+                    }
+                    analysisContainer.innerHTML = feedbackHTML;
+                }
+            }
+
+            // Display results
+            const percentage = Math.round((score / totalQuestions) * 100);
+            document.getElementById('score-display').textContent = `Calificación: ${score} / ${totalQuestions} correctas`;
+            const percentageDisplay = document.getElementById('percentage-display');
+            percentageDisplay.textContent = `${percentage}%`;
+            
+            percentageDisplay.classList.remove('score-red', 'score-yellow', 'score-green');
+            if (percentage < 60) {
+                percentageDisplay.classList.add('score-red');
+            } else if (percentage < 80) {
+                percentageDisplay.classList.add('score-yellow');
+            } else {
+                percentageDisplay.classList.add('score-green');
+            }
+
+            document.getElementById('quiz-form').style.display = 'none';
+            const resultsSection = document.getElementById('results-section');
+            resultsSection.style.display = 'block';
+            resultsSection.querySelector('.analysis-section').style.display = 'block';
+
+            // Scroll to results
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        });
+
+    });
     </script>
 </body>
 </html>
