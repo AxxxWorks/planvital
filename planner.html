@@ -462,21 +462,26 @@
             });
         }
 
-        function calculateSubjectScore(subjectName) {
-            const topicIds = subjectToTopicsMap.get(subjectName);
-            if (!topicIds || topicIds.length === 0) return null;
-            let totalScoreSum = 0;
-            let scoredTopicsCount = 0;
-            topicIds.forEach(topicId => {
-                const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`)) || 0;
-                if (reactivos > 0) {
-                    const aciertos = parseInt(getData(`topicData.${topicId}.scoreAciertos`)) || 0;
-                    totalScoreSum += (aciertos / reactivos) * 100;
-                    scoredTopicsCount++;
-                }
-            });
-            return scoredTopicsCount > 0 ? Math.round(totalScoreSum / scoredTopicsCount) : null;
+    function calculateSubjectScore(subjectName) {
+    const topicIds = subjectToTopicsMap.get(subjectName);
+    if (!topicIds || topicIds.length === 0) return null;
+    let totalScoreSum = 0;
+    let scoredTopicsCount = 0;
+    topicIds.forEach(topicId => {
+        const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`)) || 0;
+        if (reactivos > 0) {
+            const aciertos = parseInt(getData(`topicData.${topicId}.scoreAciertos`)) || 0;
+            totalScoreSum += (aciertos / reactivos) * 100;
+            scoredTopicsCount++;
         }
+    });
+    if (scoredTopicsCount > 0) {
+        const average = totalScoreSum / scoredTopicsCount;
+        // MODIFICACIÓN: Añadido .toFixed(2)
+        return average.toFixed(2);
+    }
+    return null;
+}
 
         function loadUserProgress(data) {
             if (data) { userProgress = data; } 
@@ -537,19 +542,20 @@ async function saveData(key, value) {
         function generateTopicId(dateString, topicName) { const cleanTopic = topicName.toLowerCase().replace(/[^a-z0-9]/g, ''); return `topic_${dateString}_${cleanTopic}`; }
         
         function createTopicListItem(topic, dateString) {
-            const topicId = generateTopicId(dateString, topic);
-            const isComplete = isTopicComplete(topicId);
-            const liClass = `topic-item ${isComplete ? 'topic-completed' : ''}`;
-            let scoreHTML = '';
-            const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`)) || 0;
-            if (reactivos > 0) {
-                const aciertos = parseInt(getData(`topicData.${topicId}.scoreAciertos`)) || 0;
-                const percentage = Math.round((aciertos / reactivos) * 100);
-                const color = getScoreColor(percentage);
-                scoreHTML = `<span class="topic-score" style="color: ${color};">(${percentage}%)</span>`;
-            }
-            return `<li class="${liClass}" data-topic-id="${topicId}" data-topic-name="${topic}"><span>${topic}</span>${scoreHTML}</li>`;
-        }
+    const topicId = generateTopicId(dateString, topic);
+    const isComplete = isTopicComplete(topicId);
+    const liClass = `topic-item ${isComplete ? 'topic-completed' : ''}`;
+    let scoreHTML = '';
+    const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`)) || 0;
+    if (reactivos > 0) {
+        const aciertos = parseInt(getData(`topicData.${topicId}.scoreAciertos`)) || 0;
+        const percentage = (aciertos / reactivos) * 100;
+        const color = getScoreColor(percentage);
+        // MODIFICACIÓN: Añadido .toFixed(2)
+        scoreHTML = `<span class="topic-score" style="color: ${color};">(${percentage.toFixed(2)}%)</span>`;
+    }
+    return `<li class="${liClass}" data-topic-id="${topicId}" data-topic-name="${topic}"><span>${topic}</span>${scoreHTML}</li>`;
+}
         
         function populateCalendar() {
             const daysMap = new Map(studyPlan.map(day => [day.date, day]));
@@ -625,7 +631,17 @@ async function saveData(key, value) {
         function closeTopicModal() { topicModalOverlay.classList.remove('visible'); topicModal.classList.remove('visible'); }
         function loadTopicState(topicId) { topicTaskCheckboxes.forEach(checkbox => { checkbox.checked = getData(`topicData.${topicId}.${checkbox.id}`) === true; }); aciertosInput.value = getData(`topicData.${topicId}.scoreAciertos`, ''); reactivosInput.value = getData(`topicData.${topicId}.scoreReactivos`, ''); updateScorePercentage(); updateAllStepCardsStatus(); }
         function saveTopicState(key, value) { const topicId = topicModal.dataset.currentTopicId; if (topicId) { saveData(`topicData.${topicId}.${key}`, value); } }
-        function updateScorePercentage() { const aciertos = parseInt(aciertosInput.value) || 0; const reactivos = parseInt(reactivosInput.value) || 0; let percentage = 0; if (reactivos > 0) { percentage = Math.round((aciertos / reactivos) * 100); } const color = getScoreColor(percentage); percentageOutput.value = percentage + "%"; percentageOutput.style.color = color; }
+        function updateScorePercentage() {
+            const aciertos = parseInt(aciertosInput.value) || 0;
+            const reactivos = parseInt(reactivosInput.value) || 0;
+            let percentage = 0;
+            if (reactivos > 0) {
+                percentage = (aciertos / reactivos) * 100;
+            }
+            const color = getScoreColor(percentage);
+            percentageOutput.value = percentage.toFixed(2) + "%";
+            percentageOutput.style.color = color;
+        }
         function updateStepCardStatus(cardElement) { const tasksInCard = cardElement.querySelectorAll('.task-checkbox'); const allTasksCompleted = Array.from(tasksInCard).every(task => task.checked); cardElement.classList.toggle('completed', allTasksCompleted); }
         function updateAllStepCardsStatus() { topicStepCards.forEach(updateStepCardStatus); }
         
