@@ -508,7 +508,6 @@
 
         async function main() {
             displayDailyQuote();
-            
             const docRef = db.collection('userProgress').doc(currentUser.uid);
             const doc = await docRef.get();
             loadUserProgress(doc.data());
@@ -526,29 +525,9 @@
             startCountdown();
             populateCalendar();
             
-            editCountdownBtn.addEventListener('click', () => {
-                countdownEditor.style.display = countdownEditor.style.display === 'flex' ? 'none' : 'flex';
-            });
-            saveCountdownBtn.addEventListener('click', async () => {
-                const newDate = countdownDatePicker.value;
-                if (newDate) {
-                    countdownTargetDateStr = newDate;
-                    await saveData('countdownTarget', newDate);
-                    startCountdown();
-                    populateCalendar();
-                    countdownEditor.style.display = 'none';
-                }
-            });
-            calendarContainer.addEventListener('click', e => {
-                const topicLi = e.target.closest('.topic-item');
-                if (topicLi && !draggedItem) {
-                     const { topicId, topicName } = topicLi.dataset;
-                     showTopicPlan(topicId, topicName);
-                     return;
-                }
-                const cell = e.target.closest('.day-cell:not(.empty)');
-                if (cell) showDayModal(cell.dataset.date);
-            });
+            editCountdownBtn.addEventListener('click', () => { countdownEditor.style.display = countdownEditor.style.display === 'flex' ? 'none' : 'flex'; });
+            saveCountdownBtn.addEventListener('click', async () => { const newDate = countdownDatePicker.value; if (newDate) { countdownTargetDateStr = newDate; await saveData('countdownTarget', newDate); startCountdown(); populateCalendar(); countdownEditor.style.display = 'none'; } });
+            calendarContainer.addEventListener('click', e => { const topicLi = e.target.closest('.topic-item'); if (topicLi && !draggedItem) { const { topicId, topicName } = topicLi.dataset; showTopicPlan(topicId, topicName); return; } const cell = e.target.closest('.day-cell:not(.empty)'); if (cell) showDayModal(cell.dataset.date); });
             dayModalTopicsContainer.addEventListener('click', e => { const topicLi = e.target.closest('.topic-item'); if (topicLi) { const { topicId, topicName } = topicLi.dataset; showTopicPlan(topicId, topicName); } });
             dayModal.querySelector('#modal-close-day').addEventListener('click', closeDayModal);
             dayModalOverlay.addEventListener('click', closeDayModal);
@@ -560,12 +539,85 @@
             aciertosInput.addEventListener('input', () => { saveTopicState('scoreAciertos', aciertosInput.value); updateScorePercentage(); });
             reactivosInput.addEventListener('input', () => { saveTopicState('scoreReactivos', reactivosInput.value); updateScorePercentage(); });
             
-            calendarContainer.addEventListener('dragstart', e => { if (e.target.classList.contains('topic-item')) { draggedItem = e.target; setTimeout(() => e.target.classList.add('dragging'), 0); } });
+            calendarContainer.addEventListener('dragstart', e => {
+                if (e.target.classList.contains('topic-item')) {
+                    draggedItem = e.target;
+                    
+                    let subjectTitle = 'default';
+                    let currentElement = draggedItem.previousElementSibling;
+                    while(currentElement) {
+                        if(currentElement.querySelector('.subject-title')) {
+                            subjectTitle = currentElement.querySelector('.subject-title').textContent.split('(')[0].trim();
+                            break;
+                        }
+                        currentElement = currentElement.previousElementSibling;
+                    }
+                    e.dataTransfer.setData('application/json', JSON.stringify({
+                        topicName: draggedItem.dataset.topicName,
+                        sourceSubject: subjectTitle
+                    }));
+
+                    setTimeout(() => e.target.classList.add('dragging'), 0);
+                }
+            });
+
             calendarContainer.addEventListener('dragend', e => { if (draggedItem) { draggedItem.classList.remove('dragging'); draggedItem = null; clearDragStyles(); } });
             calendarContainer.addEventListener('dragover', e => { e.preventDefault(); const targetCell = e.target.closest('.day-cell:not(.empty)'); if (!targetCell || !draggedItem) { clearDragStyles(); return; } const sourceDate = draggedItem.closest('.day-cell').dataset.date; const targetDate = targetCell.dataset.date; clearDragStyles(); if (sourceDate === targetDate) { const targetTopic = e.target.closest('.topic-item'); if (targetTopic && targetTopic !== draggedItem) { lastDragOverTopic = targetTopic; const rect = targetTopic.getBoundingClientRect(); const midpointY = rect.top + rect.height / 2; if (e.clientY < midpointY) { targetTopic.classList.add('drag-over-top'); } else { targetTopic.classList.add('drag-over-bottom'); } } } else { lastDragOverCell = targetCell; targetCell.classList.add('drag-over'); } });
-            calendarContainer.addEventListener('drop', e => { e.preventDefault(); if (!draggedItem) return; const targetCell = e.target.closest('.day-cell'); if (!targetCell || targetCell.classList.contains('empty')) { clearDragStyles(); return; } const sourceCell = draggedItem.closest('.day-cell'); const sourceDate = sourceCell.dataset.date; const targetDate = targetCell.dataset.date; const topicName = draggedItem.dataset.topicName; const sourceDay = studyPlan.find(d => d.date === sourceDate); if (!sourceDay) return; let removed = false; sourceDay.blocks.forEach(block => { const topicIndex = block.topics.indexOf(topicName); if (topicIndex > -1) { block.topics.splice(topicIndex, 1); removed = true; } }); if (!removed) return; if (sourceDate === targetDate) { const targetTopicEl = e.target.closest('.topic-item'); let reinserted = false; if (targetTopicEl && targetTopicEl !== draggedItem) { const targetTopicName = targetTopicEl.dataset.topicName; const rect = targetTopicEl.getBoundingClientRect(); const midpointY = rect.top + rect.height / 2; const insertBefore = e.clientY < midpointY; sourceDay.blocks.forEach(block => { const targetIndex = block.topics.indexOf(targetTopicName); if (targetIndex > -1) { block.topics.splice(insertBefore ? targetIndex : targetIndex + 1, 0, topicName); reinserted = true; } }); } if (!reinserted) { sourceDay.blocks[sourceDay.blocks.length - 1].topics.push(topicName); } } else { let targetDay = studyPlan.find(d => d.date === targetDate); if (!targetDay) { targetDay = { date: targetDate, blocks: [{ topics: [] }] }; studyPlan.push(targetDay); } if (targetDay.blocks.length === 0) { targetDay.blocks.push({ topics: [] }); } targetDay.blocks[targetDay.blocks.length - 1].topics.push(topicName); } studyPlan.forEach(day => { day.blocks = day.blocks.filter(block => block.topics.length > 0 || (block.subject && day.blocks.some(b => b.topics.length > 0))); }); studyPlan = studyPlan.filter(day => day.blocks.length > 0); studyPlan.sort((a, b) => new Date(a.date) - new Date(b.date)); clearDragStyles(); saveData('studyPlan', studyPlan).then(populateCalendar); });
-        }
+            
+            calendarContainer.addEventListener('drop', e => {
+                e.preventDefault();
+                if (!draggedItem) return;
 
+                const targetCell = e.target.closest('.day-cell');
+                if (!targetCell || targetCell.classList.contains('empty')) { clearDragStyles(); return; }
+                
+                const sourceCell = draggedItem.closest('.day-cell');
+                const sourceDate = sourceCell.dataset.date;
+                const targetDate = targetCell.dataset.date;
+                const { topicName, sourceSubject } = JSON.parse(e.dataTransfer.getData('application/json'));
+                
+                const sourceDay = studyPlan.find(d => d.date === sourceDate);
+                if (!sourceDay) return;
+                let removed = false;
+                sourceDay.blocks.forEach(block => { const topicIndex = block.topics.indexOf(topicName); if (topicIndex > -1) { block.topics.splice(topicIndex, 1); removed = true; } });
+                if (!removed) return;
+                
+                if (sourceDate === targetDate) {
+                    const targetTopicEl = e.target.closest('.topic-item');
+                    let reinserted = false;
+                    if(targetTopicEl && targetTopicEl !== draggedItem) {
+                        const targetTopicName = targetTopicEl.dataset.topicName;
+                        const rect = targetTopicEl.getBoundingClientRect();
+                        const midpointY = rect.top + rect.height / 2;
+                        const insertBefore = e.clientY < midpointY;
+                        sourceDay.blocks.forEach(block => {
+                            const targetIndex = block.topics.indexOf(targetTopicName);
+                            if(targetIndex > -1) {
+                                block.topics.splice(insertBefore ? targetIndex : targetIndex + 1, 0, topicName);
+                                reinserted = true;
+                            }
+                        });
+                    }
+                    if(!reinserted) { sourceDay.blocks[sourceDay.blocks.length-1].topics.push(topicName); }
+                } else {
+                    let targetDay = studyPlan.find(d => d.date === targetDate);
+                    if (!targetDay) { targetDay = { date: targetDate, blocks: [] }; studyPlan.push(targetDay); }
+                    let targetBlock = targetDay.blocks.find(b => b.subject === sourceSubject);
+                    if (!targetBlock) {
+                        targetBlock = { subject: sourceSubject, topics: [] };
+                        targetDay.blocks.push(targetBlock);
+                    }
+                    targetBlock.topics.push(topicName);
+                }
+
+                studyPlan.forEach(day => { day.blocks = day.blocks.filter(block => (block.subject && block.topics.length >= 0) || block.topics.length > 0); });
+                studyPlan = studyPlan.filter(day => day.blocks.length > 0);
+                studyPlan.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+                clearDragStyles();
+                saveData('studyPlan', studyPlan).then(populateCalendar);
+            });
+        }
         main();
     }
     </script>
