@@ -257,8 +257,8 @@
         let defaultStudyPlan = [
             { date: "2025-06-19", blocks: [{ subject: "ENDOCRINOLOGÍA", topics: ["Dislipidemias", "Hipertiroidismo", "Hipotiroidismo", "Cáncer de tiroides (Enfoque en Papilar)"] }] },
             { date: "2025-06-20", blocks: [{ topics: ["Nódulo tiroideo", "Obesidad en adultos", "Síndrome metabólico", "Enfermedad de Cushing / Síndrome de Cushing", "Enfermedad de Addison"] }] },
-            { date: "2025-06-21", blocks: [{ subject: "UROLOGÍA", topics: ["Escroto agudo y Torsión testicular", "Hiperplasia prostática benigna", "Cáncer de próstata", "Pielonefritis aguda"] }] },
-            { date: "2025-06-22", blocks: [{ topics: ["Infección de tracto urinario", "Urolitiasis", "Cáncer testicular", "Disfunción eréctil"] }] },
+            { date: "2025-06-21", blocks: [{ topics: ["Escroto agudo y Torsión testicular", "Hiperplasia prostática benigna", "Cáncer de próstata"] }] },
+            { date: "2025-06-22", blocks: [{ subject: "UROLOGÍA", topics: ["Pielonefritis aguda", "Infección de tracto urinario", "Urolitiasis", "Cáncer testicular", "Disfunción eréctil"] }] },
             { date: "2025-06-23", blocks: [{ subject: "ORL", topics: ["Faringoamigdalitis", "Epistaxis", "Rinosinusitis aguda", "Otitis externa aguda"] }] },
             { date: "2025-06-24", blocks: [{ topics: ["VPPB", "Mastoiditis aguda", "Parálisis de Bell"] }] },
             { date: "2025-06-25", blocks: [{ subject: "OFTALMOLOGÍA", topics: ["Catarata", "Conjuntivitis", "Glaucoma de ángulo aberto", "Glaucoma de ángulo cerrado"] }] },
@@ -508,6 +508,7 @@
 
         async function main() {
             displayDailyQuote();
+            
             const docRef = db.collection('userProgress').doc(currentUser.uid);
             const doc = await docRef.get();
             loadUserProgress(doc.data());
@@ -544,7 +545,7 @@
                     draggedItem = e.target;
                     
                     let subjectTitle = 'default';
-                    let currentElement = draggedItem.previousElementSibling;
+                    let currentElement = draggedItem.parentElement.closest('li');
                     while(currentElement) {
                         if(currentElement.querySelector('.subject-title')) {
                             subjectTitle = currentElement.querySelector('.subject-title').textContent.split('(')[0].trim();
@@ -611,7 +612,7 @@
                 }
 
                 studyPlan.forEach(day => { day.blocks = day.blocks.filter(block => (block.subject && block.topics.length >= 0) || block.topics.length > 0); });
-                studyPlan = studyPlan.filter(day => day.blocks.length > 0);
+                studyPlan = studyPlan.filter(day => day.blocks.length > 0 && day.blocks.some(b => b.topics.length > 0));
                 studyPlan.sort((a, b) => new Date(a.date) - new Date(b.date));
 
                 clearDragStyles();
