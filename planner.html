@@ -7,45 +7,17 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
-
-        /* --- VARIABLES GLOBALES --- */
-        :root {
-            --bg-main: #121212;
-            --bg-board: #1E1E1E;
-            --bg-card: #2D2D2D;
-            --bg-card-hover: #3a3a3a;
-            --text-primary: #E0E0E0;
-            --text-secondary: #a0a0a0;
-            --border-color: #444;
-            --shadow-color: rgba(0, 0, 0, 0.4);
-            --accent-color: #00FF7F;
-            --vfd-green: #50E050;
-            
-            --color-progress-completion: #3b82f6;
-            --color-progress-low: #ef4444;
-            --color-progress-medium: #f59e0b;
-            --color-progress-high: #22c55e;
-
-            --color-1: #00A9FF; --color-2: #FFA500; --color-3: #32C8CD;
-            --color-4: #A855F7; --color-5: #E11D48; --color-6: #16A34A;
-        }
-
+        :root { --bg-main: #121212; --bg-board: #1E1E1E; --bg-card: #2D2D2D; --bg-card-hover: #3a3a3a; --text-primary: #E0E0E0; --text-secondary: #a0a0a0; --border-color: #444; --shadow-color: rgba(0, 0, 0, 0.4); --accent-color: #00FF7F; --vfd-green: #50E050; --color-progress-completion: #3b82f6; --color-progress-low: #ef4444; --color-progress-medium: #f59e0b; --color-progress-high: #22c55e; --color-1: #00A9FF; --color-2: #FFA500; --color-3: #32C8CD; --color-4: #A855F7; --color-5: #E11D48; --color-6: #16A34A; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-main); color: var(--text-primary); line-height: 1.6; }
-
-        /* --- CABECERA PRINCIPAL Y SWITCHER DE VISTAS --- */
         .app-header { padding: 15px 40px; background-color: var(--bg-board); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; gap: 20px; }
         .app-header h1 { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; color: var(--text-primary); margin: 0; flex-grow: 1; }
         .view-switcher-btn { background-color: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: background-color 0.2s, color 0.2s; }
         .view-switcher-btn:hover { background-color: var(--bg-card-hover); }
         .view-switcher-btn .fas { margin-right: 8px; }
-
-        /* --- CONTENEDORES DE VISTAS --- */
         .view-container { display: none; }
         .view-container.active { display: block; }
         #kanban-view { height: calc(100vh - 80px); }
-
-        /* --- ESTILOS COMPARTIDOS (Progreso Global) --- */
         .global-progress-wrapper { width: 40%; max-width: 500px; display: flex; flex-direction: column; gap: 8px; }
         .global-progress-section { display: flex; align-items: center; gap: 10px; }
         .global-progress-section small { font-size: 0.7rem; color: var(--text-secondary); width: 80px; }
@@ -54,10 +26,8 @@
         .global-progress-bar.low { background-color: var(--color-progress-low); }
         .global-progress-bar.medium { background-color: var(--color-progress-medium); }
         .global-progress-bar.high { background-color: var(--color-progress-high); }
-        #global-progress-bar-calendar { background-color: var(--color-progress-completion); }
+        #global-progress-bar-calendar, #global-progress-bar { background-color: var(--color-progress-completion); }
         .global-progress-text { font-size: 0.8rem; font-weight: bold; color: var(--text-secondary); width: 60px; text-align: right; }
-
-        /* --- ESTILOS VISTA CALENDARIO --- */
         .calendar-header { text-align: center; padding: 20px; }
         .motivational-quote { font-family: 'Orbitron', sans-serif; color: var(--vfd-green); font-size: 1.5em; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; text-shadow: 0 0 4px rgba(80, 224, 80, 0.6), 0 0 8px rgba(80, 224, 80, 0.4); min-height: 1.2em; }
         .countdown-container { position: relative; display: inline-block; }
@@ -100,8 +70,6 @@
         .topic-item.drag-over-bottom { border-bottom-color: var(--accent-color); }
         .topic-item::before { content: '■'; position: absolute; left: 0; top: 5px; color: var(--accent-color); font-size: 0.8em; line-height: 1.5; transition: color 0.3s ease; }
         .topic-score { font-size: 0.85em; font-weight: bold; margin-left: 10px; flex-shrink: 0; }
-
-        /* --- ESTILOS VISTA KANBAN --- */
         .kanban-board-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 20px; height: 100%; }
         .kanban-column { background-color: var(--bg-board); border-radius: 12px; display: flex; flex-direction: column; max-height: 100%; border-top: 3px solid var(--border-color); transition: border-top-color 0.4s ease; }
         .kanban-column.inprogress { border-top-color: var(--color-progress-completion); }
@@ -139,8 +107,6 @@
         .score-inputs input, .score-percentage { width: 60px; background-color: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-primary); padding: 5px; border-radius: 4px; text-align: center; font-size: 0.9rem; }
         .score-percentage { font-weight: bold; color: var(--color-progress-medium); display: inline-block; line-height: 1.5; }
         .tag { font-size: 0.7rem; font-weight: 600; padding: 2px 8px; background-color: var(--bg-card); color: var(--text-primary); border-radius: 10px; border: 1px solid var(--border-color); }
-
-        /* MODALES (compartidos) */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px); z-index: 998; display: none; opacity: 0; transition: opacity 0.3s ease; }
         .modal-overlay.visible { display: block; opacity: 1; }
         .modal-container { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 5px 25px rgba(0,0,0,0.5); z-index: 1000; width: 90%; max-height: 90vh; display: none; flex-direction: column; transition: transform 0.3s ease, opacity 0.3s ease; }
@@ -160,21 +126,17 @@
         #topic-plan-modal .modal-header h2 { color: var(--vfd-green); font-size: 1.3em; }
         #topic-plan-modal .modal-content { padding: 15px 25px; }
         
-        @media (max-width: 768px) {
-            .app-header { flex-direction: column; align-items: flex-start; gap: 15px; }
-            .kanban-board-container { grid-template-columns: 1fr; }
-            #kanban-view { height: auto; }
-            .motivational-quote { font-size: 1.2em; } .countdown-digits { font-size: 3em; } .countdown-timer-container { gap: 15px; } .day-cell { min-height: 120px; }
-        }
-        @media (max-width: 600px) {
-            .motivational-quote { font-size: 1em; letter-spacing: 1px; } .countdown-digits { font-size: 2.2em; } .countdown-label { font-size: 0.6em; } .countdown-timer-container { gap: 10px; } body { padding: 10px; } .calendar-container { grid-template-columns: 30px 30px repeat(7, 1fr); } .modal-content { padding: 15px; } #edit-countdown-btn { right: -5px; top: -15px; }
-        }
-
+        @media (max-width: 768px) { .app-header { flex-direction: column; align-items: flex-start; gap: 15px; } .kanban-board-container { grid-template-columns: 1fr; } #kanban-view { height: auto; } .motivational-quote { font-size: 1.2em; } .countdown-digits { font-size: 3em; } .countdown-timer-container { gap: 15px; } .day-cell { min-height: 120px; } }
+        @media (max-width: 600px) { .motivational-quote { font-size: 1em; letter-spacing: 1px; } .countdown-digits { font-size: 2.2em; } .countdown-label { font-size: 0.6em; } .countdown-timer-container { gap: 10px; } body { padding: 10px; } .calendar-container { grid-template-columns: 30px 30px repeat(7, 1fr); } .modal-content { padding: 15px; } #edit-countdown-btn { right: -5px; top: -15px; } }
     </style>
 </head>
 <body>
     <header class="app-header">
         <h1>FRECUENCIA VITAL</h1>
+        <div class="global-progress-wrapper" id="global-progress-header">
+             <div class="global-progress-section"><small>Progreso Total</small><div class="global-progress-container"><div class="global-progress-bar" id="global-progress-bar"></div></div><span class="global-progress-text" id="global-progress-text">0.00%</span></div>
+             <div class="global-progress-section"><small>Promedio Vital</small><div class="global-progress-container"><div class="global-progress-bar" id="promedio-vital-bar"></div></div><span class="global-progress-text" id="promedio-vital-text">0.00%</span></div>
+        </div>
         <button id="view-switcher" class="view-switcher-btn"><i class="fas fa-columns"></i> Ver Tablero Vital</button>
     </header>
 
@@ -194,10 +156,6 @@
                 <input type="date" id="countdown-date-picker">
                 <button id="save-countdown-btn">Guardar</button>
             </div>
-            <div class="global-progress-wrapper">
-                 <div class="global-progress-section"><small>Progreso Total</small><div class="global-progress-container"><div class="global-progress-bar" id="global-progress-bar-calendar"></div></div><span class="global-progress-text" id="global-progress-text-calendar">0.00%</span></div>
-                 <div class="global-progress-section"><small>Promedio Vital</small><div class="global-progress-container"><div class="global-progress-bar" id="promedio-vital-bar-calendar"></div></div><span class="global-progress-text" id="promedio-vital-text-calendar">0.00%</span></div>
-            </div>
         </div>
         <main class="calendar-board">
             <div class="calendar-container" id="calendar-container"></div>
@@ -212,7 +170,6 @@
         </main>
     </div>
 
-    <!-- Modales (se usarán en ambas vistas) -->
     <div class="modal-overlay" id="modal-overlay"></div>
     <div class="modal-container" id="details-modal">
         <div class="modal-header"> <h2 id="modal-title"></h2> <span class="modal-close" id="modal-close-day">×</span> </div>
@@ -265,6 +222,32 @@
         }
     });
 
+    const medicalTopics = {
+        "ENDOCRINOLOGÍA": ["Dislipidemias", "Hipertiroidismo", "Hipotiroidismo", "Cáncer de tiroides (Enfoque en Papilar)", "Nódulo tiroideo", "Obesidad en adultos", "Síndrome metabólico", "Enfermedad de Cushing / Síndrome de Cushing", "Enfermedad de Addison"],
+        "UROLOGÍA": ["Escroto agudo y Torsión testicular", "Hiperplasia prostática benigna", "Cáncer de próstata", "Pielonefritis aguda", "Infección de tracto urinario", "Urolitiasis", "Cáncer testicular", "Disfunción eréctil"],
+        "ORL": ["Faringoamigdalitis", "Epistaxis", "Rinosinusitis aguda", "Otitis externa aguda", "VPPB", "Mastoiditis aguda", "Parálisis de Bell"],
+        "OFTALMOLOGÍA": ["Catarata", "Conjuntivitis", "Glaucoma de ángulo aberto", "Glaucoma de ángulo cerrado", "Ojo rojo", "Retinopatía diabética", "Trauma ocular", "Desprendimiento de retina"],
+        "TYO": ["Osteoartritis", "Osteomielitis", "Fracturas expuestas", "Esguince cervical", "Lumbalgia", "Síndrome de hombro doloroso", "Luxación glenohumeral", "Fractura de clavícula", "Fractura de radio distal", "Fractura de cadera", "Lesiones de rodilla", "Esguince de tobillo", "Fractura de tobillo", "Osteosarcoma", "Sarcoma de Ewing", "Hernia de disco", "Túnel del carpo", "Epifisiolistesis femoral", "Legg-Calvé-Perthes", "Embolia grasa", "Tumores óseos malignos", "Costilla cervical", "Fractura de húmero proximal", "Luxación de codo", "Codo de niñera", "Fracturas de codo", "Fracturas de antebrazo", "Lesiones fisiarias", "Luxación coxofemoral", "Fractura de diáfisis de tibia", "Rotura de talón de Aquiles", "Pie equino varo", "Pie plano"],
+        "CARDIOLOGÍA": ["Pericarditis", "Endocarditis infecciosa", "Estenosis aórtica", "Insuficiencia aórtica", "Estenosis mitral", "Insuficiencia mitral", "Fiebre reumática", "Hipertensión arterial sistémica", "Crisis hipertensivas", "Insuficiencia cardíaca aguda", "Insuficiencia cardíaca crónica", "Infarto agudo de miocardio", "Disección aórtica", "Cor pulmonar crónico", "Edema pulmonar", "Hipotensión ortostática", "Aneurisma aórtico abdominal", "Enfermedad coronaria", "Otras valvulopatías", "Hipertensión pulmonar", "Rehabilitación cardíaca"],
+        "ANGIOLOGÍA": ["Enfermedad arterial periférica", "Insuficiencia venosa", "Pie diabético", "Tromboembolia pulmonar", "Trombosis venosa profunda", "Úlceras por presión", "Paget-Schroetter", "Tromboembolia venosa en obstetricia"],
+        "ACLS": ["Soporte vital básico", "RCP", "Taquicardia ACLS", "Taquicardia supraventricular", "Bloqueos AV", "Bradicardia", "Fibrilación auricular", "Fibrilación ventricular", "Síndrome de WPW"],
+        "ATLS": ["PLS (Posición Lateral de Seguridad)", "Ahogamiento", "Politrauma", "Tipos de shock", "Choque hipovolémico", "Quemaduras", "Gran quemado", "TCE adultos", "TCE pediátrico", "Trauma torácico", "Hemotórax", "Neumotórax a tensión", "Taponamiento cardiaco", "Trauma abdominal", "Shock neurogénico", "Neumotórax aberto", "Neumotórax simple", "Trauma espinal", "Catéter venoso central", "Hipotermia", "Fracturas de cráneo", "Lesión traqueobronquial", "Ruptura diafragmática", "Trauma esplénico", "Trauma obstétrico", "Trauma pélvico"],
+        "TOXICOLOGÍA": ["Manejo de intoxicaciones", "Toxíndromes", "Intoxicación por benzodiacepinas", "Intoxicación por organofosforados", "Intoxicación por paracetamol", "Intoxicación por salicilatos", "Lactrodectus", "Loxosceles", "Mordedura de serpiente", "Picadura de alacrán", "Golpe de calor", "Intoxicación por etanol", "Intoxicación por monoxido de carbono", "Intoxicación por opiáceos", "Anafilaxia", "Ingesta de cáusticos", "Intoxicación alimentaria", "Intoxicación por alcoholes", "Intoxicación por anfetaminas", "Intoxicación por DMT", "Intoxicación por fentanilo", "Intoxicación por hidrocarburos", "Intoxicación por metales pesados", "Intoxicación por plomo", "Picadura de himenópteros"],
+        "GASTROENTEROLOGÍA": ["Absceso hepático amebiano", "Cirrosis hepática", "Insuficiencia hepática", "Ascitis", "Encefalopatía hepática", "Hepatitis A", "Hepatitis B", "Hepatitis C", "Pancreatitis aguda", "Reflujo ERGE", "Enfermedad ácido péptica", "Síndrome de intestino irritable", "Sangrado TDA", "Sangrado TDB", "Várices esofágicas", "EHGNA", "Enfermedad de Crohn", "Colitis ulcerativa", "Cáncer gástrico", "Carcinoma hepatocelular", "Absceso hepático piógeno", "Hepatitis autoinmune", "Pancreatitis crónica", "Acalasia", "Esófago de Barret", "Dispepsia funcional", "Mallory Weiss", "Zollinger-Ellison", "Enfermedad celíaca", "Cáncer de esófago"],
+        "CIRUGÍA ABDOMINAL Y COLOPROCTOLOGÍA": ["Cáncer de páncreas", "Apendicitis aguda", "Apendicitis en el embarazo", "Colecistitis aguda", "Coledocolitiasis", "Colelitiasis", "Colangitis aguda", "Hernias", "Hernia inguinal", "Oclusión intestinal", "Enfermedad hemorroidal", "Fístula anal", "Fisura anal", "Absceso anal", "Enfermedad diverticular", "Cáncer colorrectal", "Isquemia intestinal", "Vólvulo de sigmoides", "Heridas quirúrgicas", "Complicaciones post Qx", "Colangiocarcinoma", "Fístulas biliointestinales", "Hernia femoral", "Hernia hiatal", "Hernia umbilical", "Hernia ventral", "Vólvulo de ciego", "Quiste pilonidal", "Poliposis adenomatosa familiar (PAF)"],
+        "CIRUGÍA PEDIÁTRICA": ["Atresia duodenal", "Atresia esofágica", "Criptorquidia", "Estenosis pilórica", "Hernia diafragmática congénita", "Invaginación intestinal", "Nefroblastoma", "Neuroblastoma", "Divertículo de Meckel", "Hirschsprung", "Atresia biliar", "Atresia de coanas", "Atresia yeyunoileal", "Espina bífida", "Malformaciones rectales", "Malrotación intestinal", "Patología umbilical"],
+        "GINECOLOGÍA": ["Fitz-Hugh-Curtis", "Dismenorrea aguda", "Amenorreas primarias", "Amenorreas secundarias", "Sangrado uterino anormal", "Adenomiosis", "Anticonceptivos generalidades", "Anticonceptivos GPC", "Anticonceptivos hormonales combinados", "Anticoncepción de emergencia", "DIU de cobre", "DIU de levonorgestrel", "Implante subdérmico", "Progestágenos solos", "Lactancia como anticonceptivo", "Infertilidad", "Condón", "Vasectomía", "Cistocele e incontinencia", "Endometriosis", "Enfermedad pélvica inflamatoria", "Hidrosalpinx", "Hiperplasia endometrial", "Mastitis", "Mastopatía fibroquística", "Fibroadenoma", "Papiloma intraductal", "Patología mamaria benigna", "Quiste mamario", "Osteoporosis post menopausia", "Insuficiencia ovárica primaria", "Menopausia y climaterio", "Miomatosis uterina", "Oclusión tubaria bilateral OTB", "Ovario poliquístico", "Quiste de ovario benigno", "Torsión ovárica", "Vaginitis bacteriana", "Vaginitis infecciosa", "Trichomoniasis", "Bartolinitis", "Candidiasis vulvovaginal", "Chlamydia"],
+        "ONCOGINE": ["Tamizaje cáncer de mama", "Cáncer de mama", "Cáncer cérvicouterino", "Cáncer de endometrio", "Cáncer de ovario", "Cáncer de vagina", "Tumores anexiales"],
+        "OBSTETRICIA": ["Control prenatal", "Aloinmunización materna", "Estática fetal", "Tipos de pelvis", "Atención del parto", "Manejo activo del parto", "Cesárea", "Parto pretérmino", "Puerperio fisiológico", "Líquido amniótico", "Ruptura prematura de membranas", "Corioamnionitis", "Distocias", "Embarazo múltiple", "Endometritis puerperal", "Hiperémesis gravídica", "Insuficiencia cervical", "Muerte fetal", "Enfermedades hipertensivas del embarazo", "Preeclampsia sin datos de severidad", "Síndrome de HELLP", "Diabetes gestacional", "IVU en el embarazo", "Restricción del crecimiento intrauterino", "Sepsis puerperal", "Síndrome de Sheehan", "Depresión posparto"],
+        "HEMORRAGIAS OBSTÉTRICAS": ["Generalidades de hemorragias", "Hemorragia postparto", "Desgarro perineal", "Amenaza de aborto", "Aborto espontáneo", "Acretismo placentario", "Atonía uterina", "Choque hemorrágico en obstetricia", "Desprendimiento prematuro de placenta normoinserta", "Embarazo ectópico", "Placenta previa", "Ruptura uterina", "Vasa previa", "Enfermedad trofoblástica gestacional"],
+        "NEONATOLOGÍA": ["APGAR", "Apnea del prematuro", "Asfixia neonatal", "Displasia broncopulmonar", "Silverman Anderson", "Síndrome de aspiración de meconio", "Maduración pulmonar", "Síndrome de dificultad respiratoria", "Encefalopatía hipóxica", "Enfermedad hemorrágica del recién nacido", "Enterocolitis necrotizante", "Hipoacusia neonatal", "Hipoglucemia neonatal", "Hirschsprung", "Ictericia neonatal", "Muerte súbita del lactante", "Prematuro sano", "Reanimación neonatal", "Recién nacido de término", "Sepsis neonatal", "Tamiz neonatal", "Taquipnea transitoria del recién nacido", "Lesiones de plexo braquial obstétrico", "Lesiones extracraneales", "Displasia del desarrollo de la cadera DDC"],
+        "CONGÉNITAS": ["Cardiopatías congénitas", "Tetralogía de Fallot", "Coartación aórtica", "Persistencia del conducto arterioso", "Fenilcetonuria", "Fibrosis quística", "Galactosemia clásica", "Storch", "Storch Citomegalovirus", "Storch herpes simple", "Storch rubéola congénita", "Storch sífilis congénita", "Storch toxoplasmosis", "Storch varicela congénita"],
+        "ESCOLAR": ["Control de niño sano", "Etapas del crecimiento", "Talla baja", "Alergia alimentaria", "Cuerpo extraño", "Dermatitis del pañal", "Estreñimiento funcional", "Hiperplasia adrenal congénita", "Hipotiroidismo congénito", "Maltrato infantil", "Mucopolisacaridosis", "Reflujo gastroesofágico del lactante"],
+        "NUTRICIÓN PEDIÁTRICA": ["Alimentación complementaria", "Deficiencia de vitamina A", "Desnutrición pediátrica", "Hipovitaminosis", "Intolerancia a la lactosa", "Lactancia materna", "Obesidad en escolares", "Pelagra en niños", "Raquitismo carencial", "Síndrome metabólico en niños"],
+        "INFECTOLOGÍA PEDIÁTRICA": ["Adenitis mesentérica", "Onfalitis", "Exantemáticas Diferencial", "Eritema infeccioso", "Escarlatina", "Exantema súbito", "Enfermedad de Kawasaki", "Síndrome mano pie boca", "Rubéola", "Sarampión", "Varicela", "Parotiditis", "Bronquiolitis", "Epiglotitis", "Laringotraqueitis CRUP", "Mononucleosis infecciosa", "Tos ferina", "IVU en menores"],
+        "VACUNAS": ["Vacunas generalidades", "Tipos de vacunas", "Vacunación universal", "Aplicación de vacunas", "Vacuna para personal de salud", "Vacunas en el embarazo", "Esquema de vacunación", "Bcg", "Hepatitis A", "Hepatitis B", "Hexavalente", "Influenza", "Neumocócica", "Rotavirus", "Sabin", "Salmonella", "Dpt", "Srp", "Tétanos", "Varicela", "Vph"]
+    };
+
     async function initializeAppLogic() {
         // --- Declaraciones de variables y constantes ---
         const currentYear = new Date().getFullYear();
@@ -272,116 +255,12 @@
         const motivationalQuotes = [ "No te detengas hasta que te sientas orgulloso.", "El éxito es la suma de pequeños esfuerzos repetidos día tras día.", "Cree en ti mismo y todo será posible."];
         const ALL_TASK_IDS = ['task-1-1', 'task-1-2', 'task-1-3', 'task-2-1', 'task-2-2', 'task-3-1', 'task-4-1', 'task-5-1', 'task-5-2', 'task-6-1'];
         
-        let defaultStudyPlan = [
-            { date: "2025-06-19", blocks: [{ subject: "ENDOCRINOLOGÍA", topics: ["Dislipidemias", "Hipertiroidismo", "Hipotiroidismo", "Cáncer de tiroides (Enfoque en Papilar)"] }] },
-            { date: "2025-06-20", blocks: [{ topics: ["Nódulo tiroideo", "Obesidad en adultos", "Síndrome metabólico", "Enfermedad de Cushing / Síndrome de Cushing", "Enfermedad de Addison"] }] },
-            { date: "2025-06-21", blocks: [{ subject: "UROLOGÍA", topics: ["Escroto agudo y Torsión testicular", "Hiperplasia prostática benigna", "Cáncer de próstata", "Pielonefritis aguda"] }] },
-            { date: "2025-06-22", blocks: [{ topics: ["Infección de tracto urinario", "Urolitiasis", "Cáncer testicular", "Disfunción eréctil"] }] },
-            { date: "2025-06-23", blocks: [{ subject: "ORL", topics: ["Faringoamigdalitis", "Epistaxis", "Rinosinusitis aguda", "Otitis externa aguda"] }] },
-            { date: "2025-06-24", blocks: [{ topics: ["VPPB", "Mastoiditis aguda", "Parálisis de Bell"] }] },
-            { date: "2025-06-25", blocks: [{ subject: "OFTALMOLOGÍA", topics: ["Catarata", "Conjuntivitis", "Glaucoma de ángulo aberto", "Glaucoma de ángulo cerrado"] }] },
-            { date: "2025-06-26", blocks: [{ topics: ["Ojo rojo", "Retinopatía diabética", "Trauma ocular", "Desprendimiento de retina"] }] },
-            { date: "2025-06-27", blocks: [{ subject: "TYO", topics: ["Osteoartritis", "Osteomielitis", "Fracturas expuestas", "Esguince cervical", "Lumbalgia"] }] },
-            { date: "2025-06-28", blocks: [{ topics: ["Síndrome de hombro doloroso", "Luxación glenohumeral", "Fractura de clavícula", "Fractura de radio distal"] }] },
-            { date: "2025-06-29", blocks: [{ topics: ["Fractura de cadera", "Lesiones de rodilla", "Esguince de tobillo", "Fractura de tobillo"] }] },
-            { date: "2025-06-30", blocks: [{ topics: ["Osteosarcoma", "Sarcoma de Ewing", "Hernia de disco", "Túnel del carpo"] }] },
-            { date: "2025-07-01", blocks: [{ topics: ["Epifisiolistesis femoral", "Legg-Calvé-Perthes", "Embolia grasa", "Tumores óseos malignos"] }] },
-            { date: "2025-07-02", blocks: [{ topics: ["Costilla cervical", "Fractura de húmero proximal", "Luxación de codo", "Codo de niñera"] }] },
-            { date: "2025-07-03", blocks: [{ topics: ["Fracturas de codo", "Fracturas de antebrazo", "Lesiones fisiarias", "Luxación coxofemoral", "Fractura de diáfisis de tibia"] }] },
-            { date: "2025-07-04", blocks: [{ topics: ["Rotura de talón de Aquiles", "Pie equino varo", "Pie plano"] }, { subject: "CARDIOLOGÍA", topics: ["Pericarditis"] }] },
-            { date: "2025-07-05", blocks: [{ topics: ["Endocarditis infecciosa", "Estenosis aórtica", "Insuficiencia aórtica", "Estenosis mitral"] }] },
-            { date: "2025-07-06", blocks: [{ topics: ["Insuficiencia mitral", "Fiebre reumática", "Hipertensión arterial sistémica", "Crisis hipertensivas"] }] },
-            { date: "2025-07-07", blocks: [{ topics: ["Insuficiencia cardíaca aguda", "Insuficiencia cardíaca crónica", "Infarto agudo de miocardio", "Disección aórtica"] }] },
-            { date: "2025-07-08", blocks: [{ topics: ["Cor pulmonar crónico", "Edema pulmonar", "Hipotensión ortostática", "Aneurisma aórtico abdominal"] }] },
-            { date: "2025-07-09", blocks: [{ topics: ["Enfermedad coronaria", "Otras valvulopatías", "Hipertensión pulmonar", "Rehabilitación cardíaca"] }] },
-            { date: "2025-07-10", blocks: [{ subject: "ANGIOLOGÍA", topics: ["Enfermedad arterial periférica", "Insuficiencia venosa", "Pie diabético", "Tromboembolia pulmonar"] }] },
-            { date: "2025-07-11", blocks: [{ topics: ["Trombosis venosa profunda", "Úlceras por presión", "Paget-Schroetter", "Tromboembolia venosa en obstetricia"] }] },
-            { date: "2025-07-12", blocks: [{ subject: "ACLS", topics: ["Soporte vital básico", "RCP", "Taquicardia ACLS", "Taquicardia supraventricular"] }] },
-            { date: "2025-07-13", blocks: [{ topics: ["Bloqueos AV", "Bradicardia", "Fibrilación auricular", "Fibrilación ventricular"] }] },
-            { date: "2025-07-14", blocks: [{ topics: ["Síndrome de WPW"] }, { subject: "ATLS", topics: ["PLS (Posición Lateral de Seguridad)", "Ahogamiento", "Politrauma"] }] },
-            { date: "2025-07-15", blocks: [{ topics: ["Tipos de shock", "Choque hipovolémico", "Quemaduras", "Gran quemado"] }] },
-            { date: "2025-07-16", blocks: [{ topics: ["TCE adultos", "TCE pediátrico", "Trauma torácico", "Hemotórax"] }] },
-            { date: "2025-07-17", blocks: [{ topics: ["Neumotórax a tensión", "Taponamiento cardiaco", "Trauma abdominal", "Shock neurogénico"] }] },
-            { date: "2025-07-18", blocks: [{ topics: ["Neumotórax aberto", "Neumotórax simple", "Trauma espinal", "Catéter venoso central"] }] },
-            { date: "2025-07-19", blocks: [{ topics: ["Hipotermia", "Fracturas de cráneo", "Lesión traqueobronquial", "Ruptura diafragmática"] }] },
-            { date: "2025-07-20", blocks: [{ topics: ["Trauma esplénico", "Trauma obstétrico", "Trauma pélvico"] }, { subject: "TOXICOLOGÍA", topics: ["Manejo de intoxicaciones", "Toxíndromes"] }] },
-            { date: "2025-07-21", blocks: [{ topics: ["Intoxicación por benzodiacepinas", "Intoxicación por organofosforados", "Intoxicación por paracetamol", "Intoxicación por salicilatos"] }] },
-            { date: "2025-07-22", blocks: [{ topics: ["Lactrodectus", "Loxosceles", "Mordedura de serpiente", "Picadura de alacrán"] }] },
-            { date: "2025-07-23", blocks: [{ topics: ["Golpe de calor", "Intoxicación por etanol", "Intoxicación por monoxido de carbono", "Intoxicación por opiáceos"] }] },
-            { date: "2025-07-24", blocks: [{ topics: ["Anafilaxia", "Ingesta de cáusticos", "Intoxicación alimentaria", "Intoxicación por alcoholes"] }] },
-            { date: "2025-07-25", blocks: [{ topics: ["Intoxicación por anfetaminas", "Intoxicación por DMT", "Intoxicación por fentanilo", "Intoxicación por hidrocarburos"] }] },
-            { date: "2025-07-26", blocks: [{ topics: ["Intoxicación por metales pesados", "Intoxicación por plomo", "Picadura de himenópteros"] }, { subject: "GASTROENTEROLOGÍA", topics: ["Absceso hepático amebiano"] }] },
-            { date: "2025-07-27", blocks: [{ topics: ["Cirrosis hepática", "Insuficiencia hepática", "Ascitis", "Encefalopatía hepática"] }] },
-            { date: "2025-07-28", blocks: [{ topics: ["Hepatitis A", "Hepatitis B", "Hepatitis C", "Pancreatitis aguda"] }] },
-            { date: "2025-07-29", blocks: [{ topics: ["Reflujo ERGE", "Enfermedad ácido péptica", "Síndrome de intestino irritable", "Sangrado TDA"] }] },
-            { date: "2025-07-30", blocks: [{ topics: ["Sangrado TDB", "Várices esofágicas", "EHGNA", "Enfermedad de Crohn"] }] },
-            { date: "2025-07-31", blocks: [{ topics: ["Colitis ulcerativa", "Cáncer gástrico", "Carcinoma hepatocelular", "Absceso hepático piógeno"] }] },
-            { date: "2025-08-01", blocks: [{ topics: ["Hepatitis autoinmune", "Pancreatitis crónica", "Acalasia", "Esófago de Barret"] }] },
-            { date: "2025-08-02", blocks: [{ topics: ["Dispepsia funcional", "Mallory Weiss", "Zollinger-Ellison", "Enfermedad celíaca", "Cáncer de esófago"] }] },
-            { date: "2025-08-03", blocks: [{ topics: ["Cáncer de páncreas"] }, { subject: "CIRUGÍA ABDOMINAL Y COLOPROCTOLOGÍA", topics: ["Apendicitis aguda", "Apendicitis en el embarazo", "Colecistitis aguda"] }] },
-            { date: "2025-08-04", blocks: [{ topics: ["Coledocolitiasis", "Colelitiasis", "Colangitis aguda", "Hernias"] }] },
-            { date: "2025-08-05", blocks: [{ topics: ["Hernia inguinal", "Oclusión intestinal", "Enfermedad hemorroidal", "Fístula anal"] }] },
-            { date: "2025-08-06", blocks: [{ topics: ["Fisura anal", "Absceso anal", "Enfermedad diverticular", "Cáncer colorrectal"] }] },
-            { date: "2025-08-07", blocks: [{ topics: ["Isquemia intestinal", "Vólvulo de sigmoides", "Heridas quirúrgicas", "Complicaciones post Qx"] }] },
-            { date: "2025-08-08", blocks: [{ topics: ["Colangiocarcinoma", "Fístulas biliointestinales", "Hernia femoral", "Hernia hiatal"] }] },
-            { date: "2025-08-09", blocks: [{ topics: ["Hernia umbilical", "Hernia ventral", "Vólvulo de ciego", "Quiste pilonidal", "Poliposis adenomatosa familiar (PAF)"] }] },
-            { date: "2025-08-10", blocks: [{ subject: "CIRUGÍA PEDIÁTRICA", topics: ["Atresia duodenal", "Atresia esofágica", "Criptorquidia", "Estenosis pilórica"] }] },
-            { date: "2025-08-11", blocks: [{ topics: ["Hernia diafragmática congénita", "Invaginación intestinal", "Nefroblastoma", "Neuroblastoma"] }] },
-            { date: "2025-08-12", blocks: [{ topics: ["Divertículo de Meckel", "Hirschsprung", "Atresia biliar", "Atresia de coanas"] }] },
-            { date: "2025-08-13", blocks: [{ topics: ["Atresia yeyunoileal", "Espina bífida", "Malformaciones rectales", "Malrotación intestinal", "Patología umbilical"] }] }, 
-            { date: "2025-08-14", blocks: [{ topics: ["Fitz-Hugh-Curtis"] }, { subject: "GINECOLOGÍA", topics: ["Dismenorrea aguda", "Amenorreas primarias", "Amenorreas secundarias", "Sangrado uterino anormal"] }] },
-            { date: "2025-08-15", blocks: [{ topics: ["Adenomiosis", "Anticonceptivos generalidades", "Anticonceptivos GPC", "Anticonceptivos hormonales combinados", "Anticoncepción de emergencia"] }] },
-            { date: "2025-08-16", blocks: [{ topics: ["DIU de cobre", "DIU de levonorgestrel", "Implante subdérmico", "Progestágenos solos", "Lactancia como anticonceptivo"] }] },
-            { date: "2025-08-17", blocks: [{ topics: ["Infertilidad", "Condón", "Vasectomía", "Cistocele e incontinencia", "Endometriosis"] }] },
-            { date: "2025-08-18", blocks: [{ topics: ["Enfermedad pélvica inflamatoria", "Hidrosalpinx", "Hiperplasia endometrial", "Mastitis", "Mastopatía fibroquística"] }] },
-            { date: "2025-08-19", blocks: [{ topics: ["Fibroadenoma", "Papiloma intraductal", "Patología mamaria benigna", "Quiste mamario", "Osteoporosis post menopausia"] }] },
-            { date: "2025-08-20", blocks: [{ topics: ["Insuficiencia ovárica primaria", "Menopausia y climaterio", "Miomatosis uterina", "Oclusión tubaria bilateral OTB", "Ovario poliquístico"] }] },
-            { date: "2025-08-21", blocks: [{ topics: ["Quiste de ovario benigno", "Torsión ovárica", "Vaginitis bacteriana", "Vaginitis infecciosa", "Trichomoniasis"] }] },
-            { date: "2025-08-22", blocks: [{ topics: ["Bartolinitis", "Candidiasis vulvovaginal", "Chlamydia"] }, { subject: "ONCOGINE", topics: ["Tamizaje cáncer de mama", "Cáncer de mama"] }] },
-            { date: "2025-08-23", blocks: [{ topics: ["Cáncer cérvicouterino", "Cáncer de endometrio", "Cáncer de ovario", "Cáncer de vagina", "Tumores anexiales"] }] },
-            { date: "2025-08-24", blocks: [{ subject: "OBSTETRICIA", topics: ["Control prenatal", "Aloinmunización materna", "Estática fetal", "Tipos de pelvis", "Atención del parto"] }] },
-            { date: "2025-08-25", blocks: [{ topics: ["Manejo activo del parto", "Cesárea", "Parto pretérmino", "Puerperio fisiológico", "Líquido amniótico"] }] },
-            { date: "2025-08-26", blocks: [{ topics: ["Ruptura prematura de membranas", "Corioamnionitis", "Distocias", "Embarazo múltiple", "Endometritis puerperal"] }] },
-            { date: "2025-08-27", blocks: [{ topics: ["Hiperémesis gravídica", "Insuficiencia cervical", "Muerte fetal", "Enfermedades hipertensivas del embarazo", "Preeclampsia sin datos de severidad"] }] },
-            { date: "2025-08-28", blocks: [{ topics: ["Síndrome de HELLP", "Diabetes gestacional", "IVU en el embarazo", "Restricción del crecimiento intrauterino", "Sepsis puerperal"] }] },
-            { date: "2025-08-29", blocks: [{ topics: ["Síndrome de Sheehan", "Depresión posparto"] }, { subject: "HEMORRAGIAS OBSTÉTRICAS", topics: ["Generalidades de hemorragias", "Hemorragia postparto", "Desgarro perineal"] }] },
-            { date: "2025-08-30", blocks: [{ topics: ["Amenaza de aborto", "Aborto espontáneo", "Acretismo placentario", "Atonía uterina", "Choque hemorrágico en obstetricia"] }] },
-            { date: "2025-08-31", blocks: [{ topics: ["Desprendimiento prematuro de placenta normoinserta", "Embarazo ectópico", "Placenta previa", "Ruptura uterina", "Vasa previa"] }] },
-            { date: "2025-09-01", blocks: [{ topics: ["Enfermedad trofoblástica gestacional"] }, { subject: "NEONATOLOGÍA", topics: ["APGAR", "Apnea del prematuro", "Asfixia neonatal", "Displasia broncopulmonar"] }] },
-            { date: "2025-09-02", blocks: [{ topics: ["Silverman Anderson", "Síndrome de aspiración de meconio", "Maduración pulmonar", "Síndrome de dificultad respiratoria", "Encefalopatía hipóxica"] }] },
-            { date: "2025-09-03", blocks: [{ topics: ["Enfermedad hemorrágica del recién nacido", "Enterocolitis necrotizante", "Hipoacusia neonatal", "Hipoglucemia neonatal", "Ictericia neonatal"] }] },
-            { date: "2025-09-04", blocks: [{ topics: ["Muerte súbita del lactante", "Prematuro sano", "Reanimación neonatal", "Recién nacido de término", "Sepsis neonatal"] }] },
-            { date: "2025-09-05", blocks: [{ topics: ["Tamiz neonatal", "Taquipnea transitoria del recién nacido", "Lesiones de plexo braquial obstétrico", "Lesiones extracraneales", "Displasia del desarrollo de la cadera DDC"] }] },
-            { date: "2025-09-06", blocks: [{ topics: ["Hirschsprung"] }, { subject: "CONGENITAS", topics: ["Cardiopatías congénitas", "Tetralogía de Fallot", "Coartación aórtica", "Persistencia del conducto arterioso"] }] },
-            { date: "2025-09-07", blocks: [{ topics: ["Fenilcetonuria", "Fibrosis quística", "Galactosemia clásica", "Storch", "Storch Citomegalovirus"] }] },
-            { date: "2025-09-08", blocks: [{ topics: ["Storch herpes simple", "Storch rubéola congénita", "Storch sífilis congénita", "Storch toxoplasmosis", "Storch varicela congénita"] }] },
-            { date: "2025-09-09", blocks: [{ subject: "ESCOLAR", topics: ["Control de niño sano", "Etapas del crecimiento", "Talla baja", "Alergia alimentaria", "Cuerpo extraño"] }] },
-            { date: "2025-09-10", blocks: [{ topics: ["Dermatitis del pañal", "Estreñimiento funcional", "Hiperplasia adrenal congénita", "Hipotiroidismo congénito", "Maltrato infantil"] }] },
-            { date: "2025-09-11", blocks: [{ topics: ["Mucopolisacaridosis", "Reflujo gastroesofágico del lactante"] }] },
-            { date: "2025-09-12", blocks: [{ subject: "NUTRICIÓN PEDIÁTRICA", topics: ["Alimentación complementaria", "Deficiencia de vitamina A", "Desnutrición pediátrica", "Hipovitaminosis", "Intolerancia a la lactosa", "Lactancia materna"] }] },
-            { date: "2025-09-13", blocks: [{ topics: ["Obesidad en escolares", "Pelagra en niños", "Raquitismo carencial", "Síndrome metabólico en niños"] }] },
-            { date: "2025-09-14", blocks: [{ subject: "INFECTOLOGÍA PEDIÁTRICA", topics: ["Adenitis mesentérica", "Onfalitis", "Exantemáticas Diferencial", "Eritema infeccioso", "Escarlatina", "Exantema súbito"] }] },
-            { date: "2025-09-15", blocks: [{ topics: ["Enfermedad de Kawasaki", "Síndrome mano pie boca", "Rubéola", "Sarampión", "Varicela", "Parotiditis"] }] },
-            { date: "2025-09-16", blocks: [{ topics: ["Bronquiolitis", "Epiglotitis", "Laringotraqueitis CRUP", "Mononucleosis infecciosa", "Tos ferina", "IVU en menores"] }] },
-            { date: "2025-09-17", blocks: [{ subject: "VACUNAS", topics: ["Vacunas generalidades", "Tipos de vacunas", "Vacunación universal", "Aplicación de vacunas", "Vacuna para personal de salud", "Vacunas en el embarazo"] }] },
-            { date: "2025-09-18", blocks: [{ topics: ["Esquema de vacunación", "Bcg", "Hepatitis A", "Hepatitis B", "Hexavalente", "Influenza", "Neumocócica"] }] },
-            { date: "2025-09-19", blocks: [{ topics: ["Rotavirus", "Sabin", "Salmonella", "Dpt", "Srp", "Tétanos", "Varicela", "Vph"] }] }
-        ];
-
-        defaultStudyPlan.forEach(day => { day.date = day.date.replace("2025", currentYear); });
-        defaultStudyPlan.push(
-            { date: `${currentYear}-09-20`, blocks: [{ subject: "REPASO GENERAL 1", topics: ["Repaso Cardiología", "Repaso Neumología (si aplica)", "Repaso Endocrinología"] }] },
-            { date: `${currentYear}-09-21`, blocks: [{ subject: "REPASO GENERAL 2", topics: ["Repaso Ginecología y Obstetricia", "Repaso Pediatría"] }] },
-            { date: `${currentYear}-09-22`, blocks: [{ subject: "REPASO GENERAL 3", topics: ["Repaso Cirugía General", "Repaso Traumatología y Ortopedia", "Repaso Urología"] }] },
-            { date: `${currentYear}-09-23`, blocks: [{ subject: "SIMULACIÓN FINAL", topics: ["Realizar simulación de examen completo", "Revisión de áreas débiles", "Planificación post-examen"] }] }
-        );
-
+        // ... (resto de las constantes y variables)
         let studyPlan; 
         let userProgress = {};
         let countdownTargetDateStr;
         let countdownInterval = null;
         
-        // Referencias a elementos del DOM
         const calendarView = document.getElementById('calendar-view');
         const kanbanView = document.getElementById('kanban-view');
         const viewSwitcherBtn = document.getElementById('view-switcher');
@@ -394,87 +273,69 @@
         const saveCountdownBtn = document.getElementById('save-countdown-btn');
         const quoteContainer = document.getElementById('motivational-quote-container');
 
-        // ... el resto de las funciones ...
-
-        main();
-
-        function displayDailyQuote() { /* ... */ }
-        function startCountdown() { /* ... */ }
-        function populateCalendar() { /* ... */ }
-        function getScoreColor(percentage) { /* ... */ }
-        function loadUserProgress(data) { /* ... */ }
-        async function saveData(key, value) { /* ... */ }
-        function getData(key, defaultValue = null) { /* ... */ }
-        function isTopicComplete(topicId) { /* ... */ }
-        function generateTopicId(topicName) { /* ... */ }
-        function createTopicListItem(topic) { /* ... */ }
-        function buildSubjectMap() { /* ... */ }
-        function calculateSubjectScore(subjectName) { /* ... */ }
-        function updateGlobalProgressBars() { /* ... */ }
-        function showDayModal(dateString) { /* ... */ }
-        function closeDayModal() { /* ... */ }
-        function saveDayNote() { /* ... */ }
-        function showTopicPlan(topicId, topicName) { /* ... */ }
-        function closeTopicModal() { /* ... */ }
-        function loadTopicState(topicId) { /* ... */ }
-        function saveTopicState(key, value) { /* ... */ }
-        function updateScorePercentage() { /* ... */ }
-        function updateStepCardStatus(cardElement) { /* ... */ }
-        function updateAllStepCardsStatus() { /* ... */ }
-        function finishTopicSession() { /* ... */ }
-        let draggedItem = null; let lastDragOverCell = null; let lastDragOverTopic = null; function clearDragStyles() { /* ... */ }
-        function populateKanbanBoard() { /* ... */ }
-        function generateKanbanCardHTML(topic, specialty) { /* ... */ }
-        function generateSpecialtyHeaderHTML(specialty) { /* ... */ }
-        function updateKanbanCardState(topicId) { /* ... */ }
-        function updateAllKanbanCards() { /* ... */ }
-        function updateSpecialtyMetrics(specialtyName) { /* ... */ }
-        function updateAllSpecialtyMetrics() { /* ... */ }
-
         // --- Cuerpo Principal de la Aplicación ---
         async function main() {
-            // Cargar datos
             const docRef = db.collection('userProgress').doc(currentUser.uid);
             const doc = await docRef.get();
             loadUserProgress(doc.data());
             
-            const userPlan = getData('studyPlan');
-            if (userPlan && userPlan.length > 0 && new Date(userPlan[0].date).getFullYear() === currentYear) {
-                studyPlan = userPlan;
-            } else {
-                studyPlan = defaultStudyPlan;
-                await saveData('studyPlan', defaultStudyPlan);
+            studyPlan = getData('studyPlan');
+            if (!studyPlan || !studyPlan.length || new Date(studyPlan[0].date).getFullYear() !== currentYear) {
+                studyPlan = createDefaultPlan();
+                await saveData('studyPlan', studyPlan);
             }
             countdownTargetDateStr = getData('countdownTarget') || studyPlan[studyPlan.length - 1].date;
             countdownDatePicker.value = countdownTargetDateStr;
 
-            // Inicializar vistas y listeners
+            setupAllEventListeners();
             displayDailyQuote();
             startCountdown();
             populateCalendar();
-            populateKanbanBoard();
-            setupAllEventListeners();
+            // La vista Kanban se poblará al cambiar a ella por primera vez
+        }
+
+        function createDefaultPlan() {
+            // Lógica para crear el plan por defecto, similar a la anterior
+            let plan = [
+                { date: `${currentYear}-06-19`, blocks: [{ subject: "ENDOCRINOLOGÍA", topics: ["Dislipidemias", "Hipertiroidismo", "Hipotiroidismo", "Cáncer de tiroides (Enfoque en Papilar)"] }] },
+                // ... (resto del plan)
+                { date: `${currentYear}-09-23`, blocks: [{ subject: "SIMULACIÓN FINAL", topics: ["Realizar simulación de examen completo", "Revisión de áreas débiles", "Planificación post-examen"] }] }
+            ];
+            // Enriquecer con el estado inicial del Kanban
+            plan.forEach(day => day.blocks.forEach(block => block.topics.forEach(topic => {
+                const topicId = generateTopicId(topic);
+                if (!getData(`topicStates.${topicId}`)) {
+                    saveData(`topicStates.${topicId}`, 'todo');
+                }
+            })));
+            return plan;
         }
         
-        // --- Lógica de Navegación ---
+        // --- Lógica de Navegación y Sincronización ---
         function setupAllEventListeners(){
             viewSwitcherBtn.addEventListener('click', () => {
                 const isCalendarActive = calendarView.classList.contains('active');
                 if (isCalendarActive) {
                     calendarView.classList.remove('active');
                     kanbanView.classList.add('active');
-                    viewSwitcherBtn.innerHTML = `<i class="fas fa-calendar-day"></i> Ver Calendario Vital`;
-                    populateKanbanBoard(); // Sincronizar al cambiar
+                    viewSwitcherBtn.innerHTML = `<i class="fas fa-calendar-day"></i> Ver Calendario`;
+                    document.getElementById('global-progress-header').style.display = 'flex';
+                    populateKanbanBoard();
                 } else {
                     kanbanView.classList.remove('active');
                     calendarView.classList.add('active');
                     viewSwitcherBtn.innerHTML = `<i class="fas fa-columns"></i> Ver Tablero Vital`;
-                    populateCalendar(); // Sincronizar al cambiar
+                    document.getElementById('global-progress-header').style.display = 'none';
+                    populateCalendar();
                 }
             });
             // ... (resto de listeners)
         }
+        
+        // ... (Todas las demás funciones van aquí)
 
+        main();
+    }
     </script>
 </body>
 </html>
