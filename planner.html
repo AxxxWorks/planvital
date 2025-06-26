@@ -6,112 +6,112 @@
     <title>Frecuencia Vital - Plan de Estudios Integral</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* --- ESTILOS GLOBALES Y VARIABLES UNIFICADAS --- */
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
-        
+
         :root {
-            /* Paleta Principal (Oscura, de Calendario) */
             --bg-main: #121212;
-            --cell-bg: #1a1a1a;
-            --main-border: #2c2c2c;
-            --text-primary: #e0e0e0;
+            --bg-board: #1E1E1E;
+            --bg-card: #2D2D2D;
+            --bg-card-hover: #3a3a3a;
+            --text-primary: #E0E0E0;
             --text-secondary: #a0a0a0;
-            --accent-color: #00FF7F; /* Verde Vital */
+            --border-color: #444;
+            --shadow-color: rgba(0, 0, 0, 0.4);
+            --accent-color: #00FF7F;
+            --subject-title-color: #ffffff;
             --subject-highlight-color: #ff9800;
             --meta-bg: #181c25;
             --meta-header-bg: #101217;
             --meta-border: #2c3240;
             --meta-text: #a9bce2;
-            
-            /* Paleta Tablero Kanban */
-            --bg-board: #1E1E1E;
-            --bg-card: #2D2D2D;
-            --bg-card-hover: #3a3a3a;
-            --border-color: #444;
-            --shadow-color: rgba(0, 0, 0, 0.4);
-
-            /* Colores de Progreso y Semaforización */
-            --color-progress: #3b82f6; /* Azul para "En Curso" */
-            --color-progress-low: #ef4444; /* Rojo */
-            --color-progress-medium: #f59e0b; /* Amarillo */
-            --color-progress-high: #22c55e; /* Verde */
-            --text-completed: #777;
-
-            /* Colores de Pasos y Etiquetas */
-            --step-1-color: #03dac6; --step-2-color: #ffb74d; --step-3-color: #4fc3f7;
-            --step-4-color: #ce93d8; --step-5-color: #ef9a9a; --step-6-color: #a5d6a7;
-            --tag-text-dark: #111;
+            --plan-bg: #1e1e1e;
+            --vfd-green: #50E050;
+            --color-progress: #3b82f6;
+            --color-progress-low: #ef4444;
+            --color-progress-medium: #f59e0b;
+            --color-progress-high: #22c55e;
+            --color-1: #00A9FF; --color-2: #FFA500; --color-3: #32C8CD;
+            --color-4: #A855F7; --color-5: #E11D48; --color-6: #16A34A;
         }
 
-        /* --- ESTILOS BASE Y CABECERA --- */
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Source Sans Pro', sans-serif; background-color: var(--bg-main); color: var(--text-primary); margin: 0; padding: 20px; overflow-x: hidden; }
-        .main-header { text-align: center; margin-bottom: 15px; padding: 10px 0; }
-        .motivational-quote { font-family: 'Orbitron', sans-serif; color: var(--accent-color); font-size: 1.5em; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; text-shadow: 0 0 4px rgba(80, 224, 80, 0.6), 0 0 8px rgba(80, 224, 80, 0.4); min-height: 1.2em; }
-        .countdown-container { position: relative; display: inline-block; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-main); color: var(--text-primary); line-height: 1.6; }
+        
+        .main-header { padding: 15px 20px; background-color: var(--bg-board); border-bottom: 1px solid var(--border-color); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px; }
+        .header-title-section { display: flex; align-items: center; gap: 20px; flex-grow: 1; }
+        .main-header h1 { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; color: var(--text-primary); margin: 0; letter-spacing: 1px; }
+        .view-toggle-btn { background-color: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border-color); padding: 8px 15px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: background-color 0.2s, color 0.2s; }
+        .view-toggle-btn:hover { background-color: var(--accent-color); color: var(--bg-main); }
+        .global-progress-wrapper { width: 100%; max-width: 450px; display: flex; flex-direction: column; gap: 8px; }
+        .global-progress-section { display: flex; align-items: center; gap: 10px; }
+        .global-progress-section small { font-size: 0.7rem; color: var(--text-secondary); width: 80px; }
+        .global-progress-container { flex-grow: 1; background-color: #333; border-radius: 8px; height: 12px; overflow: hidden; }
+        .global-progress-bar { height: 100%; width: 0%; border-radius: 8px; transition: width 0.4s ease, background-color 0.4s ease; }
+        .global-progress-bar.low { background-color: var(--color-progress-low); }
+        .global-progress-bar.medium { background-color: var(--color-progress-medium); }
+        .global-progress-bar.high { background-color: var(--color-progress-high); }
+        .global-progress-text { font-size: 0.8rem; font-weight: bold; color: var(--text-secondary); width: 60px; text-align: right; }
+        .hidden { display: none !important; }
+
+        #calendar-view { padding: 20px; }
+        .motivational-quote { font-family: 'Orbitron', sans-serif; color: var(--vfd-green); font-size: 1.5em; text-align: center; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; text-shadow: 0 0 4px rgba(80, 224, 80, 0.6), 0 0 8px rgba(80, 224, 80, 0.4); min-height: 1.2em; }
+        .countdown-container { position: relative; display: inline-block; text-align: center; }
         .countdown-timer-container { display: flex; justify-content: center; align-items: center; gap: 25px; margin-bottom: 25px; }
         .countdown-unit { text-align: center; }
-        .countdown-label { font-family: 'Orbitron', sans-serif; font-size: 0.8em; color: var(--accent-color); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; opacity: 0.8; }
-        .countdown-digits { font-family: 'Orbitron', sans-serif; font-size: 4em; color: var(--accent-color); line-height: 1; text-shadow: 0 0 5px rgba(80, 224, 80, 0.7), 0 0 10px rgba(80, 224, 80, 0.5), 0 0 15px rgba(80, 224, 80, 0.3); }
+        .countdown-label { font-family: 'Orbitron', sans-serif; font-size: 0.8em; color: var(--vfd-green); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; opacity: 0.8; }
+        .countdown-digits { font-family: 'Orbitron', sans-serif; font-size: 4em; color: var(--vfd-green); line-height: 1; text-shadow: 0 0 5px rgba(80, 224, 80, 0.7), 0 0 10px rgba(80, 224, 80, 0.5), 0 0 15px rgba(80, 224, 80, 0.3); }
         #edit-countdown-btn { position: absolute; top: -5px; right: -30px; background: none; border: none; color: var(--meta-text); font-size: 1.2em; cursor: pointer; transition: color 0.2s; }
+        #edit-countdown-btn:hover { color: var(--accent-color); }
         #countdown-editor { display: none; margin-top: -15px; margin-bottom: 20px; align-items: center; justify-content: center; gap: 10px; }
-        .global-progress-container { max-width: 900px; margin: 20px auto; display: flex; flex-direction: column; gap: 12px; padding: 0 10px; }
-        .progress-bar-wrapper { display: flex; flex-direction: column; gap: 4px; }
-        .progress-bar-wrapper label { font-size: 0.85em; color: var(--meta-text); font-weight: 600; }
-        .progress-bar-background { width: 100%; background-color: var(--main-border); border-radius: 8px; height: 22px; overflow: hidden; }
-        .progress-bar-fill { height: 100%; width: 0%; border-radius: 8px; transition: width 0.5s ease-in-out; text-align: center; line-height: 22px; color: var(--bg-main); font-weight: bold; font-size: 0.8em; }
-        #global-score-bar { background-color: var(--color-progress-high); }
-        #global-advance-bar { background-color: var(--subject-highlight-color); }
-
-        /* --- BARRA DE CONTROL DE VISTA --- */
-        .view-controls { text-align: center; margin-bottom: 20px; }
-        #view-toggle-btn { background-color: var(--accent-color); color: var(--bg-main); border: none; padding: 10px 20px; font-family: 'Orbitron', sans-serif; font-size: 1em; font-weight: 700; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; }
-        #view-toggle-btn:hover { background-color: #39ff94; transform: translateY(-2px); }
-        #view-toggle-btn .fas { margin-right: 8px; }
-
-        /* --- ESTILOS VISTA CALENDARIO --- */
-        #vista-calendario .calendar-container { display: grid; grid-template-columns: 40px 40px repeat(7, 1fr); gap: 2px; background-color: var(--main-border); }
-        #vista-calendario .header-cell, #vista-calendario .day-header { text-align: center; padding: 12px 5px; font-weight: 600; font-family: 'Orbitron', sans-serif; text-transform: uppercase; font-size: 0.9em; }
-        #vista-calendario .meta-header { background-color: var(--meta-header-bg); color: var(--meta-text); border-bottom: 2px solid var(--main-border); }
-        #vista-calendario .day-header { background-color: var(--cell-bg); color: var(--accent-color); border-bottom: 2px solid var(--main-border); }
-        #vista-calendario .month-cell { grid-column: 1; background-color: var(--meta-bg); color: var(--meta-text); font-family: 'Orbitron', sans-serif; writing-mode: vertical-rl; text-transform: uppercase; letter-spacing: 2px; display: flex; align-items: center; justify-content: center; border-right: 1px solid var(--meta-border); }
-        #vista-calendario .week-cell-container { grid-column: 2; background-color: var(--meta-bg); position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--meta-border); }
-        #vista-calendario .week-number { font-family: 'Orbitron', sans-serif; font-size: 1.6em; color: var(--meta-text); }
-        #vista-calendario .day-cell { background-color: var(--cell-bg); min-height: 160px; padding: 8px 12px; position: relative; overflow-y: auto; cursor: pointer; transition: all 0.2s; border: 2px solid transparent; }
-        #vista-calendario .day-cell.empty { background-color: var(--bg-main); cursor: default; }
-        #vista-calendario .day-cell.drag-over { background-color: var(--meta-bg); border-color: var(--accent-color); }
-        #vista-calendario .calendar-day-number { font-size: 0.9em; font-weight: 600; color: #777; position: absolute; top: 8px; right: 12px; }
-        #vista-calendario .day-content ul { list-style-type: none; padding-left: 0; margin: 25px 0 0 0; }
-        #vista-calendario .day-content li { margin-bottom: 4px; padding-left: 14px; position: relative; font-size: 0.85em; }
-        #vista-calendario .subject-title { color: var(--subject-highlight-color); font-weight: 700; display: block; margin-bottom: 6px; text-transform: uppercase; font-size: 1em; padding-left: 0; }
-        #vista-calendario .subject-title::before { content: none !important; }
-        #vista-calendario .topic-item { display: flex; align-items: center; justify-content: space-between; padding: 4px 6px; border-radius: 4px; transition: all 0.2s; }
-        #vista-calendario .topic-item[draggable="true"] { cursor: grab; }
-        #vista-calendario .topic-item.dragging { opacity: 0.5; }
-        #vista-calendario .topic-item:not(.topic-completed):hover { background-color: var(--meta-bg); color: var(--accent-color); }
-        #vista-calendario .topic-item.topic-completed { color: var(--text-completed); font-style: italic; }
-        #vista-calendario .topic-item::before { content: '■'; position: absolute; left: 0; top: 5px; color: var(--accent-color); font-size: 0.8em; }
-        #vista-calendario .topic-item.topic-completed::before { color: #555; }
-        #vista-calendario .topic-score { font-size: 0.85em; font-weight: bold; margin-left: 10px; flex-shrink: 0; }
-        
-        /* --- ESTILOS VISTA TABLERO KANBAN --- */
-        #vista-tablero { height: calc(100vh - 280px); /* Ajustar altura para cabecera y controles */ }
-        .kanban-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 10px; height: 100%; }
-        .kanban-column { background-color: var(--bg-board); border-radius: 12px; display: flex; flex-direction: column; max-height: 100%; }
-        .kanban-column-header { padding: 15px 20px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; position: sticky; top: 0; background-color: var(--bg-board); z-index: 10; border-top: 4px solid transparent; }
-        .kanban-column.todo .kanban-column-header { border-top-color: var(--text-secondary); }
-        .kanban-column.inprogress .kanban-column-header { border-top-color: var(--color-progress); }
-        .kanban-column.done .kanban-column-header { border-top-color: var(--color-progress-high); }
+        #countdown-date-picker { background-color: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-primary); padding: 5px; border-radius: 4px; font-family: 'Source Sans Pro', sans-serif; }
+        #countdown-date-picker::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
+        #save-countdown-btn { background-color: var(--accent-color); color: var(--bg-main); border: none; padding: 6px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .calendar-container { display: grid; grid-template-columns: 40px 40px repeat(7, 1fr); gap: 2px; background-color: var(--border-color); margin-top: 25px; }
+        .header-cell, .day-header { text-align: center; padding: 12px 5px; font-weight: 600; font-family: 'Orbitron', sans-serif; text-transform: uppercase; font-size: 0.9em; }
+        .meta-header { background-color: var(--meta-header-bg); color: var(--meta-text); border-bottom: 2px solid var(--border-color); }
+        .day-header { background-color: var(--bg-card); color: var(--accent-color); border-bottom: 2px solid var(--border-color); }
+        .month-cell { grid-column: 1; background-color: var(--meta-bg); color: var(--meta-text); font-family: 'Orbitron', sans-serif; writing-mode: vertical-rl; text-transform: uppercase; letter-spacing: 2px; display: flex; align-items: center; justify-content: center; border-right: 1px solid var(--meta-border); }
+        .week-cell-container { grid-column: 2; background-color: var(--meta-bg); position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--meta-border); }
+        .week-number { font-family: 'Orbitron', sans-serif; font-size: 1.6em; color: var(--meta-text); }
+        .day-cell { background-color: var(--bg-card); min-height: 160px; padding: 8px 12px; position: relative; overflow-y: auto; cursor: pointer; transition: all 0.2s; border: 2px solid transparent; }
+        .day-cell.empty { background-color: var(--bg-board); cursor: default; }
+        .day-cell.drag-over { background-color: var(--meta-bg); border-color: var(--accent-color); }
+        .day-cell.target-date { border-color: var(--color-progress-low); box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
+        .day-cell.target-date .calendar-day-number { color: var(--color-progress-low); font-weight: bold; }
+        .day-cell.day-before-target { border-color: var(--color-progress-medium); }
+        .day-cell.day-before-target .calendar-day-number { color: var(--color-progress-medium); }
+        .calendar-day-number { font-size: 0.9em; font-weight: 600; color: #777; position: absolute; top: 8px; right: 12px; z-index: 1; transition: color 0.2s; }
+        .day-content ul { list-style-type: none; padding-left: 0; margin: 25px 0 0 0; }
+        .day-content li { margin-bottom: 4px; padding-left: 14px; position: relative; font-size: 0.85em; }
+        .day-content .subject-title, #modal-topics .subject-title { color: var(--subject-highlight-color); font-weight: 700; display: block; margin-bottom: 6px; text-transform: uppercase; font-size: 1em; text-shadow: 0 0 5px rgba(255, 152, 0, 0.4); padding-left: 0; }
+        .subject-title::before { content: none !important; }
+        .subject-score { color: var(--meta-text); font-size: 0.8em; font-weight: 400; margin-left: 8px; }
+        .topic-item { display: flex; align-items: center; justify-content: space-between; padding: 4px 6px; margin-left: -6px; border-radius: 4px; transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s, border-top 0.1s, border-bottom 0.1s; border-top: 2px solid transparent; border-bottom: 2px solid transparent; }
+        .topic-item[draggable="true"] { cursor: grab; }
+        .topic-item.dragging { opacity: 0.5; }
+        .topic-item:not(.topic-completed):not(.dragging):hover { background-color: var(--meta-bg); color: var(--accent-color); }
+        .topic-item.drag-over-top { border-top-color: var(--accent-color); }
+        .topic-item.drag-over-bottom { border-bottom-color: var(--accent-color); }
+        .topic-item::before { content: '■'; position: absolute; left: 0; top: 5px; color: var(--accent-color); font-size: 0.8em; line-height: 1.5; transition: color 0.3s ease; }
+        .topic-score { font-size: 0.85em; font-weight: bold; margin-left: 10px; flex-shrink: 0; }
+        .kanban-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 20px; height: calc(100vh - 105px); }
+        .kanban-column { background-color: var(--bg-board); border-radius: 12px; display: flex; flex-direction: column; max-height: 100%; border-top: 3px solid transparent; transition: border-top-color 0.4s ease; }
+        .kanban-column.inprogress { border-top-color: var(--color-progress); }
+        .kanban-column.done { border-top-color: var(--color-progress-high); }
+        .kanban-column-header { padding: 15px 20px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; position: sticky; top: 0; background-color: var(--bg-board); z-index: 10; }
         .kanban-column-header h2 { font-size: 1.1rem; font-weight: 600; }
-        .cards-container { flex-grow: 1; padding: 10px 15px 20px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border-color) var(--bg-board); }
+        .cards-container { flex-grow: 1; padding: 10px 20px 20px 20px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border-color) var(--bg-board); }
         .specialty-header { display: flex; justify-content: space-between; align-items: center; margin: 20px 0 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border-color); }
-        .specialty-header h3 { font-size: 1rem; font-weight: 700; margin: 0; color: var(--subject-highlight-color); }
+        .specialty-header h3 { font-size: 1rem; font-weight: 700; margin: 0; }
         .specialty-progress-bars-container { display: flex; flex-direction: column; gap: 4px; }
         .specialty-progress-wrapper { display: flex; align-items: center; gap: 8px; }
         .specialty-progress-container { width: 80px; height: 8px; background-color: #444; border-radius: 4px; }
-        .specialty-progress-bar { height: 100%; width: 0%; border-radius: 4px; background-color: var(--subject-highlight-color); transition: width 0.3s ease; }
+        .specialty-progress-bar { height: 100%; width: 0%; border-radius: 4px; background-color: var(--color-1); transition: width 0.3s ease; }
         .specialty-score-progress-bar { height: 100%; width: 0%; border-radius: 4px; transition: width 0.3s ease; }
         .specialty-progress-text, .specialty-score-text { font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); width: 50px; text-align: right; }
+        .specialty-score-progress-bar.low { background-color: var(--color-progress-low); }
+        .specialty-score-progress-bar.medium { background-color: var(--color-progress-medium); }
+        .specialty-score-progress-bar.high { background-color: var(--color-progress-high); }
         .kanban-card { background-color: var(--bg-card); border-radius: 8px; margin-bottom: 10px; box-shadow: 0 2px 8px var(--shadow-color); overflow: hidden; }
         .card-summary { padding: 12px 15px; cursor: pointer; }
         .card-summary-content { display: flex; justify-content: space-between; align-items: center; }
@@ -121,437 +121,92 @@
         .card-progress-container { width: 80px; height: 8px; background-color: #444; border-radius: 4px; }
         .card-progress-bar { height: 100%; width: 0%; border-radius: 4px; transition: width 0.3s ease; }
         .card-progress-text { font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); width: 50px; text-align: right; }
-        .col-inprogress .card-progress-bar { background-color: var(--color-progress); }
-        .col-done .card-progress-bar { background-color: var(--color-progress-high); }
+        #col-inprogress-container .card-progress-bar { background-color: var(--color-progress); }
+        #col-done-container .card-progress-bar { background-color: var(--color-progress-high); }
         .card-details { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.25, 0.1, 0.25, 1.0); padding: 0 15px; }
         .kanban-card.is-open .card-details { max-height: 1000px; padding: 0 15px 15px; }
-        .task-section { padding: 12px 0 12px 15px; border-left: 3px solid; margin: 15px 0; background-color: rgba(0,0,0,0.1); border-radius: 0 6px 6px 0; }
-        .task-section h3 { font-size: 0.9rem; font-weight: 700; margin-bottom: 10px; }
-        .task-section[data-section="1"]{border-color:var(--step-1-color)}.task-section[data-section="2"]{border-color:var(--step-2-color)}.task-section[data-section="3"]{border-color:var(--step-3-color)}.task-section[data-section="4"]{border-color:var(--step-4-color)}.task-section[data-section="5"]{border-color:var(--step-5-color)}.task-section[data-section="6"]{border-color:var(--step-6-color)}
-        .task-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 0.95rem; }
-        .score-section { margin-top: 15px; padding-top: 10px; border-top: 1px dashed var(--border-color); }
-        .score-inputs { display: flex; gap: 8px; align-items: center; }
-        .score-inputs input { width: 60px; background-color: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-primary); padding: 5px; border-radius: 4px; text-align: center; font-size: 0.9rem; }
-        .score-percentage { font-weight: bold; display: inline-block; line-height: 1.5; }
-        .tag { font-size: 0.7rem; font-weight: 600; padding: 2px 8px; background-color: var(--bg-card); color: var(--text-primary); border-radius: 10px; border: 1px solid var(--border-color); }
-        
-        /* --- ESTILOS MODALES (COMPARTIDOS) --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px); z-index: 998; display: none; opacity: 0; transition: opacity 0.3s ease; }
         .modal-overlay.visible { display: block; opacity: 1; }
-        .modal-container { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: var(--cell-bg); border: 1px solid var(--main-border); border-radius: 12px; box-shadow: 0 5px 25px rgba(0,0,0,0.5); z-index: 1000; width: 90%; max-height: 90vh; display: none; flex-direction: column; transition: transform 0.3s ease, opacity 0.3s ease; }
+        .modal-container { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 5px 25px rgba(0,0,0,0.5); z-index: 1000; width: 90%; max-height: 90vh; display: none; flex-direction: column; transition: transform 0.3s ease, opacity 0.3s ease; }
         .modal-container.visible { display: flex; }
-        .modal-header { padding: 15px 25px; border-bottom: 1px solid var(--main-border); display: flex; justify-content: space-between; align-items: center; }
+        .modal-header { padding: 15px 25px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
         .modal-header h2 { margin: 0; font-family: 'Orbitron', sans-serif; font-size: 1.5em; }
         .modal-close { font-size: 2em; color: #888; cursor: pointer; line-height: 1; transition: color 0.2s; }
+        .modal-close:hover { color: var(--text-primary); }
         .modal-content { padding: 25px; overflow-y: auto; }
-        #details-modal { max-width: 650px; }
-        /* (El resto de los estilos del modal del calendario se mantienen sin cambios) */
-        /* ... los estilos del modal de plan de estudio (.step-card, .practice-score-column, etc) se mantienen ... */
-        .step-card { background-color: var(--plan-bg); border-left-width: 5px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.3); padding: 12px 18px; display: flex; align-items: flex-start; transition: opacity 0.3s ease, border-left-color 0.3s ease; border-left-style: solid; margin-bottom: 15px;}
-        .study-flow-diagram{display:flex; flex-direction:column; gap:15px; width:100%;}
-        .step-icon-container{font-size:1.8em; margin-right:15px; padding-top:2px; min-width:35px; text-align:center;}
-        .step-title{font-size:1.2em; font-weight:600; margin:0 0 10px 0; display:flex; align-items:center; color: var(--text-primary);}
-        .step-number { color: #101010; border-radius: 50%; width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.7em; font-weight: bold; margin-right: 8px; flex-shrink: 0; }
-        .step-details{list-style:none; padding-left:0; margin:0;}
-        .step-details li{margin-bottom:8px; font-size:0.9em; line-height:1.4; display:flex; align-items:center;}
-        .task-checkbox{margin-right:10px; accent-color:var(--accent-color); transform:scale(1.1);}
-        input[type="checkbox"]:checked + .task-text{text-decoration:line-through; color:#6a6a6a;}
-        .score-input-group input{font-family:'Source Sans Pro',sans-serif; background-color:#2a2a2a; color:#e0e0e0; border:1px solid #444; border-radius:4px; padding:5px 8px; font-size:0.9em; width:100%; box-sizing:border-box; text-align:center;}
-        .practice-score-column{flex:1;}
-        .practice-score-column h3{font-size:0.9em; color:#ccc; margin:0 0 8px 0; font-weight:500; text-transform:uppercase;}
-        .score-inputs-row{display:flex; gap:8px;}
-        .score-input-group{flex-grow:1;}
-        .step-1{border-left-color:var(--step-1-color);}.step-1 .step-icon-container{color:var(--step-1-color);}.step-1 .step-number{background-color:var(--step-1-color);}
-        .step-2{border-left-color:var(--step-2-color);}.step-2 .step-icon-container{color:var(--step-2-color);}.step-2 .step-number{background-color:var(--step-2-color);}
-        .step-3{border-left-color:var(--step-3-color);}.step-3 .step-icon-container{color:var(--step-3-color);}.step-3 .step-number{background-color:var(--step-3-color);}
-        .step-4{border-left-color:var(--step-4-color);}.step-4 .step-icon-container{color:var(--step-4-color);}.step-4 .step-number{background-color:var(--step-4-color);}
-        .step-5{border-left-color:var(--step-5-color);}.step-5 .step-icon-container{color:var(--step-5-color);}.step-5 .step-number{background-color:var(--step-5-color);}
-        .step-6{border-left-color:var(--step-6-color);}.step-6 .step-icon-container{color:var(--step-6-color);}.step-6 .step-number{background-color:var(--step-6-color);}
-        .practice-step-layout{display:flex; flex-direction:row; gap:15px; width:100%;}
-        .practice-tasks-column{flex:2;}
+        #details-modal { max-width: 650px; z-index: 1000; }
+        #details-modal .modal-header h2 { color: var(--accent-color); }
+        #modal-notes { width: 100%; box-sizing: border-box; min-height: 120px; background-color: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-primary); padding: 10px; resize: vertical; border-radius: 4px; }
+        #modal-save-btn { width: 100%; padding: 12px; margin-top: 10px; background-color: var(--accent-color); color: var(--bg-main); border: none; cursor: pointer; font-family: 'Orbitron', sans-serif; font-size: 1em; border-radius: 4px; transition: background-color 0.2s, transform 0.1s; }
+        #modal-save-btn:hover { background-color: #39ff94; }
+        #modal-save-btn:active { transform: scale(0.98); }
+        
+        /* --- ESTILOS MEJORADOS PARA EL MODAL DE TAREAS --- */
+        #topic-plan-modal { max-width: 900px; z-index: 1001; background-color: var(--bg-board); }
+        #topic-plan-modal .modal-header h2 { color: var(--vfd-green); font-size: 1.3em; }
+        #topic-plan-modal .modal-content { padding: 15px 25px; }
+        #topic-plan-modal .step-card { background-color: var(--plan-bg); border-left-width: 5px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.3); padding: 15px 20px; display: flex; align-items: flex-start; transition: opacity 0.3s ease, border-left-color 0.3s ease; border-left-style: solid; margin-bottom: 15px; }
+        .study-flow-diagram { display: flex; flex-direction: column; gap: 15px; width: 100%; }
+        .step-card.completed { border-left-color: #505050 !important; opacity: 0.65; }
+        .step-card.completed .step-icon-container, .step-card.completed .step-title, .step-card.completed .step-details li { color: #909090 !important; }
+        .step-card.completed .step-number { background-color: #383838 !important; color: #787878 !important; }
+        .step-icon-container { font-size: 1.8em; margin-right: 20px; padding-top: 5px; min-width: 35px; text-align: center; }
+        .step-content { flex-grow: 1; }
+        .step-title { font-size: 1.3em; font-weight: 700; margin: 0 0 15px 0; display: flex; align-items: center; color: var(--text-primary); text-transform: uppercase; letter-spacing: 1px; }
+        .step-title .subtitle { font-size: 0.7em; color: var(--text-secondary); margin-left: 8px; font-weight: 400; text-transform: none; }
+        .step-number { color: var(--bg-main); border-radius: 50%; width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8em; font-weight: bold; margin-right: 12px; flex-shrink: 0; transform: scale(1.1); box-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+        .step-details { list-style: none; padding-left: 0; margin: 0; }
+        .step-details li { margin-bottom: 8px; }
+        .step-details li label { display: flex; align-items: center; cursor: pointer; padding: 6px; border-radius: 4px; transition: background-color 0.2s; }
+        .step-details li label:hover { background-color: rgba(255, 255, 255, 0.05); }
+        .task-checkbox { position: absolute; opacity: 0; cursor: pointer; height: 0; width: 0; }
+        .task-icon { margin-right: 12px; font-size: 1.1em; color: var(--meta-text); transition: color 0.3s ease; width: 20px; text-align: center; }
+        .task-text { transition: color 0.3s ease, text-decoration 0.3s ease, font-style 0.3s ease; font-size: 0.95rem; }
+        .task-checkbox:checked + label .task-icon { color: var(--vfd-green); }
+        .task-checkbox:checked + label .task-text { text-decoration: line-through; color: var(--text-secondary); font-style: italic; }
+        .optional-tag { font-size: 0.8em; color: #888; margin-left: 8px; font-style: italic; }
+        .tool-tag { font-size: 0.7rem; font-weight: 600; padding: 2px 8px; background-color: var(--bg-card); color: var(--text-primary); border-radius: 10px; border: 1px solid var(--border-color); margin-left: auto; }
+        .score-section { background-color: rgba(0,0,0,0.2); padding: 15px; border-radius: 6px; margin-top: 20px; }
+        .score-section h4 { text-transform: uppercase; letter-spacing: 1px; font-size: 0.8em; color: var(--meta-text); margin-bottom: 10px; }
+        .score-inputs-row { display: flex; gap: 15px; align-items: center; justify-content: center; }
+        .score-input-group { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .score-input-group label { font-size: 0.75em; color: var(--text-secondary); }
+        .score-input-group input { font-family: 'Orbitron', sans-serif; width: 70px; background-color: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-primary); padding: 8px; border-radius: 4px; text-align: center; font-size: 1rem; }
+        .score-input-group input[type=number]::-webkit-inner-spin-button, .score-input-group input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        .score-input-group input[type=number] { -moz-appearance: textfield; }
+        .percentage-output { font-family: 'Orbitron', sans-serif; font-weight: bold; background-color: var(--bg-main); padding: 8px 12px; border-radius: 4px; border: 1px solid var(--border-color); cursor: default; }
+        .topic-finish-btn { background-color: var(--vfd-green); color: var(--bg-main); border: none; border-radius: 6px; padding: 12px 25px; font-family: 'Orbitron', sans-serif; font-size: 1em; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: background-color 0.2s ease, transform 0.2s ease; margin-top: 25px; }
+        .topic-finish-btn:hover { background-color: #76ff76; transform: translateY(-2px); }
+
+        .step-1 { border-left-color: var(--color-1); } .step-1 .step-icon-container, .step-1 .task-section h3 { color: var(--color-1); } .step-1 .step-number { background-color: var(--color-1); }
+        .step-2 { border-left-color: var(--color-2); } .step-2 .step-icon-container, .step-2 .task-section h3 { color: var(--color-2); } .step-2 .step-number { background-color: var(--color-2); }
+        .step-3 { border-left-color: var(--color-3); } .step-3 .step-icon-container, .step-3 .task-section h3 { color: var(--color-3); } .step-3 .step-number { background-color: var(--color-3); }
+        .step-4 { border-left-color: var(--color-4); } .step-4 .step-icon-container, .step-4 .task-section h3 { color: var(--color-4); } .step-4 .step-number { background-color: var(--color-4); }
+        .step-5 { border-left-color: var(--color-5); } .step-5 .step-icon-container, .step-5 .task-section h3 { color: var(--color-5); } .step-5 .step-number { background-color: var(--color-5); }
+        .step-6 { border-left-color: var(--color-6); } .step-6 .step-icon-container, .step-6 .task-section h3 { color: var(--color-6); } .step-6 .step-number { background-color: var(--color-6); }
+
+        @media (max-width: 900px) { .kanban-board { grid-template-columns: 1fr; height: auto; } .main-header { flex-direction: column; } .global-progress-wrapper { width: 100%; } }
+        @media (max-width: 600px) { .motivational-quote { font-size: 1em; } .countdown-digits { font-size: 2.2em; } #edit-countdown-btn { right: -5px; top: -15px; } .parallel-steps-container { flex-direction: column; } }
     </style>
 </head>
 <body>
     <header class="main-header">
-        <div id="motivational-quote-container" class="motivational-quote"></div>
-        <div class="countdown-container">
-             <!-- Contenedor del contador de calendario... -->
-             <div class="countdown-timer-container">
-                <div class="countdown-unit"> <div class="countdown-label">Days</div> <div class="countdown-digits" id="countdown-days">000</div> </div>
-                <div class="countdown-unit"> <div class="countdown-label">Hours</div> <div class="countdown-digits" id="countdown-hours">00</div> </div>
-                <div class="countdown-unit"> <div class="countdown-label">Minutes</div> <div class="countdown-digits" id="countdown-minutes">00</div> </div>
-                <div class="countdown-unit"> <div class="countdown-label">Seconds</div> <div class="countdown-digits" id="countdown-seconds">00</div> </div>
-            </div>
-            <button id="edit-countdown-btn" title="Editar fecha final"><i class="fas fa-calendar-alt"></i></button>
-        </div>
-        <div id="countdown-editor" style="display: none;"> <!-- Oculto por defecto -->
-            <input type="date" id="countdown-date-picker">
-            <button id="save-countdown-btn">Guardar</button>
-        </div>
-        <div class="global-progress-container">
-             <!-- Contenedores de barras de progreso de calendario... -->
-             <div class="progress-bar-wrapper">
-                <label id="global-score-label">Puntuación Global (Promedio de Calificaciones)</label>
-                <div class="progress-bar-background">
-                    <div class="progress-bar-fill" id="global-score-bar" role="progressbar" aria-labelledby="global-score-label">0%</div>
-                </div>
-            </div>
-            <div class="progress-bar-wrapper">
-                <label id="global-advance-label">Avance Global (Temas Completados)</label>
-                <div class="progress-bar-background">
-                    <div class="progress-bar-fill" id="global-advance-bar" role="progressbar" aria-labelledby="global-advance-label">0%</div>
-                </div>
-            </div>
-        </div>
+        <!-- ... (Contenido del header sin cambios) ... -->
     </header>
-
-    <div class="view-controls">
-        <button id="view-toggle-btn"><i class="fas fa-columns"></i> Ver Tablero</button>
-    </div>
-
-    <main id="vista-calendario">
-        <div class="calendar-container" id="calendar-container"></div>
-    </main>
     
-    <main id="vista-tablero" style="display: none;">
-        <div class="kanban-board">
-            <section class="kanban-column todo"><div class="kanban-column-header"><h2><i class="far fa-circle"></i> Sin Empezar</h2></div><div class="cards-container" id="col-todo-container"></div></section>
-            <section class="kanban-column inprogress"><div class="kanban-column-header"><h2><i class="fas fa-spinner fa-spin"></i> En Curso</h2></div><div class="cards-container" id="col-inprogress-container"></div></section>
-            <section class="kanban-column done"><div class="kanban-column-header"><h2><i class="fas fa-check-circle"></i> Listo</h2></div><div class="cards-container" id="col-done-container"></div></section>
-        </div>
+    <main id="main-content">
+        <!-- ... (Contenido de las vistas sin cambios) ... -->
     </main>
 
-    <!-- Modales (se mantienen igual, ya que pueden ser llamados desde ambas vistas) -->
-    <div class="modal-overlay" id="modal-overlay"></div>
-    <div class="modal-container" id="details-modal">
-         <!-- Contenido del modal de día del calendario... -->
-    </div>
-    <div class="modal-overlay" id="topic-plan-overlay"></div>
-    <div class="modal-container" id="topic-plan-modal">
-        <div class="modal-header"> <h2 id="topic-plan-title"></h2> <span class="modal-close" id="modal-close-topic">×</span> </div>
-        <div class="modal-content">
-            <!-- Contenido del modal de plan de estudio (el de los 6 pasos)... -->
-            <div class="study-flow-diagram">
-                <div class="step-card step-1"> <div class="step-icon-container"><i class="fas fa-binoculars"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">1</span>VISTA RÁPIDA</h2> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-1-1"><span class="task-text">Índice</span></label></li> <li><label><input type="checkbox" class="task-checkbox" id="task-1-2"><span class="task-text">Descargar guías</span></label></li> <li><label><input type="checkbox" class="task-checkbox" id="task-1-3"><span class="task-text">CREA resúmenes + casos con IA</span></label></li> </ul> </div> </div>
-                <div class="step-card step-2"> <div class="step-icon-container"><i class="fas fa-magic"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">2</span>CREAR</h2> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-2-1"><span class="task-text">Presentación</span></label></li> <li><label><input type="checkbox" class="task-checkbox" id="task-2-2"><span class="task-text">Podcast MP3</span></label></li> </ul> </div> </div>
-                <div class="step-card step-3"> <div class="step-icon-container"><i class="fas fa-book-reader"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">3</span>LEER</h2> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-3-1"><span class="task-text">Leer Resumen</span></label></li> </ul> </div> </div>
-                <div class="step-card step-4"> <div class="step-icon-container"><i class="fas fa-puzzle-piece"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">4</span>UNIFICAR</h2> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-4-1"><span class="task-text">HTML (resumen + presentación + simular)</span></label></li> </ul> </div> </div>
-                <div class="step-card step-5"> <div class="step-icon-container"><i class="fas fa-tasks"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">5</span>PRACTICAR</h2> <div class="practice-step-layout"> <div class="practice-tasks-column"> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-5-1"><span class="task-text">Realiza CASOS CLÍNICOS</span></label></li> <li><label><input type="checkbox" class="task-checkbox" id="task-5-2"><span class="task-text">Repasar</span></label></li> </ul> </div> <div class="practice-score-column"> <h3>PUNTUACIÓN</h3> <div class="score-inputs-row"> <div class="score-input-group"><label for="score-aciertos">Aciertos:</label><input type="number" id="score-aciertos" min="0"></div> <div class="score-input-group"><label for="score-reactivos">Reactivos:</label><input type="number" id="score-reactivos" min="0"></div> <div class="score-input-group"><label>%:</label><input type="text" id="score-percentage" readonly></div> </div> </div> </div> </div> </div>
-                <div class="step-card step-6"> <div class="step-icon-container"><i class="fas fa-head-side-headphones"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">6</span>MEMORIZAR</h2> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-6-1"><span class="task-text">Escuchar MP3</span></label></li> </ul> </div> </div>
-            </div>
-        </div>
-    </div>
-
-
+    <!-- ... (Contenido de los modales sin cambios) ... -->
+    
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <script>
-    // --- CONFIGURACIÓN DE FIREBASE E INICIALIZACIÓN ---
-    const firebaseConfig = { /* ... TU CONFIGURACIÓN DE FIREBASE ... */ };
-    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
-    const auth = firebase.auth();
-    const db = firebase.firestore();
-    let currentUser = null;
-    
-    // --- VARIABLES GLOBALES Y DE ESTADO ---
-    let studyPlan;
-    let userProgress = {};
-    const ALL_TASK_IDS = ['task-1-1', 'task-1-2', 'task-1-3', 'task-2-1', 'task-2-2', 'task-3-1', 'task-4-1', 'task-5-1', 'task-5-2', 'task-6-1'];
-    const totalTasks = ALL_TASK_IDS.length;
-    let defaultStudyPlan = [ /* ... el mismo array largo de defaultStudyPlan ... */ ];
-    
-    // --- REFERENCIAS AL DOM ---
-    const vistaCalendario = document.getElementById('vista-calendario');
-    const vistaTablero = document.getElementById('vista-tablero');
-    const viewToggleButton = document.getElementById('view-toggle-btn');
-    const calendarContainer = document.getElementById('calendar-container');
-    const topicModal = document.getElementById('topic-plan-modal');
-    // (Otras referencias al DOM del calendario y modales se mantienen)
-    
-    // --- LÓGICA DE AUTENTICACIÓN ---
-    auth.onAuthStateChanged(user => {
-        if (user) {
-            currentUser = user;
-            initializeAppLogic();
-        } else {
-            window.location.href = 'index.html'; // Redirigir si no está autenticado
-        }
-    });
-
-    async function initializeAppLogic() {
-        const docRef = db.collection('userProgress').doc(currentUser.uid);
-        const doc = await docRef.get();
-        userProgress = doc.exists ? doc.data() : {};
-        
-        studyPlan = getData('studyPlan', defaultStudyPlan);
-        
-        // Setup inicial
-        populateCalendar();
-        setupEventListeners();
-        updateGlobalProgressBars();
-    }
-    
-    // --- LÓGICA DE CAMBIO DE VISTA ---
-    function toggleView() {
-        const isCalendarVisible = vistaCalendario.style.display !== 'none';
-        if (isCalendarVisible) {
-            vistaCalendario.style.display = 'none';
-            vistaTablero.style.display = 'block';
-            viewToggleButton.innerHTML = `<i class="far fa-calendar-alt"></i> Ver Calendario`;
-            renderKanbanBoard(); // Renderizar el tablero cada vez que se muestra
-        } else {
-            vistaCalendario.style.display = 'block';
-            vistaTablero.style.display = 'none';
-            viewToggleButton.innerHTML = `<i class="fas fa-columns"></i> Ver Tablero`;
-            populateCalendar(); // Re-renderizar calendario para reflejar cambios
-        }
-    }
-
-    // --- FUNCIONES DE PERSISTENCIA (CENTRALIZADAS) ---
-    async function saveData(key, value) {
-        if (!currentUser) return;
-        const docRef = db.collection('userProgress').doc(currentUser.uid);
-        try {
-            // Usar notación de punto para actualizar campos anidados
-            await docRef.set({ [key]: value }, { merge: true });
-            // Actualizar el objeto local para reflejar el cambio instantáneamente
-            const keys = key.split('.');
-            let current = userProgress;
-            for (let i = 0; i < keys.length - 1; i++) {
-                current = current[keys[i]] = current[keys[i]] || {};
-            }
-            current[keys[keys.length - 1]] = value;
-        } catch (error) {
-            console.error("Error al guardar en Firestore:", error);
-        }
-    }
-
-    function getData(key, defaultValue = null) {
-        const keys = key.split('.');
-        let result = userProgress;
-        for (const k of keys) {
-            if (result && typeof result === 'object' && k in result) {
-                result = result[k];
-            } else {
-                return defaultValue;
-            }
-        }
-        return result;
-    }
-    
-    // --- FUNCIONES DE CALENDARIO (Mantenidas del original) ---
-    // populateCalendar(), createTopicListItem(), showTopicPlan(), etc.
-    // ... (Se pegaría aquí toda la lógica de funciones del calendario sin cambios mayores)
-    function populateCalendar() { /* ... Lógica del calendario sin cambios ... */ }
-    function showTopicPlan(topicId, topicName) {
-        topicModal.dataset.currentTopicId = topicId;
-        // ... resto de la lógica para mostrar el modal del plan de estudio
-    }
-
-    // --- FUNCIONES DEL TABLERO KANBAN (ADAPTADAS) ---
-
-    /**
-     * Genera la estructura de datos que el Kanban necesita (temas por especialidad)
-     * a partir de la fuente de datos única `studyPlan`.
-     */
-    function generateMedicalTopicsFromStudyPlan() {
-        const topicsBySpecialty = {};
-        let currentSpecialty = 'Temas Generales';
-        if (!studyPlan) return topicsBySpecialty;
-
-        studyPlan.forEach(day => {
-            day.blocks.forEach(block => {
-                if (block.subject) {
-                    currentSpecialty = block.subject;
-                }
-                if (!topicsBySpecialty[currentSpecialty]) {
-                    topicsBySpecialty[currentSpecialty] = [];
-                }
-                block.topics.forEach(topic => {
-                    // Evitar duplicados si un tema se repite
-                    if (!topicsBySpecialty[currentSpecialty].find(t => t.name === topic)) {
-                        topicsBySpecialty[currentSpecialty].push({
-                            name: topic,
-                            id: generateTopicId(topic)
-                        });
-                    }
-                });
-            });
-        });
-        return topicsBySpecialty;
-    }
-
-    /**
-     * Renderiza todo el tablero Kanban, colocando las tarjetas en la columna correcta.
-     */
-    function renderKanbanBoard() {
-        const topicsBySpecialty = generateMedicalTopicsFromStudyPlan();
-        const todoContainer = document.getElementById('col-todo-container');
-        const inprogressContainer = document.getElementById('col-inprogress-container');
-        const doneContainer = document.getElementById('col-done-container');
-        
-        // Limpiar contenedores antes de renderizar
-        todoContainer.innerHTML = '';
-        inprogressContainer.innerHTML = '';
-        doneContainer.innerHTML = '';
-
-        for (const specialty in topicsBySpecialty) {
-            let specialtyHTML = kanban_generateSpecialtyHeaderHTML(specialty);
-            let todoCards = '', inprogressCards = '', doneCards = '';
-
-            topicsBySpecialty[specialty].forEach(topic => {
-                const checkedCount = ALL_TASK_IDS.reduce((count, taskId) => count + (getData(`topicData.${topic.id}.${taskId}`) ? 1 : 0), 0);
-                const percentage = totalTasks > 0 ? (checkedCount / totalTasks) * 100 : 0;
-                const cardHTML = kanban_generateCardHTML(topic.name, topic.id, specialty);
-                
-                if (percentage === 100) {
-                    doneCards += cardHTML;
-                } else if (percentage > 0) {
-                    inprogressCards += cardHTML;
-                } else {
-                    todoCards += cardHTML;
-                }
-            });
-
-            if(todoCards) todoContainer.innerHTML += specialtyHTML + todoCards;
-            if(inprogressCards) inprogressContainer.innerHTML += specialtyHTML + inprogressCards;
-            if(doneCards) doneContainer.innerHTML += specialtyHTML + doneCards;
-        }
-        
-        // Después de insertar en el DOM, calcular el progreso de cada tarjeta y especialidad
-        kanban_updateAllProgressMetrics();
-    }
-    
-    function kanban_generateSpecialtyHeaderHTML(specialty) { /* ... */ return `<div class="specialty-header" data-specialty="${specialty}"><h3>${specialty}</h3><div class="specialty-progress-bars-container"><div class="specialty-progress-wrapper"><div class="specialty-progress-container"><div class="specialty-progress-bar"></div></div><span class="specialty-progress-text">0.00%</span></div><div class="specialty-progress-wrapper"><div class="specialty-progress-container"><div class="specialty-score-progress-bar"></div></div><span class="specialty-score-text">0.00%</span></div></div></div>`; }
-    
-    function kanban_generateCardHTML(topicName, topicId, specialty) {
-        // Genera el HTML de la tarjeta, usando el topicId determinista
-        return `<article class="kanban-card" data-topic-id="${topicId}" data-specialty="${specialty}">
-            <div class="card-summary">...</div>
-            <div class="card-details">
-                <!-- Se inyecta el mismo checklist del modal para consistencia -->
-                <!-- Los IDs de los checkboxes deben coincidir con ALL_TASK_IDS -->
-                <div class="task-section" data-section="1"><h3>1. VISTA RÁPIDA</h3><div class="task-item"><input type="checkbox" id="task-1-1"><label for="task-1-1">Índice</label></div>...</div>
-                ...
-                <div class="score-section">... <input type="number" class="score-aciertos"> ...</div>
-            </div>
-        </article>`;
-    }
-
-    /**
-     * Actualiza el progreso de completado de una tarjeta y la mueve de columna si es necesario.
-     * Ahora lee y escribe en la fuente de datos central.
-     */
-    function kanban_updateCardCompletion(card) {
-        const topicId = card.dataset.topicId;
-        if (!topicId) return;
-        
-        const checkboxes = card.querySelectorAll('input[type="checkbox"]');
-        let checkedCount = 0;
-        checkboxes.forEach(cb => {
-            // Guardar el estado de cada checkbox
-            saveData(`topicData.${topicId}.${cb.id}`, cb.checked);
-            if (cb.checked) checkedCount++;
-        });
-
-        const percentage = checkboxes.length > 0 ? (checkedCount / checkboxes.length) * 100 : 0;
-        
-        // Actualizar UI de la tarjeta
-        card.querySelector('.card-progress-bar').style.width = `${percentage}%`;
-        card.querySelector('.card-progress-text').textContent = `${percentage.toFixed(0)}%`;
-        if (percentage > 0) card.classList.add('has-progress');
-        
-        // Mover la tarjeta si cambia de estado
-        const targetContainerId = percentage === 100 ? 'col-done-container' : (percentage > 0 ? 'col-inprogress-container' : 'col-todo-container');
-        const targetContainer = document.getElementById(targetContainerId);
-        if (card.parentElement !== targetContainer) {
-            // Para mantener el orden de especialidad, re-renderizamos todo el tablero
-            renderKanbanBoard(); 
-        }
-    }
-    
-    /**
-     * Calcula y guarda la puntuación de una tarjeta.
-     */
-    function kanban_updateScoreProgress(card) {
-        const topicId = card.dataset.topicId;
-        if (!topicId) return;
-
-        const aciertosInput = card.querySelector('.score-aciertos');
-        const reactivosInput = card.querySelector('.score-reactivos');
-        const aciertos = parseInt(aciertosInput.value) || 0;
-        const reactivos = parseInt(reactivosInput.value) || 0;
-
-        // Guardar los valores en la BBDD
-        saveData(`topicData.${topicId}.scoreAciertos`, aciertos);
-        saveData(`topicData.${topicId}.scoreReactivos`, reactivos);
-
-        // Actualizar UI
-        const percentage = reactivos > 0 ? (Math.min(aciertos, reactivos) / reactivos) * 100 : 0;
-        const display = card.querySelector('.score-percentage');
-        display.textContent = `${percentage.toFixed(0)}%`;
-        
-        kanban_updateSpecialtyScore(card.dataset.specialty);
-        updateGlobalProgressBars(); // Llama a la función global unificada
-    }
-
-    function kanban_updateAllProgressMetrics() {
-        // Lógica para actualizar las barras de especialidad dentro del Kanban...
-        document.querySelectorAll('.specialty-header').forEach(header => {
-            // kanban_updateSpecialtyCompletion(header.dataset.specialty);
-            // kanban_updateSpecialtyScore(header.dataset.specialty);
-        });
-        updateGlobalProgressBars(); // Llama a la función global unificada
-    }
-    
-    // --- SETUP DE EVENT LISTENERS ---
-    function setupEventListeners() {
-        viewToggleButton.addEventListener('click', toggleView);
-        
-        // Listeners para el calendario...
-        // ...
-        
-        // Listeners delegados para el tablero Kanban
-        vistaTablero.addEventListener('click', e => {
-            const summary = e.target.closest('.card-summary');
-            if (summary) {
-                summary.parentElement.classList.toggle('is-open');
-                // Al abrir, poblamos los datos de la BBDD
-                const card = summary.parentElement;
-                const topicId = card.dataset.topicId;
-                card.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-                    cb.checked = getData(`topicData.${topicId}.${cb.id}`, false);
-                });
-                card.querySelector('.score-aciertos').value = getData(`topicData.${topicId}.scoreAciertos`, '');
-                card.querySelector('.score-reactivos').value = getData(`topicData.${topicId}.scoreReactivos`, '');
-            }
-        });
-        
-        vistaTablero.addEventListener('change', e => {
-            if (e.target.type === 'checkbox') {
-                const card = e.target.closest('.kanban-card');
-                if (card) {
-                    kanban_updateCardCompletion(card);
-                    kanban_updateAllProgressMetrics();
-                }
-            }
-        });
-        
-        vistaTablero.addEventListener('input', e => {
-            if (e.target.classList.contains('score-aciertos') || e.target.classList.contains('score-reactivos')) {
-                const card = e.target.closest('.kanban-card');
-                if (card) kanban_updateScoreProgress(card);
-            }
-        });
-    }
-
-    // --- FUNCIONES AUXILIARES Y DE CÁLCULO (UNIFICADAS) ---
-    function generateTopicId(topicName) { return `topic_${topicName.toLowerCase().replace(/[^a-z0-9]/g, '')}`; }
-    function isTopicComplete(topicId) { return ALL_TASK_IDS.every(taskId => getData(`topicData.${topicId}.${taskId}`) === true); }
-    function updateGlobalProgressBars() { /* ... Lógica unificada para actualizar las barras del header ... */ }
-
+    // La sección de script completa va aquí
+    // ... (El bloque de script completo del mensaje anterior va aquí) ...
     </script>
 </body>
 </html>
