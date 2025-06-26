@@ -3,1404 +3,665 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plan de Estudio ENARM 2024</title>
+    <title>Frecuencia Vital - Estudio Unificado v3</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
+
         :root {
             --bg-color: #121212;
-            --primary-color: #1e1e1e;
-            --secondary-color: #2a2a2a;
+            --cell-bg: #1a1a1a;
+            --main-border: #2c2c2c;
             --text-color: #e0e0e0;
-            --accent-color: #03dac6;
-            --accent-hover: #018786;
-            --border-color: #3a3a3a;
-            --success-color: #4caf50;
-            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --text-secondary: #a0a0a0;
+            --text-muted: #777;
+            --accent-color: #00FF7F;
+            --subject-highlight-color: #e0e0e0; 
+            --meta-bg: #181c25;
+            --meta-header-bg: #101217;
+            --meta-border: #2c3240;
+            --meta-text: #a9bce2;
+            --plan-bg: #1e1e1e;
+            --vfd-green: #50E050;
+            --progress-score-bg: #4caf50;
+            --progress-advance-bg: #ff9800;
+            --text-completed: #777;
+            --bullet-completed: #555;
+            --tag-text-dark: #111;
+            --error-color: #ff6b6b;
+            --warning-color: #ff9800;
+            --shadow-color: rgba(0, 0, 0, 0.4);
+            --step-1-color: #03dac6; --step-2-color: #ffb74d; --step-3-color: #4fc3f7;
+            --step-4-color: #ce93d8; --step-5-color: #ef9a9a; --step-6-color: #a5d6a7;
+            --color-todo: var(--text-secondary);
+            --color-inprogress: var(--color-inprogress);
+            --color-done: var(--vfd-green);
         }
 
-        body {
-            font-family: var(--font-main);
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-            line-height: 1.6;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+        /* --- ESTRUCTURA PRINCIPAL Y PESTAÑAS --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Source Sans Pro', sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
+        .tab-navigation { display: flex; border-bottom: 2px solid var(--main-border); margin: 0 25px; flex-shrink: 0; }
+        .tab-button { font-family: 'Orbitron', sans-serif; font-size: 1.1em; font-weight: 500; padding: 12px 25px; cursor: pointer; background-color: transparent; border: none; color: var(--text-secondary); border-bottom: 3px solid transparent; transition: color 0.3s ease, border-bottom-color 0.3s ease; margin-bottom: -2px; }
+        .tab-button:hover { color: var(--text-color); }
+        .tab-button.active { color: var(--accent-color); border-bottom-color: var(--accent-color); }
 
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            background-color: var(--primary-color);
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            border: 1px solid var(--border-color);
-        }
+        /* --- BANNER FIJO --- */
+        .app-banner { padding: 20px 25px 15px 25px; background-color: var(--bg-color); border-bottom: 1px solid var(--main-border); flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        .motivational-quote { font-family: 'Orbitron', sans-serif; color: var(--vfd-green); font-size: 1.4em; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 4px rgba(80, 224, 80, 0.6), 0 0 8px rgba(80, 224, 80, 0.4); min-height: 1.2em; }
+        .countdown-container { position: relative; display: inline-block; }
+        .countdown-timer-container { display: flex; justify-content: center; align-items: center; gap: 25px; }
+        .countdown-unit { text-align: center; }
+        .countdown-label { font-family: 'Orbitron', sans-serif; font-size: 0.7em; color: var(--vfd-green); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; opacity: 0.8; }
+        .countdown-digits { font-family: 'Orbitron', sans-serif; font-size: 3.5em; color: var(--vfd-green); line-height: 1; text-shadow: 0 0 5px rgba(80, 224, 80, 0.7), 0 0 10px rgba(80, 224, 80, 0.5), 0 0 15px rgba(80, 224, 80, 0.3); }
+        #edit-countdown-btn { position: absolute; top: -5px; right: -30px; background: none; border: none; color: var(--meta-text); font-size: 1.2em; cursor: pointer; transition: color 0.2s; }
+        #edit-countdown-btn:hover { color: var(--accent-color); }
+        #countdown-editor { display: none; margin-top: 10px; align-items: center; justify-content: center; gap: 10px; }
+        #countdown-date-picker { background-color: var(--cell-bg); border: 1px solid var(--main-border); color: var(--text-color); padding: 5px; border-radius: 4px; font-family: 'Source Sans Pro', sans-serif; }
+        #countdown-date-picker::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
+        #save-countdown-btn { background-color: var(--accent-color); color: var(--bg-color); border: none; padding: 6px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; }
 
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 2px solid var(--accent-color);
-            padding-bottom: 20px;
-        }
+        /* --- ÁREA DE CONTENIDO DESPLAZABLE --- */
+        .main-content-area { flex-grow: 1; overflow-y: auto; overflow-x: hidden; }
+        .tab-content { padding: 20px; animation: fadeIn 0.5s; }
+        .tab-content.hidden { display: none; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        header h1 {
-            color: var(--accent-color);
-            margin: 0;
-            font-size: 2.5em;
-            font-weight: 700;
-        }
+        /* --- VISTA PROGRESO GLOBAL (ACORDEONES) --- */
+        #global-progress-view h1 { text-align: center; color: var(--vfd-green); font-family: 'Orbitron'; letter-spacing: 1px; margin-bottom: 20px; text-shadow: 0 0 4px rgba(80,224,80,0.6); }
+        .global-progress-wrapper { margin-bottom: 12px; max-width: 900px; margin-left: auto; margin-right: auto;}
+        .global-progress-wrapper label { display: block; font-size: 0.9em; color: var(--text-secondary); margin-bottom: 5px; padding-left: 2px; }
+        .progress-bar-background { width: 100%; background-color: var(--main-border); border-radius: 8px; height: 22px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; width: 0%; border-radius: 8px; transition: width 0.5s ease-in-out; text-align: center; line-height: 22px; color: var(--bg-color); font-weight: bold; font-size: 0.8em; }
+        #global-score-bar { background-color: var(--progress-score-bg); }
+        #global-advance-bar { background-color: var(--progress-advance-bg); }
+        #specialty-accordions { display: flex; flex-direction: column; gap: 10px; margin-top: 25px; max-width: 900px; margin-left: auto; margin-right: auto; }
+        .specialty-accordion .accordion-header { background-color: var(--cell-bg); color: var(--text-color); cursor: pointer; padding: 12px 20px; width: 100%; border: none; text-align: left; outline: none; font-size: 1.2em; font-weight: 600; display: flex; align-items: center; justify-content: space-between; border-radius: 8px; border-left: 4px solid var(--main-border); transition: background-color 0.3s ease, border-left-color 0.3s ease; }
+        .specialty-accordion .accordion-header:hover, .specialty-accordion .accordion-header.active { background-color: var(--meta-bg); border-left-color: var(--accent-color); }
+        .accordion-header .specialty-name { flex-grow: 1; }
+        .specialty-progress-indicators { display: flex; gap: 20px; align-items: center; font-size: 0.8em; margin-left: 15px; }
+        .indicator { display: flex; align-items: center; gap: 6px; }
+        .indicator .fas { font-size: 1.1em; }
+        .score-red { color: var(--error-color); }
+        .score-yellow { color: var(--warning-color); }
+        .score-green { color: var(--vfd-green); }
+        .indicator.score-indicator .fas { color: var(--warning-color); } 
+        .indicator .score-value { font-weight: bold; }
+        .indicator .completion-value { color: var(--text-secondary); }
+        .accordion-header .fa-chevron-down { transition: transform 0.3s ease; }
+        .specialty-accordion .accordion-header.active .fa-chevron-down { transform: rotate(180deg); }
+        .accordion-panel { padding: 0px 20px; background-color: transparent; max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out, padding 0.4s ease-out; }
+        .topic-progress-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 5px; border-bottom: 1px solid #2c2c2c; font-size: 0.95em; }
+        .topic-progress-item:last-child { border-bottom: none; }
+        .topic-name { color: var(--text-secondary); }
+        .topic-score { font-weight: 600; font-family: 'Orbitron', monospace; font-size: 0.9em; }
+        .topic-score.not-started { color: var(--text-muted); }
 
-        header p {
-            font-size: 1.1em;
-            color: #b0b0b0;
-        }
+        /* --- ESTILOS DEL CALENDARIO --- */
+        .calendar-container { display: grid; grid-template-columns: 40px 40px repeat(7, 1fr); gap: 2px; background-color: var(--main-border); }
+        .header-cell, .day-header { text-align: center; padding: 12px 5px; font-weight: 600; font-family: 'Orbitron', sans-serif; text-transform: uppercase; font-size: 0.9em; }
+        .meta-header { background-color: var(--meta-header-bg); color: var(--meta-text); border-bottom: 2px solid var(--main-border); }
+        .day-header { background-color: var(--cell-bg); color: var(--accent-color); border-bottom: 2px solid var(--main-border); }
+        .month-cell { grid-column: 1; background-color: var(--meta-bg); color: var(--meta-text); font-family: 'Orbitron', sans-serif; writing-mode: vertical-rl; text-transform: uppercase; letter-spacing: 2px; display: flex; align-items: center; justify-content: center; border-right: 1px solid var(--meta-border); }
+        .week-cell-container { grid-column: 2; background-color: var(--meta-bg); position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--meta-border); }
+        .week-number { font-family: 'Orbitron', sans-serif; font-size: 1.6em; color: var(--meta-text); }
+        .day-cell { background-color: var(--cell-bg); min-height: 160px; padding: 8px 12px; position: relative; overflow-y: auto; cursor: pointer; transition: all 0.2s; border: 2px solid transparent; }
+        .day-cell.empty { background-color: var(--bg-color); cursor: default; }
+        .day-cell.drag-over { background-color: var(--meta-bg); border-color: var(--accent-color); }
+        .day-cell.target-date { border-color: var(--error-color); box-shadow: 0 0 10px rgba(255, 107, 107, 0.4); }
+        .day-cell.target-date .calendar-day-number { color: var(--error-color); font-weight: bold; }
+        .day-cell.day-before-target { border-color: var(--warning-color); }
+        .day-cell.day-before-target .calendar-day-number { color: var(--warning-color); }
+        .calendar-day-number { font-size: 0.9em; font-weight: 600; color: #777; position: absolute; top: 8px; right: 12px; z-index: 1; transition: color 0.2s; }
+        .day-content { margin-top: 25px; }
 
-        .save-button-container {
-            text-align: center;
-            margin: 30px 0;
+        /* CAMBIO 4: Estilos para el título de especialidad fijo y la lista de temas */
+        h3.subject-title { 
+            font-size: 1em; text-transform: uppercase; font-weight: 700;
+            color: var(--subject-highlight-color); 
+            background-color: var(--cell-bg);
+            padding: 4px 0 6px 0; margin: 0 0 6px 0;
+            position: sticky; top: 0;
+            z-index: 2;
         }
-
-        #save-progress {
-            background-color: var(--accent-color);
-            color: #000;
-            border: none;
-            padding: 15px 35px;
-            font-size: 1.2em;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        #save-progress:hover {
-            background-color: var(--accent-hover);
-            transform: translateY(-2px);
-        }
+        h3.subject-title.subject-completed { color: var(--text-muted); }
+        .subject-score { color: var(--meta-text); font-size: 0.8em; font-weight: 400; margin-left: 8px; }
+        ul.topic-list { list-style-type: none; padding-left: 0; margin: 0; }
+        ul.topic-list li { margin-bottom: 4px; padding-left: 14px; position: relative; font-size: 0.85em; }
         
-        #save-progress:active {
-            transform: translateY(0);
-        }
+        .topic-item { display: flex; align-items: center; justify-content: space-between; padding: 4px 6px; margin-left: -6px; border-radius: 4px; transition: all 0.2s; border-top: 2px solid transparent; border-bottom: 2px solid transparent; }
+        .topic-item[draggable="true"] { cursor: grab; }
+        .topic-item.dragging { opacity: 0.5; }
+        .topic-item:not(.topic-completed):not(.dragging):hover { background-color: var(--meta-bg); color: var(--accent-color); }
+        .topic-item.drag-over-top { border-top-color: var(--accent-color); }
+        .topic-item.drag-over-bottom { border-bottom-color: var(--accent-color); }
+        .topic-item::before { content: '■'; position: absolute; left: 0; top: 5px; color: var(--accent-color); font-size: 0.8em; line-height: 1.5; transition: color 0.3s ease; }
+        .topic-score { font-size: 0.85em; font-weight: bold; margin-left: 10px; flex-shrink: 0; }
+        .topic-item.topic-completed { color: var(--text-completed); font-style: italic; }
+        .topic-item.topic-completed:hover { color: var(--text-completed); background-color: transparent; }
+        .topic-item.topic-completed::before { color: var(--bullet-completed); }
 
-        .schedule-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 25px;
-            max-height: 80vh; /* Altura máxima para el contenedor del temario */
-            overflow-y: auto; /* Habilita el scroll vertical */
-            padding: 15px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background-color: #1a1a1a;
-        }
+        /* --- ESTILOS DEL KANBAN --- */
+        .kanban-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; height: 100%; }
+        .kanban-column { background-color: var(--plan-bg); border-radius: 12px; display: flex; flex-direction: column; max-height: 100%; }
+        .kanban-column-header { padding: 15px 20px; border-bottom: 1px solid var(--main-border); display: flex; align-items: center; gap: 10px; position: sticky; top: 0; background-color: var(--plan-bg); z-index: 10; }
+        .kanban-column-header h2 { font-size: 1.1rem; font-weight: 600; }
+        #col-todo .kanban-column-header h2, #col-todo .kanban-column-header i { color: var(--color-todo); }
+        #col-inprogress .kanban-column-header h2, #col-inprogress .kanban-column-header i { color: var(--color-inprogress); }
+        #col-done .kanban-column-header h2, #col-done .kanban-column-header i { color: var(--color-done); }
+        .cards-container { flex-grow: 1; padding: 10px 20px 20px 20px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--main-border) var(--plan-bg); }
+        .specialty-header { display: flex; flex-direction: column; gap: 5px; margin: 20px 0 10px; padding: 10px; border-radius: 6px; background-color: var(--meta-bg); border-left: 4px solid; }
+        .specialty-header-main { display: flex; justify-content: space-between; align-items: center; }
+        .specialty-header-main h3 { font-size: 1.1rem; font-weight: 700; margin: 0; }
+        .specialty-progress-wrapper { display: flex; align-items: center; gap: 8px; }
+        .specialty-progress-wrapper small { font-size: 0.7rem; color: var(--meta-text); width: 40px; flex-shrink: 0; }
+        .specialty-progress-container { flex-grow: 1; height: 8px; background-color: var(--main-border); border-radius: 4px; }
+        .specialty-progress-bar { height: 100%; width: 0%; border-radius: 4px; transition: all 0.3s ease; background-color: var(--progress-advance-bg); }
+        .specialty-score-bar { height: 100%; width: 0%; border-radius: 4px; transition: all 0.3s ease; }
+        .specialty-score-bar.low { background-color: var(--error-color); }
+        .specialty-score-bar.medium { background-color: var(--warning-color); }
+        .specialty-score-bar.high { background-color: var(--vfd-green); }
+        .specialty-percentage-text { font-size: 0.8em; font-weight: 600; color: var(--text-secondary); width: 45px; text-align: right; flex-shrink: 0; }
+        .kanban-card { background-color: var(--cell-bg); border-radius: 8px; margin-bottom: 10px; box-shadow: 0 2px 8px var(--shadow-color); cursor: pointer; transition: border-left-color 0.3s; }
+        .kanban-card:hover { background-color: var(--meta-bg); }
+        .card-summary { padding: 12px 15px; }
+        .card-topic-name { font-weight: 600; }
+        .card-progress-display { display: flex; align-items: center; gap: 15px; margin-top: 10px; }
+        .card-progress-bar-container { flex-grow: 1; height: 6px; background-color: var(--main-border); border-radius: 3px; }
+        .card-progress-bar { height: 100%; width: 0%; border-radius: 3px; transition: width 0.3s ease; }
+        .card-progress-text, .card-score-text { font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); }
         
-        /* Estilos para la barra de scroll */
-        .schedule-container::-webkit-scrollbar {
-            width: 10px;
-        }
-
-        .schedule-container::-webkit-scrollbar-track {
-            background: var(--secondary-color);
-            border-radius: 10px;
-        }
-
-        .schedule-container::-webkit-scrollbar-thumb {
-            background-color: var(--accent-color);
-            border-radius: 10px;
-            border: 2px solid var(--secondary-color);
-        }
+        /* --- ESTILOS DE MODALES (Unificados) --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px); z-index: 998; display: none; opacity: 0; transition: opacity 0.3s ease; }
+        .modal-overlay.visible { display: block; opacity: 1; }
+        .modal-container { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: var(--cell-bg); border: 1px solid var(--main-border); border-radius: 12px; box-shadow: 0 5px 25px rgba(0,0,0,0.5); z-index: 1000; width: 90%; max-height: 90vh; display: none; flex-direction: column; transition: transform 0.3s ease, opacity 0.3s ease; }
+        .modal-container.visible { display: flex; }
+        .modal-header { padding: 15px 25px; border-bottom: 1px solid var(--main-border); display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h2 { margin: 0; font-family: 'Orbitron', sans-serif; font-size: 1.5em; }
+        .modal-close { font-size: 2em; color: #888; cursor: pointer; line-height: 1; transition: color 0.2s; }
+        .modal-close:hover { color: var(--text-color); }
+        .modal-content { padding: 25px; overflow-y: auto; }
+        #details-modal { max-width: 650px; z-index: 1000; }
+        #details-modal .modal-header h2 { color: var(--accent-color); }
+        #modal-notes { width: 100%; box-sizing: border-box; min-height: 120px; background-color: #2c2c2c; border: 1px solid var(--main-border); color: var(--text-color); padding: 10px; resize: vertical; border-radius: 4px; }
+        #modal-save-btn { width: 100%; padding: 12px; margin-top: 10px; background-color: var(--accent-color); color: var(--bg-color); border: none; cursor: pointer; font-family: 'Orbitron', sans-serif; font-size: 1em; border-radius: 4px; transition: background-color 0.2s, transform 0.1s; }
+        #modal-save-btn:hover { background-color: #39ff94; }
+        #modal-save-btn:active { transform: scale(0.98); }
+        #topic-plan-modal { max-width: 900px; z-index: 1001; background-color: var(--bg-color); }
+        #topic-plan-modal .modal-header h2 { color: var(--vfd-green); font-size: 1.3em; }
+        #topic-plan-modal .modal-content { padding: 15px 25px; }
+        .study-flow-diagram { display: flex; flex-direction: column; gap: 15px; width: 100%; }
+        .step-card { border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.3); padding: 12px 18px; display: flex; align-items: flex-start; transition: opacity 0.3s ease, border-left-color 0.3s ease; border-left-style: solid; border-left-width: 5px; background-color: var(--plan-bg); }
+        .step-card.completed { border-left-color: #505050 !important; opacity: 0.65; }
+        .step-card.completed .step-icon-container, .step-card.completed .step-title, .step-card.completed .step-details li { color: #909090 !important; }
+        .step-card.completed .step-number { background-color: #383838 !important; color: #787878 !important; }
+        .step-icon-container { font-size: 1.8em; margin-right: 15px; padding-top: 2px; min-width: 35px; text-align: center; }
+        .step-content { flex-grow: 1; }
+        .step-title { font-size: 1.2em; font-weight: 600; margin: 0 0 10px 0; display: flex; align-items: center; color: var(--text-color); }
+        .step-title .subtitle { font-size: 0.7em; color: #999; margin-left: 8px; font-weight: 400; text-transform: none; }
+        .step-number { color: #101010; border-radius: 50%; width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; font-size: 0.7em; font-weight: bold; margin-right: 8px; flex-shrink: 0; }
+        .step-details { list-style: none; padding-left: 0; margin: 0; }
+        .step-details li { margin-bottom: 8px; font-size: 0.9em; line-height: 1.4; display: flex; align-items: center; color: var(--meta-text); }
+        .step-details li label { display: flex; align-items: center; cursor: pointer; width: 100%; }
+        .task-checkbox { margin-right: 10px; accent-color: var(--vfd-green); transform: scale(1.1); }
+        .task-text { transition: text-decoration 0.3s ease, color 0.3s ease; }
+        input[type="checkbox"]:checked + label .task-text, input[type="checkbox"]:checked ~ .task-text { text-decoration: line-through; color: #6a6a6a; }
+        .optional-tag { font-size: 0.8em; color: #888; margin-left: 5px; font-style: italic; }
+        .tool-tag { padding: 2px 8px; border-radius: 12px; font-size: 0.75em; font-weight: 600; margin-left: 8px; border: 1px solid; }
+        .tag-madera { background-color: #c8e6c9; color: var(--tag-text-dark); border-color: #a5d6a7; }
+        .tag-ia { background-color: #bbdefb; color: var(--tag-text-dark); border-color: #90caf9; }
+        .tag-genspark { background-color: #ffecb3; color: var(--tag-text-dark); border-color: #ffe082; }
+        .tag-notebooklm { background-color: #d1c4e9; color: var(--tag-text-dark); border-color: #b39ddb; }
+        .step-1 { border-left-color: var(--step-1-color); } .step-1 .step-icon-container { color: var(--step-1-color); } .step-1 .step-number { background-color: var(--step-1-color); }
+        .step-2 { border-left-color: var(--step-2-color); } .step-2 .step-icon-container { color: var(--step-2-color); } .step-2 .step-number { background-color: var(--step-2-color); }
+        .step-3 { border-left-color: var(--step-3-color); } .step-3 .step-icon-container { color: var(--step-3-color); } .step-3 .step-number { background-color: var(--step-3-color); }
+        .step-4 { border-left-color: var(--step-4-color); } .step-4 .step-icon-container { color: var(--step-4-color); } .step-4 .step-number { background-color: var(--step-4-color); }
+        .step-5 { border-left-color: var(--step-5-color); } .step-5 .step-icon-container { color: var(--step-5-color); } .step-5 .step-number { background-color: var(--step-5-color); }
+        .step-6 { border-left-color: var(--step-6-color); } .step-6 .step-icon-container { color: var(--step-6-color); } .step-6 .step-number { background-color: var(--step-6-color); }
+        .parallel-steps-container { display: flex; gap: 15px; }
+        .parallel-steps-container .step-card { flex: 1; }
+        .practice-step-layout { display: flex; flex-direction: row; gap: 15px; width: 100%; }
+        .practice-tasks-column { flex: 2; }
+        .practice-score-column { flex: 1; }
+        .practice-score-column h3 { font-size: 0.9em; color: #ccc; margin: 0 0 8px 0; font-weight: 500; text-transform: uppercase; }
+        .score-inputs-row { display: flex; gap: 8px; }
+        .score-input-group { flex-grow: 1; }
+        .score-input-group label { font-size: 0.75em; color: #bbb; }
+        .score-input-group input { font-family: 'Source Sans Pro', sans-serif; background-color: #2a2a2a; color: #e0e0e0; border: 1px solid #444; border-radius: 4px; padding: 5px 8px; font-size: 0.9em; width: 100%; box-sizing: border-box; text-align: center; }
+        .score-input-group input[type=number]::-webkit-inner-spin-button, .score-input-group input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        .score-input-group input[type=number] { -moz-appearance: textfield; }
+        .percentage-output { font-weight: bold; background-color: var(--plan-bg) !important; cursor: default; }
+        .topic-modal-footer { margin-top: 25px; padding-top: 15px; border-top: 1px solid var(--main-border); text-align: right; }
+        .topic-finish-btn { background-color: var(--vfd-green); color: var(--bg-color); border: none; border-radius: 6px; padding: 12px 25px; font-family: 'Orbitron', sans-serif; font-size: 1em; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: background-color 0.2s ease, transform 0.2s ease; }
+        .topic-finish-btn:hover { background-color: #76ff76; transform: translateY(-2px); }
         
-        .schedule-container::-webkit-scrollbar-thumb:hover {
-            background-color: var(--accent-hover);
+        /* --- MEDIA QUERIES --- */
+        @media (max-width: 992px) {
+            .calendar-container { grid-template-columns: repeat(7, 1fr); }
+            .month-cell, .week-cell-container { display: none; }
         }
-
-
-        .day {
-            background-color: var(--secondary-color);
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            border: 1px solid var(--border-color);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .day:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(3, 218, 198, 0.2);
-        }
-
-        .day h3 {
-            color: var(--accent-color);
-            margin-top: 0;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 10px;
-            font-size: 1.4em;
-        }
-
-        .day ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .day li {
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-        }
-
-        .day input[type="checkbox"] {
-            margin-right: 12px;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border: 2px solid var(--accent-color);
-            border-radius: 4px;
-            cursor: pointer;
-            position: relative;
-            transition: background-color 0.2s;
-            flex-shrink: 0;
-        }
-
-        .day input[type="checkbox"]:checked {
-            background-color: var(--accent-color);
-            border-color: var(--accent-color);
-        }
-        
-        .day input[type="checkbox"]:checked::before {
-            content: '\2713'; /* Checkmark */
-            font-size: 16px;
-            color: var(--primary-color);
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-weight: bold;
-        }
-
-        .day label {
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-        
-        .day input[type="checkbox"]:checked + label {
-            text-decoration: line-through;
-            color: #888;
-        }
-
-        .category-title {
-            color: #ffffff;
-            font-weight: bold;
-            display: block;
-            border-left: 3px solid var(--accent-hover);
-            padding-left: 8px;
-        }
-        
-        /* Estilo para el li que contiene el título de la categoría */
-        li.category-header {
-            margin-top: 15px;
-            margin-bottom: 10px;
-        }
-        
-        .task-sheet {
-            margin-top: 40px;
-            background-color: var(--primary-color);
-            padding: 25px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-        }
-        
-        .task-sheet h2 {
-            color: var(--accent-color);
-            text-align: center;
-        }
-
-        #task-list {
-            list-style-type: disc;
-            padding-left: 20px;
-        }
-        
-        #task-list li {
-            background-color: var(--secondary-color);
-            margin-bottom: 10px;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        
-        #toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: var(--success-color);
-            color: white;
-            padding: 16px 30px;
-            border-radius: 8px;
-            z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.5s, bottom 0.5s;
-            font-size: 1.1em;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-        }
+        @media (max-width: 768px) { .motivational-quote { font-size: 1.2em; } .countdown-digits { font-size: 3em; } .countdown-timer-container { gap: 15px; } .parallel-steps-container, .practice-step-layout, .kanban-board { flex-direction: column; display: block; } .kanban-column { margin-bottom: 20px; } .day-cell { min-height: 120px; } .specialty-progress-indicators { display: none; } }
+        @media (max-width: 600px) { .tab-navigation { margin: 0 10px; } .tab-button { padding: 10px 15px; font-size: 1em; } .motivational-quote { font-size: 1em; letter-spacing: 1px; } .countdown-digits { font-size: 2.2em; } .countdown-label { font-size: 0.6em; } .countdown-timer-container { gap: 10px; } body { padding: 0; } .tab-content { padding: 10px; } .calendar-container { grid-template-columns: 30px 30px repeat(7, 1fr); } .modal-content { padding: 15px; } .step-card { flex-direction: column; } .step-icon-container { text-align: left; margin-bottom: 5px;} #edit-countdown-btn { right: -5px; top: -15px; } }
     </style>
 </head>
 <body>
+    <header class="app-banner">
+        <div id="motivational-quote-container" class="motivational-quote"></div>
+        <div class="countdown-container">
+            <div class="countdown-timer-container">
+                <div class="countdown-unit"><div class="countdown-label">Días</div><div class="countdown-digits" id="countdown-days">000</div></div>
+                <div class="countdown-unit"><div class="countdown-label">Horas</div><div class="countdown-digits" id="countdown-hours">00</div></div>
+                <div class="countdown-unit"><div class="countdown-label">Minutos</div><div class="countdown-digits" id="countdown-minutes">00</div></div>
+                <div class="countdown-unit"><div class="countdown-label">Segundos</div><div class="countdown-digits" id="countdown-seconds">00</div></div>
+            </div>
+            <button id="edit-countdown-btn" title="Editar fecha final"><i class="fas fa-calendar-alt"></i></button>
+        </div>
+        <div id="countdown-editor">
+            <input type="date" id="countdown-date-picker">
+            <button id="save-countdown-btn">Guardar</button>
+        </div>
+    </header>
 
-    <div class="container">
-        <header>
-            <h1>Plan de Estudio ENARM 2024</h1>
-            <p>Organiza tu preparación diaria. Marca los temas estudiados y guarda tu progreso.</p>
-        </header>
+    <nav class="tab-navigation">
+        <button id="tab-btn-progress" class="tab-button active" aria-selected="true">Progreso Global</button>
+        <button id="tab-btn-calendar" class="tab-button" aria-selected="false">Calendario Vital</button>
+        <button id="tab-btn-board" class="tab-button" aria-selected="false">Tablero Vital</button>
+    </nav>
 
-        <div class="save-button-container">
-            <button id="save-progress">Guardar Progreso</button>
+    <main class="main-content-area">
+        <div id="global-progress-view" class="tab-content">
+            <h1>PROGRESO VITAL</h1>
+            <div class="global-progress-wrapper">
+                <label id="global-score-label">Puntuación Global (Promedio de Calificaciones)</label>
+                <div class="progress-bar-background"><div class="progress-bar-fill" id="global-score-bar" role="progressbar">0%</div></div>
+            </div>
+            <div class="global-progress-wrapper">
+                <label id="global-advance-label">Avance Global (Temas Completados)</label>
+                <div class="progress-bar-background"><div class="progress-bar-fill" id="global-advance-bar" role="progressbar">0%</div></div>
+            </div>
+            <div id="specialty-accordions">
+                <!-- Los acordeones de especialidades se generarán aquí con JS -->
+            </div>
         </div>
 
-        <div class="schedule-container">
-            <!-- TEMARIO HASTA 25 DE JUNIO (SIN CAMBIOS) -->
-            <div class="day">
-                <h3>25 de junio</h3>
-                <ul>
-                    <li><input type="checkbox" id="topic-25-1"><label for="topic-25-1">Insuficiencia Renal Aguda</label></li>
-                    <li><input type="checkbox" id="topic-25-2"><label for="topic-25-2">Insuficiencia Renal Crónica</label></li>
-                    <li><input type="checkbox" id="topic-25-3"><label for="topic-25-3">Trastornos del Sodio</label></li>
-                    <li><input type="checkbox" id="topic-25-4"><label for="topic-25-4">Trastornos del Potasio</label></li>
-                    <li><input type="checkbox" id="topic-25-5"><label for="topic-25-5">Trastornos del Calcio</label></li>
-                    <li><input type="checkbox" id="topic-25-6"><label for="topic-25-6">Trastornos del Magnesio</label></li>
-                    <li><input type="checkbox" id="topic-25-7"><label for="topic-25-7">Trastornos Ácido-Base</label></li>
-                    <li><input type="checkbox" id="topic-25-8"><label for="topic-25-8">Terapia de Reemplazo Renal</label></li>
-                </ul>
-            </div>
-            
-            <!-- INICIO DEL NUEVO TEMARIO REDISTRIBUIDO -->
-            
-            <div class="day">
-                <h3>26 de junio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">ORL</strong></li>
-                    <li><input type="checkbox" id="topic-n-1"><label for="topic-n-1">Vppb</label></li>
-                    <li><input type="checkbox" id="topic-n-2"><label for="topic-n-2">Parálisis de Bell</label></li>
-                    <li><input type="checkbox" id="topic-n-3"><label for="topic-n-3">Neuralgia de trigémino</label></li>
-                    <li><input type="checkbox" id="topic-n-4"><label for="topic-n-4">Neuritis vestibular</label></li>
-                    <li><input type="checkbox" id="topic-n-5"><label for="topic-n-5">Epistaxis</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>27 de junio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">ORL</strong></li>
-                    <li><input type="checkbox" id="topic-n-6"><label for="topic-n-6">Fracturas nasales</label></li>
-                    <li><input type="checkbox" id="topic-n-7"><label for="topic-n-7">Rinosinusitis</label></li>
-                    <li><input type="checkbox" id="topic-n-8"><label for="topic-n-8">Mastoiditis aguda</label></li>
-                    <li><input type="checkbox" id="topic-n-9"><label for="topic-n-9">Otitis</label></li>
-                    <li><input type="checkbox" id="topic-n-10"><label for="topic-n-10">Faringoamigdalitis</label></li>
-                    <li><input type="checkbox" id="topic-n-11"><label for="topic-n-11">Angina de Ludwig</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>28 de junio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">OFTALMOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-12"><label for="topic-n-12">Catarata</label></li>
-                    <li><input type="checkbox" id="topic-n-13"><label for="topic-n-13">Conjuntivitis (alérgica, bacteriana, neonatal, viral)</label></li>
-                    <li><input type="checkbox" id="topic-n-14"><label for="topic-n-14">Glaucoma de ángulo abierto</label></li>
-                    <li><input type="checkbox" id="topic-n-15"><label for="topic-n-15">Glaucoma de ángulo cerrado</label></li>
-                    <li><input type="checkbox" id="topic-n-16"><label for="topic-n-16">Ojo rojo</label></li>
-                </ul>
-            </div>
-
-            <div class="day">
-                <h3>29 de junio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">OFTALMOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-17"><label for="topic-n-17">Retinopatía diabética</label></li>
-                    <li><input type="checkbox" id="topic-n-18"><label for="topic-n-18">Retinopatía hipertensiva</label></li>
-                    <li><input type="checkbox" id="topic-n-19"><label for="topic-n-19">Trauma ocular</label></li>
-                    <li><input type="checkbox" id="topic-n-20"><label for="topic-n-20">Degeneración macular</label></li>
-                    <li><input type="checkbox" id="topic-n-21"><label for="topic-n-21">Desprendimiento de retina</label></li>
-                </ul>
-            </div>
-
-            <div class="day">
-                <h3>30 de junio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">OFTALMOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-22"><label for="topic-n-22">Blefaritis</label></li>
-                    <li><input type="checkbox" id="topic-n-23"><label for="topic-n-23">Chalazión</label></li>
-                    <li><input type="checkbox" id="topic-n-24"><label for="topic-n-24">Orzuelo</label></li>
-                    <li><input type="checkbox" id="topic-n-25"><label for="topic-n-25">Glaucoma congénito</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>1 de julio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">TYO</strong></li>
-                    <li><input type="checkbox" id="topic-n-26"><label for="topic-n-26">Osteoartritis</label></li>
-                    <li><input type="checkbox" id="topic-n-27"><label for="topic-n-27">Osteomielitis</label></li>
-                    <li><input type="checkbox" id="topic-n-28"><label for="topic-n-28">Fracturas expuestas</label></li>
-                    <li><input type="checkbox" id="topic-n-29"><label for="topic-n-29">Esguince cervical</label></li>
-                    <li><input type="checkbox" id="topic-n-30"><label for="topic-n-30">Lumbalgia</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>2 de julio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">TYO</strong></li>
-                    <li><input type="checkbox" id="topic-n-31"><label for="topic-n-31">Síndrome de hombro doloroso</label></li>
-                    <li><input type="checkbox" id="topic-n-32"><label for="topic-n-32">Luxación glenohumeral</label></li>
-                    <li><input type="checkbox" id="topic-n-33"><label for="topic-n-33">Fractura de clavícula</label></li>
-                    <li><input type="checkbox" id="topic-n-34"><label for="topic-n-34">Fractura de radio distal</label></li>
-                    <li><input type="checkbox" id="topic-n-35"><label for="topic-n-35">Fractura de cadera</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>3 de julio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">TYO</strong></li>
-                    <li><input type="checkbox" id="topic-n-36"><label for="topic-n-36">Lesiones de rodilla</label></li>
-                    <li><input type="checkbox" id="topic-n-37"><label for="topic-n-37">Esguince de tobillo</label></li>
-                    <li><input type="checkbox" id="topic-n-38"><label for="topic-n-38">Fractura de tobillo</label></li>
-                    <li><input type="checkbox" id="topic-n-39"><label for="topic-n-39">Osteosarcoma</label></li>
-                    <li><input type="checkbox" id="topic-n-40"><label for="topic-n-40">Sarcoma de Ewing</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>4 de julio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">TYO</strong></li>
-                    <li><input type="checkbox" id="topic-n-41"><label for="topic-n-41">Hernia de disco</label></li>
-                    <li><input type="checkbox" id="topic-n-42"><label for="topic-n-42">Túnel del carpo</label></li>
-                    <li><input type="checkbox" id="topic-n-43"><label for="topic-n-43">Epifisiolistesis femoral</label></li>
-                    <li><input type="checkbox" id="topic-n-44"><label for="topic-n-44">Legg calvé perthes</label></li>
-                    <li><input type="checkbox" id="topic-n-45"><label for="topic-n-45">Embolia grasa</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>5 de julio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">TYO</strong></li>
-                    <li><input type="checkbox" id="topic-n-46"><label for="topic-n-46">Tumores óseos malignos</label></li>
-                    <li><input type="checkbox" id="topic-n-47"><label for="topic-n-47">Costilla cervical</label></li>
-                    <li><input type="checkbox" id="topic-n-48"><label for="topic-n-48">Fractura de humero proximal</label></li>
-                    <li><input type="checkbox" id="topic-n-49"><label for="topic-n-49">Luxación de codo</label></li>
-                    <li><input type="checkbox" id="topic-n-50"><label for="topic-n-50">Codo de niñera</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>6 de julio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">TYO</strong></li>
-                    <li><input type="checkbox" id="topic-n-51"><label for="topic-n-51">Fracturas de codo</label></li>
-                    <li><input type="checkbox" id="topic-n-52"><label for="topic-n-52">Fracturas de antebrazo</label></li>
-                    <li><input type="checkbox" id="topic-n-53"><label for="topic-n-53">Lesiones fisiarias</label></li>
-                    <li><input type="checkbox" id="topic-n-54"><label for="topic-n-54">Luxación coxofemoral</label></li>
-                    <li><input type="checkbox" id="topic-n-55"><label for="topic-n-55">Fractura de diáfisis de tibia</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>7 de julio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">TYO</strong></li>
-                    <li><input type="checkbox" id="topic-n-56"><label for="topic-n-56">Rotura de talón de aquiles</label></li>
-                    <li><input type="checkbox" id="topic-n-57"><label for="topic-n-57">Pie equino varo</label></li>
-                    <li><input type="checkbox" id="topic-n-58"><label for="topic-n-58">Pie plano</label></li>
-                    <li class="category-header"><strong class="category-title">CARDIOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-59"><label for="topic-n-59">Pericarditis</label></li>
-                    <li><input type="checkbox" id="topic-n-60"><label for="topic-n-60">Endocarditis infecciosa</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>8 de julio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">CARDIOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-61"><label for="topic-n-61">Estenosis aórtica</label></li>
-                    <li><input type="checkbox" id="topic-n-62"><label for="topic-n-62">Insuficiencia aórtica</label></li>
-                    <li><input type="checkbox" id="topic-n-63"><label for="topic-n-63">Estenosis mitral</label></li>
-                    <li><input type="checkbox" id="topic-n-64"><label for="topic-n-64">Insuficiencia mitral</label></li>
-                    <li><input type="checkbox" id="topic-n-65"><label for="topic-n-65">Fiebre reumática</label></li>
-                </ul>
-            </div>
-
-            <div class="day">
-                <h3>9 de julio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">CARDIOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-66"><label for="topic-n-66">Hipertensión arterial sistémica</label></li>
-                    <li><input type="checkbox" id="topic-n-67"><label for="topic-n-67">Crisis hipertensivas</label></li>
-                    <li><input type="checkbox" id="topic-n-68"><label for="topic-n-68">Insuficiencia cardíaca aguda</label></li>
-                    <li><input type="checkbox" id="topic-n-69"><label for="topic-n-69">Insuficiencia cardíaca crónica</label></li>
-                    <li><input type="checkbox" id="topic-n-70"><label for="topic-n-70">Infarto agudo de miocardio</label></li>
-                </ul>
-            </div>
-
-            <div class="day">
-                <h3>10 de julio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">CARDIOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-71"><label for="topic-n-71">Disección aórtica</label></li>
-                    <li><input type="checkbox" id="topic-n-72"><label for="topic-n-72">Cor pulmonar crónico</label></li>
-                    <li><input type="checkbox" id="topic-n-73"><label for="topic-n-73">Edema pulmonar</label></li>
-                    <li><input type="checkbox" id="topic-n-74"><label for="topic-n-74">Hipotensión ortostática</label></li>
-                    <li><input type="checkbox" id="topic-n-75"><label for="topic-n-75">Aneurisma aórtico abdominal</label></li>
-                </ul>
-            </div>
-
-            <div class="day">
-                <h3>11 de julio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">CARDIOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-76"><label for="topic-n-76">Enfermedad coronaria</label></li>
-                    <li><input type="checkbox" id="topic-n-77"><label for="topic-n-77">Otras valvulopatías</label></li>
-                    <li><input type="checkbox" id="topic-n-78"><label for="topic-n-78">Hipertensión pulmonar</label></li>
-                    <li><input type="checkbox" id="topic-n-79"><label for="topic-n-79">Rehabilitación cardíaca</label></li>
-                </ul>
-            </div>
-
-            <div class="day">
-                <h3>12 de julio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">ANGIOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-80"><label for="topic-n-80">Enfermedad arterial periférica</label></li>
-                    <li><input type="checkbox" id="topic-n-81"><label for="topic-n-81">Insuficiencia venosa</label></li>
-                    <li><input type="checkbox" id="topic-n-82"><label for="topic-n-82">Pie diabético</label></li>
-                    <li><input type="checkbox" id="topic-n-83"><label for="topic-n-83">Tromboembolia pulmonar</label></li>
-                    <li><input type="checkbox" id="topic-n-84"><label for="topic-n-84">Trombosis venosa profunda</label></li>
-                </ul>
-            </div>
-
-            <div class="day">
-                <h3>13 de julio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">ANGIOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-85"><label for="topic-n-85">Úlceras por presión</label></li>
-                    <li><input type="checkbox" id="topic-n-86"><label for="topic-n-86">Paget schroetter</label></li>
-                    <li><input type="checkbox" id="topic-n-87"><label for="topic-n-87">Tromboembolia venosa en obstetricia</label></li>
-                    <li class="category-header"><strong class="category-title">ACLS</strong></li>
-                    <li><input type="checkbox" id="topic-n-88"><label for="topic-n-88">Soporte vital básico</label></li>
-                    <li><input type="checkbox" id="topic-n-89"><label for="topic-n-89">Rcp</label></li>
-                </ul>
-            </div>
-
-            <div class="day">
-                <h3>14 de julio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">ACLS</strong></li>
-                    <li><input type="checkbox" id="topic-n-90"><label for="topic-n-90">Taquicardia acls</label></li>
-                    <li><input type="checkbox" id="topic-n-91"><label for="topic-n-91">Taquicardia supraventricular</label></li>
-                    <li><input type="checkbox" id="topic-n-92"><label for="topic-n-92">Bloqueos av</label></li>
-                    <li><input type="checkbox" id="topic-n-93"><label for="topic-n-93">Bradicardia</label></li>
-                    <li><input type="checkbox" id="topic-n-94"><label for="topic-n-94">Fibrilación auricular</label></li>
-                </ul>
-            </div>
-
-            <div class="day">
-                <h3>15 de julio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">ACLS</strong></li>
-                    <li><input type="checkbox" id="topic-n-95"><label for="topic-n-95">Fibrilación ventricular</label></li>
-                    <li><input type="checkbox" id="topic-n-96"><label for="topic-n-96">Síndrome de wpw</label></li>
-                    <li><input type="checkbox" id="topic-n-97"><label for="topic-n-97">Pls</label></li>
-                    <li><input type="checkbox" id="topic-n-98"><label for="topic-n-98">Ahogamiento</label></li>
-                </ul>
-            </div>
-
-            <div class="day">
-                <h3>16 de julio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">ATLS</strong></li>
-                    <li><input type="checkbox" id="topic-n-99"><label for="topic-n-99">Poli trauma</label></li>
-                    <li><input type="checkbox" id="topic-n-100"><label for="topic-n-100">Tipos de shock</label></li>
-                    <li><input type="checkbox" id="topic-n-101"><label for="topic-n-101">Choque hipovolémico</label></li>
-                    <li><input type="checkbox" id="topic-n-102"><label for="topic-n-102">Quemaduras</label></li>
-                    <li><input type="checkbox" id="topic-n-103"><label for="topic-n-103">Gran quemado</label></li>
-                </ul>
-            </div>
-
-            <div class="day">
-                <h3>17 de julio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">ATLS</strong></li>
-                    <li><input type="checkbox" id="topic-n-104"><label for="topic-n-104">Tce adultos</label></li>
-                    <li><input type="checkbox" id="topic-n-105"><label for="topic-n-105">Tce pediátrico</label></li>
-                    <li><input type="checkbox" id="topic-n-106"><label for="topic-n-106">Trauma torácico</label></li>
-                    <li><input type="checkbox" id="topic-n-107"><label for="topic-n-107">Hemotórax</label></li>
-                    <li><input type="checkbox" id="topic-n-108"><label for="topic-n-108">Neumotórax a tensión</label></li>
-                </ul>
-            </div>
-
-            <div class="day">
-                <h3>18 de julio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">ATLS</strong></li>
-                    <li><input type="checkbox" id="topic-n-109"><label for="topic-n-109">Taponamiento cardiaco</label></li>
-                    <li><input type="checkbox" id="topic-n-110"><label for="topic-n-110">Trauma abdominal</label></li>
-                    <li><input type="checkbox" id="topic-n-111"><label for="topic-n-111">Shock neurogénico</label></li>
-                    <li><input type="checkbox" id="topic-n-112"><label for="topic-n-112">Neumotórax abierto</label></li>
-                    <li><input type="checkbox" id="topic-n-113"><label for="topic-n-113">Neumotórax simple</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>19 de julio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">ATLS</strong></li>
-                    <li><input type="checkbox" id="topic-n-114"><label for="topic-n-114">Trauma espinal</label></li>
-                    <li><input type="checkbox" id="topic-n-115"><label for="topic-n-115">Catéter venoso central</label></li>
-                    <li><input type="checkbox" id="topic-n-116"><label for="topic-n-116">Hipotermia</label></li>
-                    <li><input type="checkbox" id="topic-n-117"><label for="topic-n-117">Fracturas de cráneo</label></li>
-                    <li><input type="checkbox" id="topic-n-118"><label for="topic-n-118">Lesión traqueobronquial</label></li>
-                </ul>
-            </div>
-
-            <div class="day">
-                <h3>20 de julio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">ATLS</strong></li>
-                    <li><input type="checkbox" id="topic-n-119"><label for="topic-n-119">Ruptura diafragmática</label></li>
-                    <li><input type="checkbox" id="topic-n-120"><label for="topic-n-120">Trauma esplénico</label></li>
-                    <li><input type="checkbox" id="topic-n-121"><label for="topic-n-121">Trauma obstétrico</label></li>
-                    <li><input type="checkbox" id="topic-n-122"><label for="topic-n-122">Trauma pélvico</label></li>
-                </ul>
-            </div>
-
-            <div class="day">
-                <h3>21 de julio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">TOXICOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-123"><label for="topic-n-123">Manejo de intoxicaciones</label></li>
-                    <li><input type="checkbox" id="topic-n-124"><label for="topic-n-124">Toxíndromes</label></li>
-                    <li><input type="checkbox" id="topic-n-125"><label for="topic-n-125">Intoxicación por benzodiacepinas</label></li>
-                    <li><input type="checkbox" id="topic-n-126"><label for="topic-n-126">Intoxicación por organofosforados</label></li>
-                    <li><input type="checkbox" id="topic-n-127"><label for="topic-n-127">Intoxicación por paracetamol</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>22 de julio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">TOXICOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-128"><label for="topic-n-128">Intoxicación por salicilatos</label></li>
-                    <li><input type="checkbox" id="topic-n-129"><label for="topic-n-129">Lactrodectus</label></li>
-                    <li><input type="checkbox" id="topic-n-130"><label for="topic-n-130">Loxosceles</label></li>
-                    <li><input type="checkbox" id="topic-n-131"><label for="topic-n-131">Mordedura de serpiente</label></li>
-                    <li><input type="checkbox" id="topic-n-132"><label for="topic-n-132">Picadura de alacrán</label></li>
-                </ul>
-            </div>
-
-            <div class="day">
-                <h3>23 de julio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">TOXICOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-133"><label for="topic-n-133">Golpe de calor</label></li>
-                    <li><input type="checkbox" id="topic-n-134"><label for="topic-n-134">Intoxicación por etanol</label></li>
-                    <li><input type="checkbox" id="topic-n-135"><label for="topic-n-135">Intoxicación por monoxido de carbono</label></li>
-                    <li><input type="checkbox" id="topic-n-136"><label for="topic-n-136">Intoxicación por opiáceos</label></li>
-                    <li><input type="checkbox" id="topic-n-137"><label for="topic-n-137">Anafilaxia</label></li>
-                </ul>
-            </div>
-
-            <div class="day">
-                <h3>24 de julio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">TOXICOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-138"><label for="topic-n-138">Ingesta de cáusticos</label></li>
-                    <li><input type="checkbox" id="topic-n-139"><label for="topic-n-139">Intoxicación alimentaria</label></li>
-                    <li><input type="checkbox" id="topic-n-140"><label for="topic-n-140">Intoxicación por alcoholes</label></li>
-                    <li><input type="checkbox" id="topic-n-141"><label for="topic-n-141">Intoxicación por anfetaminas</label></li>
-                    <li><input type="checkbox" id="topic-n-142"><label for="topic-n-142">Intoxicación por DMT</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>25 de julio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">TOXICOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-143"><label for="topic-n-143">Intoxicación por fentanilo</label></li>
-                    <li><input type="checkbox" id="topic-n-144"><label for="topic-n-144">Intoxicación por hidrocarburos</label></li>
-                    <li><input type="checkbox" id="topic-n-145"><label for="topic-n-145">Intoxicación por metales pesados</label></li>
-                    <li><input type="checkbox" id="topic-n-146"><label for="topic-n-146">Intoxicación por plomo</label></li>
-                    <li><input type="checkbox" id="topic-n-147"><label for="topic-n-147">Picadura de himenópteros</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>26 de julio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">GASTROENTEROLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-148"><label for="topic-n-148">Absceso hepático amebiano</label></li>
-                    <li><input type="checkbox" id="topic-n-149"><label for="topic-n-149">Cirrosis hepática</label></li>
-                    <li><input type="checkbox" id="topic-n-150"><label for="topic-n-150">Insuficiencia hepática</label></li>
-                    <li><input type="checkbox" id="topic-n-151"><label for="topic-n-151">Ascitis</label></li>
-                    <li><input type="checkbox" id="topic-n-152"><label for="topic-n-152">Encefalopatía hepática</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>27 de julio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">GASTROENTEROLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-153"><label for="topic-n-153">Hepatitis A</label></li>
-                    <li><input type="checkbox" id="topic-n-154"><label for="topic-n-154">Hepatitis B</label></li>
-                    <li><input type="checkbox" id="topic-n-155"><label for="topic-n-155">Hepatitis C</label></li>
-                    <li><input type="checkbox" id="topic-n-156"><label for="topic-n-156">Pancreatitis aguda</label></li>
-                    <li><input type="checkbox" id="topic-n-157"><label for="topic-n-157">Reflujo ERGE</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>28 de julio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">GASTROENTEROLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-158"><label for="topic-n-158">Enfermedad ácido péptica</label></li>
-                    <li><input type="checkbox" id="topic-n-159"><label for="topic-n-159">Síndrome de intestino irritable</label></li>
-                    <li><input type="checkbox" id="topic-n-160"><label for="topic-n-160">Sangrado TDA</label></li>
-                    <li><input type="checkbox" id="topic-n-161"><label for="topic-n-161">Sagrado TDB</label></li>
-                    <li><input type="checkbox" id="topic-n-162"><label for="topic-n-162">Varices esofágicas</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>29 de julio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">GASTROENTEROLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-163"><label for="topic-n-163">Ehgna</label></li>
-                    <li><input type="checkbox" id="topic-n-164"><label for="topic-n-164">Enfermedad de Crohn</label></li>
-                    <li><input type="checkbox" id="topic-n-165"><label for="topic-n-165">Colitis ulcerativa</label></li>
-                    <li><input type="checkbox" id="topic-n-166"><label for="topic-n-166">Cáncer gástrico</label></li>
-                    <li><input type="checkbox" id="topic-n-167"><label for="topic-n-167">Carcinoma hepatocelular</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>30 de julio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">GASTROENTEROLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-168"><label for="topic-n-168">Absceso hepático piógeno</label></li>
-                    <li><input type="checkbox" id="topic-n-169"><label for="topic-n-169">Hepatitis autoinmune</label></li>
-                    <li><input type="checkbox" id="topic-n-170"><label for="topic-n-170">Pancreatitis crónica</label></li>
-                    <li><input type="checkbox" id="topic-n-171"><label for="topic-n-171">Acalasia</label></li>
-                    <li><input type="checkbox" id="topic-n-172"><label for="topic-n-172">Esófago de Barret</label></li>
-                </ul>
-            </div>
-
-            <div class="day">
-                <h3>31 de julio</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">GASTROENTEROLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-173"><label for="topic-n-173">Dispepsia funcional</label></li>
-                    <li><input type="checkbox" id="topic-n-174"><label for="topic-n-174">Mallory Weiss</label></li>
-                    <li><input type="checkbox" id="topic-n-175"><label for="topic-n-175">Zollinger Ellison</label></li>
-                    <li><input type="checkbox" id="topic-n-176"><label for="topic-n-176">Enfermedad celíaca</label></li>
-                    <li><input type="checkbox" id="topic-n-177"><label for="topic-n-177">Cáncer de esófago</label></li>
-                    <li><input type="checkbox" id="topic-n-178"><label for="topic-n-178">Cáncer de páncreas</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>1 de agosto</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">CIRUGÍA ABDOMINAL Y COLOPROCTOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-179"><label for="topic-n-179">Apendicitis aguda</label></li>
-                    <li><input type="checkbox" id="topic-n-180"><label for="topic-n-180">Apendicitis en el embarazo</label></li>
-                    <li><input type="checkbox" id="topic-n-181"><label for="topic-n-181">Colecistitis aguda</label></li>
-                    <li><input type="checkbox" id="topic-n-182"><label for="topic-n-182">Coledocolitiasis</label></li>
-                    <li><input type="checkbox" id="topic-n-183"><label for="topic-n-183">Colelitiasis</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>2 de agosto</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">CIRUGÍA ABDOMINAL Y COLOPROCTOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-184"><label for="topic-n-184">Colangitis aguda</label></li>
-                    <li><input type="checkbox" id="topic-n-185"><label for="topic-n-185">Hernias</label></li>
-                    <li><input type="checkbox" id="topic-n-186"><label for="topic-n-186">Hernia inguinal</label></li>
-                    <li><input type="checkbox" id="topic-n-187"><label for="topic-n-187">Oclusión intestinal</label></li>
-                    <li><input type="checkbox" id="topic-n-188"><label for="topic-n-188">Enfermedad hemorroidal</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>3 de agosto</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">CIRUGÍA ABDOMINAL Y COLOPROCTOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-189"><label for="topic-n-189">Fístula anal</label></li>
-                    <li><input type="checkbox" id="topic-n-190"><label for="topic-n-190">Fisura anal</label></li>
-                    <li><input type="checkbox" id="topic-n-191"><label for="topic-n-191">Absceso anal</label></li>
-                    <li><input type="checkbox" id="topic-n-192"><label for="topic-n-192">Enfermedad diverticular</label></li>
-                    <li><input type="checkbox" id="topic-n-193"><label for="topic-n-193">Cáncer colo-rectal</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>4 de agosto</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">CIRUGÍA ABDOMINAL Y COLOPROCTOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-194"><label for="topic-n-194">Isquemia intestinal</label></li>
-                    <li><input type="checkbox" id="topic-n-195"><label for="topic-n-195">Vólvulo de sigmoides</label></li>
-                    <li><input type="checkbox" id="topic-n-196"><label for="topic-n-196">Heridas quirúrgicas</label></li>
-                    <li><input type="checkbox" id="topic-n-197"><label for="topic-n-197">Complicaciones post Qx</label></li>
-                    <li><input type="checkbox" id="topic-n-198"><label for="topic-n-198">Colangiocarcinoma</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>5 de agosto</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">CIRUGÍA ABDOMINAL Y COLOPROCTOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-199"><label for="topic-n-199">Fístulas biliointestinales</label></li>
-                    <li><input type="checkbox" id="topic-n-200"><label for="topic-n-200">Hernia femoral</label></li>
-                    <li><input type="checkbox" id="topic-n-201"><label for="topic-n-201">Hernia hiatal</label></li>
-                    <li><input type="checkbox" id="topic-n-202"><label for="topic-n-202">Hernia umbilical</label></li>
-                    <li><input type="checkbox" id="topic-n-203"><label for="topic-n-203">Hernia ventral</label></li>
-                </ul>
-            </div>
-
-            <div class="day">
-                <h3>6 de agosto</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">CIRUGÍA ABDOMINAL Y COLOPROCTOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-204"><label for="topic-n-204">Vólvulo de ciego</label></li>
-                    <li><input type="checkbox" id="topic-n-205"><label for="topic-n-205">Quiste pilonidal</label></li>
-                    <li><input type="checkbox" id="topic-n-206"><label for="topic-n-206">Poliposis adematosa familiar PAF</label></li>
-                    <li class="category-header"><strong class="category-title">CIRUGÍA PEDIÁTRICA</strong></li>
-                    <li><input type="checkbox" id="topic-n-207"><label for="topic-n-207">Atresia duodenal</label></li>
-                    <li><input type="checkbox" id="topic-n-208"><label for="topic-n-208">Atresia esofágica</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>7 de agosto</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">CIRUGÍA PEDIÁTRICA</strong></li>
-                    <li><input type="checkbox" id="topic-n-209"><label for="topic-n-209">Criptorquidia</label></li>
-                    <li><input type="checkbox" id="topic-n-210"><label for="topic-n-210">Estenosis pilórica</label></li>
-                    <li><input type="checkbox" id="topic-n-211"><label for="topic-n-211">Hernía diafragmática congénita</label></li>
-                    <li><input type="checkbox" id="topic-n-212"><label for="topic-n-212">Invaginación intestinal</label></li>
-                    <li><input type="checkbox" id="topic-n-213"><label for="topic-n-213">Nefroblastoma</label></li>
-                </ul>
-            </div>
-
-            <div class="day">
-                <h3>8 de agosto</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">CIRUGÍA PEDIÁTRICA</strong></li>
-                    <li><input type="checkbox" id="topic-n-214"><label for="topic-n-214">Neuroblastoma</label></li>
-                    <li><input type="checkbox" id="topic-n-215"><label for="topic-n-215">Divertículo de Meckel</label></li>
-                    <li><input type="checkbox" id="topic-n-216"><label for="topic-n-216">Hirschsprung</label></li>
-                    <li><input type="checkbox" id="topic-n-217"><label for="topic-n-217">Atresia biliar</label></li>
-                    <li><input type="checkbox" id="topic-n-218"><label for="topic-n-218">Atresia de coanas</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>9 de agosto</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">CIRUGÍA PEDIÁTRICA</strong></li>
-                    <li><input type="checkbox" id="topic-n-219"><label for="topic-n-219">Atresia yeyunoileal</label></li>
-                    <li><input type="checkbox" id="topic-n-220"><label for="topic-n-220">Espina bífida</label></li>
-                    <li><input type="checkbox" id="topic-n-221"><label for="topic-n-221">Malformaciones rectales</label></li>
-                    <li><input type="checkbox" id="topic-n-222"><label for="topic-n-222">Malrotación intestinal</label></li>
-                    <li><input type="checkbox" id="topic-n-223"><label for="topic-n-223">Patología umbilical</label></li>
-                    <li><input type="checkbox" id="topic-n-224"><label for="topic-n-224">Retinoblastoma</label></li>
-                    <li><input type="checkbox" id="topic-n-225"><label for="topic-n-225">Tumor abdominal</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>10 de agosto</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">GINECOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-226"><label for="topic-n-226">Fitz-Hugh-Curtis</label></li>
-                    <li><input type="checkbox" id="topic-n-227"><label for="topic-n-227">Dismenorrea aguda</label></li>
-                    <li><input type="checkbox" id="topic-n-228"><label for="topic-n-228">Amenorreas primarias</label></li>
-                    <li><input type="checkbox" id="topic-n-229"><label for="topic-n-229">Amenorreas secundarias</label></li>
-                    <li><input type="checkbox" id="topic-n-230"><label for="topic-n-230">Sangrado uterino anormal</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>11 de agosto</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">GINECOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-231"><label for="topic-n-231">Adenomiosis</label></li>
-                    <li><input type="checkbox" id="topic-n-232"><label for="topic-n-232">Anticonceptivos generalidades</label></li>
-                    <li><input type="checkbox" id="topic-n-233"><label for="topic-n-233">Anticonceptivos GPC</label></li>
-                    <li><input type="checkbox" id="topic-n-234"><label for="topic-n-234">Anticonceptivos hormonales combinados</label></li>
-                    <li><input type="checkbox" id="topic-n-235"><label for="topic-n-235">Anticoncepción de emergencia</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>12 de agosto</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">GINECOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-236"><label for="topic-n-236">DIU de cobre</label></li>
-                    <li><input type="checkbox" id="topic-n-237"><label for="topic-n-237">DIU de levonorgestrel</label></li>
-                    <li><input type="checkbox" id="topic-n-238"><label for="topic-n-238">Implante subdérmico</label></li>
-                    <li><input type="checkbox" id="topic-n-239"><label for="topic-n-239">Progestágenos solos</label></li>
-                    <li><input type="checkbox" id="topic-n-240"><label for="topic-n-240">Lactancia como anticonceptivo</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>13 de agosto</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">GINECOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-241"><label for="topic-n-241">Infertilidad</label></li>
-                    <li><input type="checkbox" id="topic-n-242"><label for="topic-n-242">Condón</label></li>
-                    <li><input type="checkbox" id="topic-n-243"><label for="topic-n-243">Vasectomía</label></li>
-                    <li><input type="checkbox" id="topic-n-244"><label for="topic-n-244">Cistocele e incontinencia</label></li>
-                    <li><input type="checkbox" id="topic-n-245"><label for="topic-n-245">Endometriosis</label></li>
-                </ul>
-            </div>
-
-            <div class="day">
-                <h3>14 de agosto</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">GINECOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-246"><label for="topic-n-246">Enfermedad pélvica inflamatoria</label></li>
-                    <li><input type="checkbox" id="topic-n-247"><label for="topic-n-247">Hidrosalpinx</label></li>
-                    <li><input type="checkbox" id="topic-n-248"><label for="topic-n-248">Hiperplasia endometrial</label></li>
-                    <li><input type="checkbox" id="topic-n-249"><label for="topic-n-249">Mastitis</label></li>
-                    <li><input type="checkbox" id="topic-n-250"><label for="topic-n-250">Mastopatía fibroquística</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>15 de agosto</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">GINECOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-251"><label for="topic-n-251">Fibroadenoma</label></li>
-                    <li><input type="checkbox" id="topic-n-252"><label for="topic-n-252">Papiloma intraductal</label></li>
-                    <li><input type="checkbox" id="topic-n-253"><label for="topic-n-253">Patología mamaria benigna</label></li>
-                    <li><input type="checkbox" id="topic-n-254"><label for="topic-n-254">Quiste mamario</label></li>
-                    <li><input type="checkbox" id="topic-n-255"><label for="topic-n-255">Osteoporosis post menopausia</label></li>
-                </ul>
-            </div>
-
-            <div class="day">
-                <h3>16 de agosto</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">GINECOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-256"><label for="topic-n-256">Insuficiencia ovárica primaria</label></li>
-                    <li><input type="checkbox" id="topic-n-257"><label for="topic-n-257">Menopausia y climaterio</label></li>
-                    <li><input type="checkbox" id="topic-n-258"><label for="topic-n-258">Miomatosis uterina</label></li>
-                    <li><input type="checkbox" id="topic-n-259"><label for="topic-n-259">Oclusión tubaria bilateral OTB</label></li>
-                    <li><input type="checkbox" id="topic-n-260"><label for="topic-n-260">Ovario poliquístico</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>17 de agosto</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">GINECOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-261"><label for="topic-n-261">Quiste de ovario benigno</label></li>
-                    <li><input type="checkbox" id="topic-n-262"><label for="topic-n-262">Torsión ovárica</label></li>
-                    <li><input type="checkbox" id="topic-n-263"><label for="topic-n-263">Vaginitis bacteriana</label></li>
-                    <li><input type="checkbox" id="topic-n-264"><label for="topic-n-264">Vaginitis infecciosa</label></li>
-                    <li><input type="checkbox" id="topic-n-265"><label for="topic-n-265">Trichomoniasis</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>18 de agosto</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">GINECOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-266"><label for="topic-n-266">Bartolinitis</label></li>
-                    <li><input type="checkbox" id="topic-n-267"><label for="topic-n-267">Candidiasis vulvovaginal</label></li>
-                    <li><input type="checkbox" id="topic-n-268"><label for="topic-n-268">Chlamydia</label></li>
-                    <li class="category-header"><strong class="category-title">ONCOGINE</strong></li>
-                    <li><input type="checkbox" id="topic-n-269"><label for="topic-n-269">Tamizaje cáncer de mama</label></li>
-                    <li><input type="checkbox" id="topic-n-270"><label for="topic-n-270">Cáncer de mama</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>19 de agosto</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">ONCOGINE</strong></li>
-                    <li><input type="checkbox" id="topic-n-271"><label for="topic-n-271">Cáncer cérvicouterino</label></li>
-                    <li><input type="checkbox" id="topic-n-272"><label for="topic-n-272">Cáncer de endometrio</label></li>
-                    <li><input type="checkbox" id="topic-n-273"><label for="topic-n-273">Cáncer de ovario</label></li>
-                    <li><input type="checkbox" id="topic-n-274"><label for="topic-n-274">Cáncer de vagina</label></li>
-                    <li><input type="checkbox" id="topic-n-275"><label for="topic-n-275">Tumores anexiales</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>20 de agosto</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">OBSTETRICIA</strong></li>
-                    <li><input type="checkbox" id="topic-n-276"><label for="topic-n-276">Control prenatal</label></li>
-                    <li><input type="checkbox" id="topic-n-277"><label for="topic-n-277">Aloinmunización materna</label></li>
-                    <li><input type="checkbox" id="topic-n-278"><label for="topic-n-278">Estática fetal</label></li>
-                    <li><input type="checkbox" id="topic-n-279"><label for="topic-n-279">Tipos de pelvis</label></li>
-                    <li><input type="checkbox" id="topic-n-280"><label for="topic-n-280">Atención del parto</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>21 de agosto</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">OBSTETRICIA</strong></li>
-                    <li><input type="checkbox" id="topic-n-281"><label for="topic-n-281">Manejo activo del parto</label></li>
-                    <li><input type="checkbox" id="topic-n-282"><label for="topic-n-282">Cesárea</label></li>
-                    <li><input type="checkbox" id="topic-n-283"><label for="topic-n-283">Parto pretérmino</label></li>
-                    <li><input type="checkbox" id="topic-n-284"><label for="topic-n-284">Puerperio fisiológico</label></li>
-                    <li><input type="checkbox" id="topic-n-285"><label for="topic-n-285">Líquido amniótico</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>22 de agosto</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">OBSTETRICIA</strong></li>
-                    <li><input type="checkbox" id="topic-n-286"><label for="topic-n-286">Ruptura prematura de membranas</label></li>
-                    <li><input type="checkbox" id="topic-n-287"><label for="topic-n-287">Corioamnionitis</label></li>
-                    <li><input type="checkbox" id="topic-n-288"><label for="topic-n-288">Distocias</label></li>
-                    <li><input type="checkbox" id="topic-n-289"><label for="topic-n-289">Embarazo múltiple</label></li>
-                    <li><input type="checkbox" id="topic-n-290"><label for="topic-n-290">Endometritis puerperal</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>23 de agosto</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">OBSTETRICIA</strong></li>
-                    <li><input type="checkbox" id="topic-n-291"><label for="topic-n-291">Hiperémesis gravídica</label></li>
-                    <li><input type="checkbox" id="topic-n-292"><label for="topic-n-292">Insuficiencia cervical</label></li>
-                    <li><input type="checkbox" id="topic-n-293"><label for="topic-n-293">Muerte fetal</label></li>
-                    <li><input type="checkbox" id="topic-n-294"><label for="topic-n-294">Enfermedades hipertensivas del embarazo</label></li>
-                    <li><input type="checkbox" id="topic-n-295"><label for="topic-n-295">Preeclampsia sin datos de severidad</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>24 de agosto</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">OBSTETRICIA</strong></li>
-                    <li><input type="checkbox" id="topic-n-296"><label for="topic-n-296">Síndrome de HELLP</label></li>
-                    <li><input type="checkbox" id="topic-n-297"><label for="topic-n-297">Diabetes gestacional</label></li>
-                    <li><input type="checkbox" id="topic-n-298"><label for="topic-n-298">IVU en el embarazo</label></li>
-                    <li><input type="checkbox" id="topic-n-299"><label for="topic-n-299">Restricción del crecimiento intrauterino</label></li>
-                    <li><input type="checkbox" id="topic-n-300"><label for="topic-n-300">Sepsis puerperal</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>25 de agosto</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">OBSTETRICIA</strong></li>
-                    <li><input type="checkbox" id="topic-n-301"><label for="topic-n-301">Síndrome de Sheehan</label></li>
-                    <li><input type="checkbox" id="topic-n-302"><label for="topic-n-302">Depresión posparto</label></li>
-                    <li class="category-header"><strong class="category-title">HEMORRAGIAS OBSTÉTRICAS</strong></li>
-                    <li><input type="checkbox" id="topic-n-303"><label for="topic-n-303">Generalidades de hemorragias</label></li>
-                    <li><input type="checkbox" id="topic-n-304"><label for="topic-n-304">Hemorragia postparto</label></li>
-                    <li><input type="checkbox" id="topic-n-305"><label for="topic-n-305">Desgarro perineal</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>26 de agosto</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">HEMORRAGIAS OBSTÉTRICAS</strong></li>
-                    <li><input type="checkbox" id="topic-n-306"><label for="topic-n-306">Amenaza de aborto</label></li>
-                    <li><input type="checkbox" id="topic-n-307"><label for="topic-n-307">Aborto espontáneo</label></li>
-                    <li><input type="checkbox" id="topic-n-308"><label for="topic-n-308">Acretismo placentario</label></li>
-                    <li><input type="checkbox" id="topic-n-309"><label for="topic-n-309">Atonía uterina</label></li>
-                    <li><input type="checkbox" id="topic-n-310"><label for="topic-n-310">Choque hemorrágico en obstetricia</label></li>
-                </ul>
-            </div>
-
-            <div class="day">
-                <h3>27 de agosto</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">HEMORRAGIAS OBSTÉTRICAS</strong></li>
-                    <li><input type="checkbox" id="topic-n-311"><label for="topic-n-311">Desprendimiento prematuro de placenta normoinserta</label></li>
-                    <li><input type="checkbox" id="topic-n-312"><label for="topic-n-312">Embarazo ectópico</label></li>
-                    <li><input type="checkbox" id="topic-n-313"><label for="topic-n-313">Placenta previa</label></li>
-                    <li><input type="checkbox" id="topic-n-314"><label for="topic-n-314">Ruptura uterina</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>28 de agosto</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">HEMORRAGIAS OBSTÉTRICAS</strong></li>
-                    <li><input type="checkbox" id="topic-n-315"><label for="topic-n-315">Vasa previa</label></li>
-                    <li><input type="checkbox" id="topic-n-316"><label for="topic-n-316">Enfermedad trofoblástica gestacional</label></li>
-                    <li class="category-header"><strong class="category-title">NEONATOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-317"><label for="topic-n-317">APGAR</label></li>
-                    <li><input type="checkbox" id="topic-n-318"><label for="topic-n-318">Apnea del prematuro</label></li>
-                    <li><input type="checkbox" id="topic-n-319"><label for="topic-n-319">Asfixia neonatal</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>29 de agosto</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">NEONATOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-320"><label for="topic-n-320">Displasia broncopulmonar</label></li>
-                    <li><input type="checkbox" id="topic-n-321"><label for="topic-n-321">Silverman Anderson</label></li>
-                    <li><input type="checkbox" id="topic-n-322"><label for="topic-n-322">Síndrome de aspiración de meconio</label></li>
-                    <li><input type="checkbox" id="topic-n-323"><label for="topic-n-323">Maduración pulmonar</label></li>
-                    <li><input type="checkbox" id="topic-n-324"><label for="topic-n-324">Síndrome de dificultad respiratoria</label></li>
-                </ul>
-            </div>
-
-            <div class="day">
-                <h3>30 de agosto</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">NEONATOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-325"><label for="topic-n-325">Encefalopatía hipóxica</label></li>
-                    <li><input type="checkbox" id="topic-n-326"><label for="topic-n-326">Enfermedad hemorrágica del recién nacido</label></li>
-                    <li><input type="checkbox" id="topic-n-327"><label for="topic-n-327">Enterocolitis necrotizante</label></li>
-                    <li><input type="checkbox" id="topic-n-328"><label for="topic-n-328">Hipoacusia neonatal</label></li>
-                    <li><input type="checkbox" id="topic-n-329"><label for="topic-n-329">Hipoglucemia neonatal</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>31 de agosto</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">NEONATOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-330"><label for="topic-n-330">Hirschsprung</label></li>
-                    <li><input type="checkbox" id="topic-n-331"><label for="topic-n-331">Ictericia neonatal</label></li>
-                    <li><input type="checkbox" id="topic-n-332"><label for="topic-n-332">Muerte súbita del lactante</label></li>
-                    <li><input type="checkbox" id="topic-n-333"><label for="topic-n-333">Prematuro sano</label></li>
-                    <li><input type="checkbox" id="topic-n-334"><label for="topic-n-334">Reanimación neonatal</label></li>
-                </ul>
-            </div>
-
-            <div class="day">
-                <h3>1 de septiembre</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">NEONATOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-335"><label for="topic-n-335">Recién nacido de término</label></li>
-                    <li><input type="checkbox" id="topic-n-336"><label for="topic-n-336">Sepsis neonatal</label></li>
-                    <li><input type="checkbox" id="topic-n-337"><label for="topic-n-337">Tamiz neonatal</label></li>
-                    <li><input type="checkbox" id="topic-n-338"><label for="topic-n-338">Taquipnea transitoria del recién nacido</label></li>
-                    <li><input type="checkbox" id="topic-n-339"><label for="topic-n-339">Lesiones de plexo braquial obstétrico</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>2 de septiembre</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">NEONATOLOGÍA</strong></li>
-                    <li><input type="checkbox" id="topic-n-340"><label for="topic-n-340">Lesiones extracraneales</label></li>
-                    <li><input type="checkbox" id="topic-n-341"><label for="topic-n-341">Displasia del desarrollo de la cadera DDC</label></li>
-                    <li class="category-header"><strong class="category-title">CONGENITAS</strong></li>
-                    <li><input type="checkbox" id="topic-n-342"><label for="topic-n-342">Cardiopatías congénitas</label></li>
-                    <li><input type="checkbox" id="topic-n-343"><label for="topic-n-343">Tetralogía de Fallot</label></li>
-                    <li><input type="checkbox" id="topic-n-344"><label for="topic-n-344">Coartación aórtica</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>3 de septiembre</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">CONGENITAS</strong></li>
-                    <li><input type="checkbox" id="topic-n-345"><label for="topic-n-345">Persistencia del conducto arterioso</label></li>
-                    <li><input type="checkbox" id="topic-n-346"><label for="topic-n-346">Fenilcetonuria</label></li>
-                    <li><input type="checkbox" id="topic-n-347"><label for="topic-n-347">Fibrosis quística</label></li>
-                    <li><input type="checkbox" id="topic-n-348"><label for="topic-n-348">Galactosemia clásica</label></li>
-                    <li><input type="checkbox" id="topic-n-349"><label for="topic-n-349">Storch</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>4 de septiembre</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">CONGENITAS</strong></li>
-                    <li><input type="checkbox" id="topic-n-350"><label for="topic-n-350">Storch Citomegalovirus</label></li>
-                    <li><input type="checkbox" id="topic-n-351"><label for="topic-n-351">Storch herpes simple</label></li>
-                    <li><input type="checkbox" id="topic-n-352"><label for="topic-n-352">Storch rubéola congénita</label></li>
-                    <li><input type="checkbox" id="topic-n-353"><label for="topic-n-353">Storch sífilis congénita</label></li>
-                    <li><input type="checkbox" id="topic-n-354"><label for="topic-n-354">Storch toxoplasmosis</label></li>
-                    <li><input type="checkbox" id="topic-n-355"><label for="topic-n-355">Storch varicela congénita</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>5 de septiembre</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">ESCOLAR</strong></li>
-                    <li><input type="checkbox" id="topic-n-356"><label for="topic-n-356">Control de niño sano</label></li>
-                    <li><input type="checkbox" id="topic-n-357"><label for="topic-n-357">Etapas del crecimiento</label></li>
-                    <li><input type="checkbox" id="topic-n-358"><label for="topic-n-358">Talla baja</label></li>
-                    <li><input type="checkbox" id="topic-n-359"><label for="topic-n-359">Alergia alimentaria</label></li>
-                    <li><input type="checkbox" id="topic-n-360"><label for="topic-n-360">Cuerpo extraño</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>6 de septiembre</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">ESCOLAR</strong></li>
-                    <li><input type="checkbox" id="topic-n-361"><label for="topic-n-361">Dermatitis del pañal</label></li>
-                    <li><input type="checkbox" id="topic-n-362"><label for="topic-n-362">Estreñimiento funcional</label></li>
-                    <li><input type="checkbox" id="topic-n-363"><label for="topic-n-363">Hiperplasia adrenal congénita</label></li>
-                    <li><input type="checkbox" id="topic-n-364"><label for="topic-n-364">Hipotiroidismo congénito</label></li>
-                    <li><input type="checkbox" id="topic-n-365"><label for="topic-n-365">Maltrato infantil</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>7 de septiembre</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">ESCOLAR</strong></li>
-                    <li><input type="checkbox" id="topic-n-366"><label for="topic-n-366">Mucopolisacaridosis</label></li>
-                    <li><input type="checkbox" id="topic-n-367"><label for="topic-n-367">Reflujo gastroesofágico del lactante</label></li>
-                    <li class="category-header"><strong class="category-title">NUTRICIÓN PEDIÁTRICA</strong></li>
-                    <li><input type="checkbox" id="topic-n-368"><label for="topic-n-368">Alimentación complementaria</label></li>
-                    <li><input type="checkbox" id="topic-n-369"><label for="topic-n-369">Deficiencia de vitamina A</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>8 de septiembre</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">NUTRICIÓN PEDIÁTRICA</strong></li>
-                    <li><input type="checkbox" id="topic-n-370"><label for="topic-n-370">Desnutrición pediátrica</label></li>
-                    <li><input type="checkbox" id="topic-n-371"><label for="topic-n-371">Hipovitaminosis</label></li>
-                    <li><input type="checkbox" id="topic-n-372"><label for="topic-n-372">Intolerancia a la lactosa</label></li>
-                    <li><input type="checkbox" id="topic-n-373"><label for="topic-n-373">Lactancia materna</label></li>
-                    <li><input type="checkbox" id="topic-n-374"><label for="topic-n-374">Obesidad en escolares</label></li>
-                </ul>
-            </div>
-
-            <div class="day">
-                <h3>9 de septiembre</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">NUTRICIÓN PEDIÁTRICA</strong></li>
-                    <li><input type="checkbox" id="topic-n-375"><label for="topic-n-375">Pelagra en niños</label></li>
-                    <li><input type="checkbox" id="topic-n-376"><label for="topic-n-376">Raquitismo carencial</label></li>
-                    <li><input type="checkbox" id="topic-n-377"><label for="topic-n-377">Síndrome metabólico en niños</label></li>
-                    <li class="category-header"><strong class="category-title">INFECTOLOGÍA PEDIÁTRICA</strong></li>
-                    <li><input type="checkbox" id="topic-n-378"><label for="topic-n-378">Adenitis mesentérica</label></li>
-                    <li><input type="checkbox" id="topic-n-379"><label for="topic-n-379">Onfalitis</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>10 de septiembre</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">INFECTOLOGÍA PEDIÁTRICA</strong></li>
-                    <li><input type="checkbox" id="topic-n-380"><label for="topic-n-380">Exantemáticas Diferencial</label></li>
-                    <li><input type="checkbox" id="topic-n-381"><label for="topic-n-381">Eritema infeccioso</label></li>
-                    <li><input type="checkbox" id="topic-n-382"><label for="topic-n-382">Escarlatina</label></li>
-                    <li><input type="checkbox" id="topic-n-383"><label for="topic-n-383">Exantema súbito</label></li>
-                    <li><input type="checkbox" id="topic-n-384"><label for="topic-n-384">Enfermedad de Kawasaki</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>11 de septiembre</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">INFECTOLOGÍA PEDIÁTRICA</strong></li>
-                    <li><input type="checkbox" id="topic-n-385"><label for="topic-n-385">Síndrome mano pie boca</label></li>
-                    <li><input type="checkbox" id="topic-n-386"><label for="topic-n-386">Rubéola</label></li>
-                    <li><input type="checkbox" id="topic-n-387"><label for="topic-n-387">Sarampión</label></li>
-                    <li><input type="checkbox" id="topic-n-388"><label for="topic-n-388">Varicela</label></li>
-                    <li><input type="checkbox" id="topic-n-389"><label for="topic-n-389">Parotiditis</label></li>
-                </ul>
-            </div>
-
-            <div class="day">
-                <h3>12 de septiembre</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">INFECTOLOGÍA PEDIÁTRICA</strong></li>
-                    <li><input type="checkbox" id="topic-n-390"><label for="topic-n-390">Bronquiolitis</label></li>
-                    <li><input type="checkbox" id="topic-n-391"><label for="topic-n-391">Epiglotitis</label></li>
-                    <li><input type="checkbox" id="topic-n-392"><label for="topic-n-392">Laringotraqueitis CRUP</label></li>
-                    <li><input type="checkbox" id="topic-n-393"><label for="topic-n-393">Mononucleosis infecciosa</label></li>
-                    <li><input type="checkbox" id="topic-n-394"><label for="topic-n-394">Tos ferina</label></li>
-                    <li><input type="checkbox" id="topic-n-395"><label for="topic-n-395">IVU en menores</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>13 de septiembre</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">VACUNAS</strong></li>
-                    <li><input type="checkbox" id="topic-n-396"><label for="topic-n-396">Vacunas generalidades</label></li>
-                    <li><input type="checkbox" id="topic-n-397"><label for="topic-n-397">Tipos de vacunas</label></li>
-                    <li><input type="checkbox" id="topic-n-398"><label for="topic-n-398">Vacunación universal</label></li>
-                    <li><input type="checkbox" id="topic-n-399"><label for="topic-n-399">Aplicación de vacunas</label></li>
-                    <li><input type="checkbox" id="topic-n-400"><label for="topic-n-400">Vacuna para personal de salud</label></li>
-                </ul>
-            </div>
-
-            <div class="day">
-                <h3>14 de septiembre</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">VACUNAS</strong></li>
-                    <li><input type="checkbox" id="topic-n-401"><label for="topic-n-401">Vacunas en el embarazo</label></li>
-                    <li><input type="checkbox" id="topic-n-402"><label for="topic-n-402">Esquema de vacunación</label></li>
-                    <li><input type="checkbox" id="topic-n-403"><label for="topic-n-403">Bcg</label></li>
-                    <li><input type="checkbox" id="topic-n-404"><label for="topic-n-404">Hepatitis A</label></li>
-                    <li><input type="checkbox" id="topic-n-405"><label for="topic-n-405">Hepatitis B</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>15 de septiembre</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">VACUNAS</strong></li>
-                    <li><input type="checkbox" id="topic-n-406"><label for="topic-n-406">Hexavalente</label></li>
-                    <li><input type="checkbox" id="topic-n-407"><label for="topic-n-407">Influenza</label></li>
-                    <li><input type="checkbox" id="topic-n-408"><label for="topic-n-408">Neumocócica</label></li>
-                    <li><input type="checkbox" id="topic-n-409"><label for="topic-n-409">Rotavirus</label></li>
-                    <li><input type="checkbox" id="topic-n-410"><label for="topic-n-410">Sabin</label></li>
-                </ul>
-            </div>
-            
-            <div class="day">
-                <h3>16 de septiembre</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">VACUNAS</strong></li>
-                    <li><input type="checkbox" id="topic-n-411"><label for="topic-n-411">Salmonella</label></li>
-                    <li><input type="checkbox" id="topic-n-412"><label for="topic-n-412">Dpt</label></li>
-                    <li><input type="checkbox" id="topic-n-413"><label for="topic-n-413">Srp</label></li>
-                    <li><input type="checkbox" id="topic-n-414"><label for="topic-n-414">Tétanos</label></li>
-                    <li><input type="checkbox" id="topic-n-415"><label for="topic-n-415">Varicela</label></li>
-                    <li><input type="checkbox" id="topic-n-416"><label for="topic-n-416">Vph</label></li>
-                </ul>
-            </div>
-
-            <div class="day">
-                <h3>17 de septiembre</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">DÍA DE REPASO</strong></li>
-                </ul>
-            </div>
-
-            <div class="day">
-                <h3>18 de septiembre</h3>
-                <ul>
-                     <li class="category-header"><strong class="category-title">DÍA DE REPASO</strong></li>
-                </ul>
-            </div>
-
-            <div class="day">
-                <h3>19 de septiembre</h3>
-                <ul>
-                     <li class="category-header"><strong class="category-title">DÍA DE REPASO</strong></li>
-                </ul>
-            </div>
-
-            <div class="day">
-                <h3>20 de septiembre</h3>
-                <ul>
-                    <li class="category-header"><strong class="category-title">DÍA DE REPASO FINAL</strong></li>
-                </ul>
-            </div>
-            <!-- FIN DEL TEMARIO -->
-
+        <div id="calendar-view" class="tab-content hidden">
+            <div class="calendar-container" id="calendar-container"></div>
         </div>
+        
+        <div id="board-view" class="tab-content hidden">
+            <main class="kanban-board">
+                <section class="kanban-column" id="col-todo">
+                    <div class="kanban-column-header"><h2><i class="far fa-circle" style="margin-right: 8px;"></i>Sin Empezar</h2></div>
+                    <div class="cards-container" id="col-todo-container"></div>
+                </section>
+                <section class="kanban-column" id="col-inprogress">
+                    <div class="kanban-column-header"><h2><i class="fas fa-spinner" style="margin-right: 8px;"></i>En Curso</h2></div>
+                    <div class="cards-container" id="col-inprogress-container"></div>
+                </section>
+                <section class="kanban-column" id="col-done">
+                    <div class="kanban-column-header"><h2><i class="fas fa-check-circle" style="margin-right: 8px;"></i>Listo</h2></div>
+                    <div class="cards-container" id="col-done-container"></div>
+                </section>
+            </main>
+        </div>
+    </main>
+    
+    <!-- MODALES (sin cambios en su estructura) -->
+    <div class="modal-overlay" id="modal-overlay"></div>
+    <div class="modal-container" id="details-modal">
+        <div class="modal-header"> <h2 id="modal-title"></h2> <span class="modal-close" id="modal-close-day">×</span> </div>
+        <div class="modal-content"> <div id="modal-topics"></div> <div class="notes-section" style="margin-top: 20px;"> <h3>Mis Anotaciones del Día</h3> <textarea id="modal-notes" placeholder="Escribe aquí tus notas generales para este día..."></textarea> <button id="modal-save-btn">Guardar Nota</button> </div> </div>
     </div>
-
-    <div class="container task-sheet">
-        <h2>Hoja de Tareas Pendientes</h2>
-        <ul id="task-list">
-            <!-- Los temas no completados aparecerán aquí -->
-        </ul>
+    <div class="modal-overlay" id="topic-plan-overlay"></div>
+    <div class="modal-container" id="topic-plan-modal">
+        <div class="modal-header"> <h2 id="topic-plan-title"></h2> <span class="modal-close" id="modal-close-topic">×</span> </div>
+        <div class="modal-content">
+            <div class="study-flow-diagram">
+                <div class="step-card step-1"> <div class="step-icon-container"><i class="fas fa-binoculars"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">1</span>VISTA RÁPIDA</h2> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-1-1"><i class="fas fa-list-ul task-icon"></i><span class="task-text">Índice</span><span class="tool-tag tag-madera">MADERA</span></label></li> <li><label><input type="checkbox" class="task-checkbox" id="task-1-2"><i class="fas fa-download task-icon"></i><span class="task-text">Descargar guías</span><span class="optional-tag">* opcional</span></label></li> <li><label><input type="checkbox" class="task-checkbox" id="task-1-3"><i class="fas fa-brain task-icon"></i><span class="task-text">CREA resúmenes + casos con IA (5min)</span><span class="tool-tag tag-ia">IAGOOGLE</span></label></li> </ul> </div> </div>
+                <div class="parallel-steps-container"> <div class="step-card step-2"> <div class="step-icon-container"><i class="fas fa-magic"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">2</span>CREAR</h2> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-2-1"><i class="fas fa-chalkboard-teacher task-icon"></i><span class="task-text">Presentación</span><span class="tool-tag tag-genspark">Genspark</span></label></li> <li><label><input type="checkbox" class="task-checkbox" id="task-2-2"><i class="fas fa-microphone-alt task-icon"></i><span class="task-text">Podcast MP3</span><span class="tool-tag tag-notebooklm">NOTEBOOKLM</span></label></li> </ul> </div> </div> <div class="step-card step-3"> <div class="step-icon-container"><i class="fas fa-book-reader"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">3</span>LEER</h2> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-3-1"><i class="fas fa-file-alt task-icon"></i><span class="task-text">Leer Resumen</span></label></li> </ul> </div> </div> </div>
+                <div class="step-card step-4"> <div class="step-icon-container"><i class="fas fa-puzzle-piece"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">4</span>UNIFICAR<span class="subtitle">(resumen + presentación + simular + enlaces)</span></h2> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-4-1"><i class="fas fa-code task-icon"></i><span class="task-text">HTML</span><span class="tool-tag tag-ia">IAGOOGLE</span></label></li> </ul> </div> </div>
+                <div class="step-card step-5"> <div class="step-icon-container"><i class="fas fa-tasks"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">5</span>PRACTICAR</h2> <div class="practice-step-layout"> <div class="practice-tasks-column"> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-5-1"><i class="fas fa-notes-medical task-icon"></i><span class="task-text">Realiza CASOS CLÍNICOS</span></label></li> <li><label><input type="checkbox" class="task-checkbox" id="task-5-2"><i class="fas fa-redo-alt task-icon"></i><span class="task-text">Repasar</span><span class="tool-tag tag-genspark">GENSPARK</span><span class="tool-tag tag-madera">MADERAS</span></label></li> </ul> </div> <div class="practice-score-column"> <h3>PUNTUACIÓN</h3> <div class="score-inputs-row"> <div class="score-input-group"><label for="score-aciertos">Aciertos:</label><input type="number" id="score-aciertos" min="0"></div> <div class="score-input-group"><label for="score-reactivos">Reactivos:</label><input type="number" id="score-reactivos" min="0"></div> <div class="score-input-group"><label for="score-percentage">%:</label><input type="text" id="score-percentage" class="percentage-output" readonly value="0%"></div> </div> </div> </div> </div> </div>
+                <div class="step-card step-6"> <div class="step-icon-container"><i class="fas fa-head-side-headphones"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">6</span>MEMORIZAR</h2> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-6-1"><i class="fas fa-headphones-alt task-icon"></i><span class="task-text">Escuchar MP3</span></label></li> </ul> </div> </div>
+            </div>
+            <div class="topic-modal-footer"> <button id="topic-finish-btn" class="topic-finish-btn">Terminar Tema</button> </div>
+        </div>
     </div>
     
-    <div id="toast">Progreso guardado con éxito</div>
-
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const saveButton = document.getElementById('save-progress');
-            const checkboxes = document.querySelectorAll('.schedule-container input[type="checkbox"]');
-            const taskList = document.getElementById('task-list');
-            const toast = document.getElementById('toast');
+        // Frecuencia Vital - Lógica de Aplicación Unificada v3
+        const firebaseConfig = {
+            apiKey: "AIzaSyD4SjKhedm4ZWHed70_sjQgxPokjHvwvUc",
+            authDomain: "frecuencia-vital.firebaseapp.com",
+            projectId: "frecuencia-vital",
+            storageBucket: "frecuencia-vital.appspot.com",
+            messagingSenderId: "492064882273",
+            appId: "1:492064882273:web:46ad9f9a66126bfdb53420",
+            measurementId: "G-0C466YCX31"
+        };
+        if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        let currentUser = null;
+        
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                currentUser = user;
+                initializeAppLogic();
+            } else {
+                window.location.href = 'index.html';
+            }
+        });
+
+        async function initializeAppLogic() {
+            console.log("Iniciando Frecuencia Vital v3...");
+            const currentYear = new Date().getFullYear();
+
+            // --- SECCIÓN 1: FUENTE DE DATOS UNIFICADA ---
+            const legacyProgressData = [ { specialty: "Geriatría", topic: "Valoración geriátrica", aciertos: 18, reactivos: 21 }, { specialty: "Geriatría", topic: "Alzheimer", aciertos: 12, reactivos: 15 }, { specialty: "Geriatría", topic: "Delirium", aciertos: 7, reactivos: 15 }, { specialty: "Geriatría", topic: "Demencia vascular", aciertos: 8, reactivos: 9 }, { specialty: "Geriatría", topic: "Deterioro cognitivo", aciertos: 15, reactivos: 21 }, { specialty: "Geriatría", topic: "Insomnio en el adulto mayor", aciertos: 9, reactivos: 9 }, { specialty: "Geriatría", topic: "Síndrome de caídas", aciertos: 7, reactivos: 9 }, { specialty: "Geriatría", topic: "Síndrome de fragilidad", aciertos: 15, reactivos: 21 }, { specialty: "Geriatría", topic: "Maltrato en el adulto mayor", aciertos: 8, reactivos: 9 }, { specialty: "Geriatría", topic: "Colapso del cuidador", aciertos: 15, reactivos: 21 }, { specialty: "Geriatría", topic: "Depresión mayor", aciertos: 9, reactivos: 9 }, { specialty: "Psiquiatría", topic: "Abuso de sustancias", aciertos: 11, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Abstinencia alcohólica", aciertos: 12, reactivos: 12 }, { specialty: "Psiquiatría", topic: "Trastorno por alcohol", aciertos: 9, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Esquizofrenia", aciertos: 10, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Estrés post traumático", aciertos: 3, reactivos: 9 }, { specialty: "Psiquiatría", topic: "Trastornos del sueño", aciertos: 10, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Intento de suicidio", aciertos: 8, reactivos: 9 }, { specialty: "Psiquiatría", topic: "Tdha", aciertos: 8, reactivos: 12 }, { specialty: "Psiquiatría", topic: "Trastorno bipolar", aciertos: 13, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Trastornos de ansiedad", aciertos: 10, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Trastornos c. alimentaria", aciertos: 13, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Consumo de mariguana", aciertos: 14, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Violencia contra la mujer", aciertos: 12, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Autismo", aciertos: 8, reactivos: 9 }, { specialty: "Psiquiatría", topic: "Síndrome de Munchausen", aciertos: 8, reactivos: 9 }, { specialty: "Psiquiatría", topic: "Depresion", aciertos: 13, reactivos: 15 }, { specialty: "Dermatología", topic: "Dermatitis atópica", aciertos: 18, reactivos: 18 }, { specialty: "Dermatología", topic: "Dermatofitosis", aciertos: 16, reactivos: 18 }, { specialty: "Dermatología", topic: "SSJ y NET", aciertos: 12, reactivos: 12 }, { specialty: "Dermatología", topic: "Escabiosis - Sarna", aciertos: 12, reactivos: 12 }, { specialty: "Dermatología", topic: "Impétigo", aciertos: 7, reactivos: 12 }, { specialty: "Dermatología", topic: "Melanoma", aciertos: 8, reactivos: 12 }, { specialty: "Dermatología", topic: "Psoriasis", aciertos: 8, reactivos: 12 }, { specialty: "Dermatología", topic: "Carcinoma basocelular", aciertos: 10, reactivos: 12 }, { specialty: "Dermatología", topic: "Acné vulgar", aciertos: 9, reactivos: 9 }, { specialty: "Dermatología", topic: "Erisipela", aciertos: 7, reactivos: 9 }, { specialty: "Dermatología", topic: "Urticaria", aciertos: 7, reactivos: 9 }, { specialty: "Dermatología", topic: "Dermatitis por contacto", aciertos: 6, reactivos: 9 }, { specialty: "Dermatología", topic: "Pediculosis capitis", aciertos: 11, reactivos: 12 }, { specialty: "Dermatología", topic: "Síndrome de Ritter", aciertos: 10, reactivos: 12 }, { specialty: "Dermatología", topic: "Carcinoma espinocelular", aciertos: 9, reactivos: 12 }, { specialty: "Nefrología", topic: "Lesión renal aguda", aciertos: 7, reactivos: 12 }, { specialty: "Nefrología", topic: "Enfermedad renal crónica 1", aciertos: 10, reactivos: 12 }, { specialty: "Nefrología", topic: "Nefropatía diabética", aciertos: 7, reactivos: 12 }, { specialty: "Nefrología", topic: "Síndrome nefrítico y nefrootico", aciertos: 17, reactivos: 24 }, { specialty: "Nefrología", topic: "Trastorno ácido-base", aciertos: 11, reactivos: 12 }, { specialty: "Nefrología", topic: "Nefritis lúpica", aciertos: 9, reactivos: 12 }, { specialty: "Reumatología", topic: "Artritis reactiva", aciertos: 8, reactivos: 12 }, { specialty: "Reumatología", topic: "Artritis reumatoide", aciertos: 10, reactivos: 15 }, { specialty: "Reumatología", topic: "Espondilitis anquilosante", aciertos: 11, reactivos: 12 }, { specialty: "Reumatología", topic: "Gota", aciertos: 6, reactivos: 12 }, { specialty: "Reumatología", topic: "Lupus eritematoso sistémico", aciertos: 12, reactivos: 15 }, { specialty: "Reumatología", topic: "Arteritis de la temporal", aciertos: 9, reactivos: 9 }, { specialty: "Reumatología", topic: "Granulomatosis de Wegener", aciertos: 6, reactivos: 9 }, { specialty: "Reumatología", topic: "Artritis Septica", aciertos: 9, reactivos: 12 }, { specialty: "Neumología", topic: "Asma en pediátricos", aciertos: 11, reactivos: 21 }, { specialty: "Neumología", topic: "Exacerbación de asma", aciertos: 8, reactivos: 9 }, { specialty: "Neumología", topic: "Cáncer de pulmón", aciertos: 4, reactivos: 12 }, { specialty: "Neumología", "topic": "Epoc1", "aciertos": 3, "reactivos": 12 }, { "specialty": "Neumología", "topic": "Derrame pleural", "aciertos": 10, "reactivos": 12 }, { "specialty": "Neumología", "topic": "Tabaquismo", "aciertos": 5, "reactivos": 9 }, { specialty: "Neurología", topic: "Cefalea Secundarias", aciertos: 12, reactivos: 12 }, { specialty: "Neurología", topic: "Cefaleas Tensional y Migraña", aciertos: 9, reactivos: 12 }, { specialty: "Neurología", topic: "Crisis convulsivas", aciertos: 4, reactivos: 12 }, { specialty: "Neurología", topic: "Estatus epiléptico", aciertos: 9, reactivos: 12 }, { specialty: "Neurología", topic: "Crisis febriles", aciertos: 5, reactivos: 12 }, { specialty: "Neurología", topic: "Enfermedad de Parkinson", aciertos: 6, reactivos: 9 }, { specialty: "Neurología", topic: "EVC isquémico", aciertos: 10, reactivos: 12 }, { specialty: "Neurología", topic: "Hemorragia subaracnoidea 1", aciertos: 9, reactivos: 9 }, { specialty: "Neurología", topic: "Guillain Barré", aciertos: 8, reactivos: 9 }, { specialty: "Neurología", topic: "Esclerosis múltiple", aciertos: 5, reactivos: 12 }, { specialty: "Neurología", topic: "EVC hemorrágico", aciertos: 6, reactivos: 12 }, { specialty: "Neurología", topic: "Miastenia gravis", aciertos: 5, reactivos: 9 }, { specialty: "Neurología", topic: "Muerte encefálica", aciertos: 6, reactivos: 9 }, { specialty: "Hematología", topic: "Anemia generalidades 1", aciertos: 8, reactivos: 18 }, { specialty: "Hematología", topic: "Anemia ferropénica Adultos", aciertos: 8, reactivos: 12 }, { specialty: "Hematología", topic: "Leucemias", aciertos: 8, reactivos: 12 }, { specialty: "Hematología", topic: "Linfomas", aciertos: 10, reactivos: 15 }, { specialty: "Hematología", topic: "Trombocitopenia inmune", aciertos: 5, reactivos: 9 }, { specialty: "Infectología", topic: "Brucelosis", aciertos: 3, reactivos: 3 }, { specialty: "Infectología", topic: "Cisticercosis", aciertos: 7, reactivos: 9 }, { specialty: "Infectología", topic: "Clostridium y teniasis", aciertos: 8, reactivos: 9 }, { specialty: "Infectología", topic: "Diarrea aguda en adultos 1", aciertos: 9, reactivos: 12 }, { specialty: "Infectología", topic: "Diarrea en niños", aciertos: 10, reactivos: 12 }, { specialty: "Infectología", topic: "Chinkungunya", aciertos: 7, reactivos: 9 }, { specialty: "Infectología", topic: "Dengue 1", aciertos: 6, reactivos: 9 }, { specialty: "Infectología", topic: "Zika", aciertos: 8, reactivos: 9 }, { specialty: "Infectología", topic: "Paludismo", aciertos: 7, reactivos: 9 }, { specialty: "Infectología", topic: "Salmonella Fiebre tifoidea", aciertos: 7, reactivos: 9 }, { specialty: "Infectología", topic: "Sepsis y choque séptico", aciertos: 7, reactivos: 9 }, { specialty: "Infectología", topic: "Tuberculosis pulmonar", aciertos: 14, reactivos: 21 }, { specialty: "Infectología", topic: "ETS Generalidades", aciertos: 14, reactivos: 18 }, { specialty: "Infectología", topic: "VIH Adultos", aciertos: 16, reactivos: 21 }, { specialty: "Infectología", topic: "VIH Madre e hijo", aciertos: 17, reactivos: 21 }, { specialty: "Infectología", topic: "RV yOportunistas", aciertos: 14, reactivos: 21 }, { specialty: "Infectología", topic: "Sarcoma de Kaposi", aciertos: 6, reactivos: 9 }, { specialty: "Infectología", topic: "Giardiasis", aciertos: 8, reactivos: 9 }, { specialty: "Infectología", topic: "Tuberculosis extrapulmonar", aciertos: 10, reactivos: 12 }, { specialty: "Infectología", topic: "Lepra", aciertos: 5, reactivos: 9 }, { specialty: "Infectología", topic: "Medios de cultivo", aciertos: 5, reactivos: 9 }, { specialty: "Infectología", topic: "Actinomicosis", aciertos: 6, reactivos: 9 }, { specialty: "Infectología", topic: "Amebiasis intestinal", aciertos: 7, reactivos: 9 }, { specialty: "Infectología", topic: "Anquilostomiasis", aciertos: 9, reactivos: 9 }, { specialty: "Infectología", topic: "Ascariasis", aciertos: 9, reactivos: 9 }, { specialty: "Infectología", topic: "Aspergilosis", aciertos: 7, reactivos: 9 }, { "specialty": "Infectología", "topic": "Coccidioidomicosis", "aciertos": 8, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Difteria", "aciertos": 9, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Enfermedad de Chagas 1", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Enfermedad de Lyme", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Estrongiloidiasis", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Fascitis necrosante", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Fiebre de origen desconocido", "aciertos": 5, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Filariasis linfática", "aciertos": 4, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Filariasis ocular Loasis", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Infecciones odontogénicas", "aciertos": 6, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Leishmaniasis", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Leptospirosis", "aciertos": 8, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Mucormicosis", "aciertos": 9, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Oncocercosis", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Oxiuriasis o enterobiasis", "aciertos": 5, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Poliomielitis", "aciertos": 8, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Rabia", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Tricuriasis", "aciertos": 9, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Triquinosis", "aciertos": 8, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Neumonía adquirida en la comunidad", "aciertos": 3, "reactivos": 12 }, { "specialty": "Infectología", "topic": "Neumonía bacteriana adquirida en la comunidad Niños", "aciertos": 7, "reactivos": 12 }, { "specialty": "Infectología", "topic": "Influenza", "aciertos": 6, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Meningitis", "aciertos": 10, "reactivos": 12 }, { "specialty": "Infectología", "topic": "Encefalitis viral", "aciertos": 8, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Absceso cerebral", "aciertos": 8, "reactivos": 9 }, { specialty: "Endocrinología", topic: "INTRO DM", aciertos: 10, reactivos: 12 }, { specialty: "Endocrinología", topic: "Prediabetes", aciertos: 15, reactivos: 15 }, { specialty: "Endocrinología", topic: "Diabetes mellitus", aciertos: 12, reactivos: 15 }, { specialty: "Endocrinología", topic: "Diabetes en el adulto mayor", aciertos: 6, reactivos: 9 }, { specialty: "Endocrinología", topic: "Diabetes en pediatría", aciertos: 5, reactivos: 9 }, { specialty: "Endocrinología", topic: "Cetoacidosis diabética y EHH", aciertos: 13, reactivos: 18 }, { specialty: "Endocrinología", topic: "Hipoglucemia", aciertos: 6, reactivos: 9 } ];
+            const futureTopicsData = [ { subject: "ORL", topics: ["Vppb", "Parálisis de Bell", "Neuralgia de trigémino", "Neuritis vestibular", "Epistaxis", "Fracturas nasales", "Rinosinusitis", "Mastoiditis aguda", "Otitis", "Faringoamigdalitis", "Angina de Ludwig"] }, { subject: "OFTALMOLOGÍA", topics: ["Catarata", "Conjuntivitis (aleergica, Bacteriana, neonatal,viral)", "Glaucoma de ángulo abierto", "Glaucoma de ángulo cerrado", "Ojo rojo", "Retinopatía diabética", "Retinopatía hipertensiva", "Trauma ocular", "Degeneración macular", "Desprendimiento de retina", "Blefaritis", "Chalazión", "Orzuelo", "Glaucoma congénito"] }, { subject: "TYO", topics: ["Osteoartritis", "Osteomielitis", "Fracturas expuestas", "Esguince cervical", "Lumbalgia", "Síndrome de hombro doloroso", "Luxación glenohumeral", "Fractura de clavícula", "Fractura de radio distal", "Fractura de cadera", "Lesiones de rodilla", "Esguince de tobillo", "Fractura de tobillo", "Osteosarcoma", "Sarcoma de Ewing", "Hernia de disco", "Túnel del carpo", "Epifisiolistesis femoral", "Legg calvé perthes", "Embolia grasa", "Tumores óseos malignos", "Costilla cervical", "Fractura de humero proximal", "Luxación de codo", "Codo de niñera", "Fracturas de codo", "Fracturas de antebrazo", "Lesiones fisiarias", "Luxación coxofemoral", "Fractura de diáfisis de tibia", "Rotura de talón de aquiles", "Pie equino varo", "Pie plano"] }, { subject: "CARDIOLOGÍA", topics: ["Pericarditis", "Endocarditis infecciosa", "Estenosis aórtica", "Insuficiencia aórtica", "Estenosis mitral", "Insuficiencia mitral", "Fiebre reumática", "Hipertensión arterial sistémica", "Crisis hipertensivas", "Insuficiencia cardíaca aguda", "Insuficiencia cardíaca crónica", "Infarto agudo de miocardio", "Disección aórtica", "Cor pulmonar crónico", "Edema pulmonar", "Hipotensión ortostática", "Aneurisma aórtico abdominal", "Enfermedad coronaria", "Otras valvulopatías", "Hipertensión pulmonar", "Rehabilitación cardíaca"] }, { subject: "ANGIOLOGÍA", topics: ["Enfermedad arterial periférica", "Insuficiencia venosa", "Pie diabético", "Tromboembolia pulmonar", "Trombosis venosa profunda", "Úlceras por presión", "Paget schroetter", "Tromboembolia venosa en obstetricia"] }, { subject: "ACLS", topics: ["Soporte vital básico", "Rcp", "Taquicardia acls", "Taquicardia supraventricular", "Bloqueos av", "Bradicardia", "Fibrilación auricular", "Fibrilación ventricular", "Síndrome de wpw", "Pls", "Ahogamiento"] }, { subject: "ATLS", topics: ["Poli trauma", "Tipos de shock", "Choque hipovolémico", "Quemaduras", "Gran quemado", "Tce adultos", "Tce pediátrico", "Trauma torácico", "Hemotórax", "Neumotórax a tensión", "Taponamiento cardiaco", "Trauma abdominal", "Shock neurogénico", "Neumotórax abierto", "Neumotórax simple", "Trauma espinal", "Catéter venoso central", "Hipotermia", "Fracturas de cráneo", "Lesión traqueobronquial", "Ruptura diafragmática", "Trauma esplénico", "Trauma obstétrico", "Trauma pélvico"] }, { subject: "TOXICOLOGÍA", topics: ["Manejo de intoxicaciones", "Toxíndromes", "Intoxicación por benzodiacepinas", "Intoxicación por organofosforados", "Intoxicación por paracetamol", "Intoxicación por salicilatos", "Lactrodectus", "Loxosceles", "Mordedura de serpiente", "Picadura de alacrán", "Golpe de calor", "Intoxicación por etanol", "Intoxicación por monoxido de carbono", "Intoxicación por opiáceos", "Anafilaxia", "Ingesta de cáusticos", "Intoxicación alimentaria", "Intoxicación por alcoholes", "Intoxicación por anfetaminas", "Intoxicación por DMT", "Intoxicación por fentanilo", "Intoxicación por hidrocarburos", "Intoxicación por metales pesados", "Intoxicación por plomo", "Picadura de himenópteros"] }, { subject: "GASTROENTEROLOGÍA", topics: ["Absceso hepático amebiano", "Cirrosis hepática", "Insuficiencia hepática", "Ascitis", "Encefalopatía hepática", "Hepatitis A", "Hepatitis B", "Hepatitis C", "Pancreatitis aguda", "Reflujo ERGE", "Enfermedad ácido péptica", "Síndrome de intestino irritable", "Sangrado TDA", "Sagrado TDB", "Varices esofágicas", "Ehgna", "Enfermedad de Crohn", "Colitis ulcerativa", "Cáncer gástrico", "Carcinoma hepatocelular", "Absceso hepático piógeno", "Hepatitis autoinmune", "Pancreatitis crónica", "Acalasia", "Esófago de Barret", "Dispepsia funcional", "Mallory Weiss", "Zollinger Ellison", "Enfermedad celíaca", "Cáncer de esófago", "Cáncer de páncreas"] }, { subject: "CIRUGÍA ABDOMINAL Y COLOPROCTOLOGÍA", topics: ["Apendicitis aguda", "Apendicitis en el embarazo", "Colecistitis aguda", "Coledocolitiasis", "Colelitiasis", "Colangitis aguda", "Hernias", "Hernia inguinal", "Oclusión intestinal", "Enfermedad hemorroidal", "Fístula anal", "Fisura anal", "Absceso anal", "Enfermedad diverticular", "Cáncer colo-rectal", "Isquemia intestinal", "Vólvulo de sigmoides", "Heridas quirúrgicas", "Complicaciones post Qx", "Colangiocarcinoma", "Fístulas biliointestinales", "Hernia femoral", "Hernia hiatal", "Hernia umbilical", "Hernia ventral", "Vólvulo de ciego", "Quiste pilonidal", "Poliposis adematosa familiar PAF"] }, { subject: "CIRUGÍA PEDIÁTRICA", topics: ["Atresia duodenal", "Atresia esofágica", "Criptorquidia", "Estenosis pilórica", "Hernía diafragmática congénita", "Invaginación intestinal", "Nefroblastoma", "Neuroblastoma", "Divertículo de Meckel", "Hirschsprung", "Atresia biliar", "Atresia de coanas", "Atresia yeyunoileal", "Espina bífida", "Malformaciones rectales", "Malrotación intestinal", "Patología umbilical", "Retinoblastoma", "Tumor abdominal"] }, { subject: "GINECOLOGÍA", topics: ["Fitz-Hugh-Curtis", "Dismenorrea aguda", "Amenorreas primarias", "Amenorreas secundarias", "Sangrado uterino anormal", "Adenomiosis", "Anticonceptivos generalidades", "Anticonceptivos GPC", "Anticonceptivos hormonales combinados", "Anticoncepción de emergencia", "DIU de cobre", "DIU de levonorgestrel", "Implante subdérmico", "Progestágenos solos", "Lactancia como anticonceptivo", "Infertilidad", "Condón", "Vasectomía", "Cistocele e incontinencia", "Endometriosis", "Enfermedad pélvica inflamatoria", "Hidrosalpinx", "Hiperplasia endometrial", "Mastitis", "Mastopatía fibroquística", "Fibroadenoma", "Papiloma intraductal", "Patología mamaria benigna", "Quiste mamario", "Osteoporosis post menopausia", "Insuficiencia ovárica primaria", "Menopausia y climaterio", "Miomatosis uterina", "Oclusión tubaria bilateral OTB", "Ovario poliquístico", "Quiste de ovario benigno", "Torsión ovárica", "Vaginitis bacteriana", "Vaginitis infecciosa", "Trichomoniasis", "Bartolinitis", "Candidiasis vulvovaginal", "Chlamydia"] }, { subject: "ONCOGINE", topics: ["Tamizaje cáncer de mama", "Cáncer de mama", "Cáncer cérvicouterino", "Cáncer de endometrio", "Cáncer de ovario", "Cáncer de vagina", "Tumores anexiales"] }, { subject: "OBSTETRICIA", topics: ["Control prenatal", "Aloinmunización materna", "Estática fetal", "Tipos de pelvis", "Atención del parto", "Manejo activo del parto", "Cesárea", "Parto pretérmino", "Puerperio fisiológico", "Líquido amniótico", "Ruptura prematura de membranas", "Corioamnionitis", "Distocias", "Embarazo múltiple", "Endometritis puerperal", "Hiperémesis gravídica", "Insuficiencia cervical", "Muerte fetal", "Enfermedades hipertensivas del embarazo", "Preeclampsia sin datos de severidad", "Síndrome de HELLP", "Diabetes gestacional", "IVU en el embarazo", "Restricción del crecimiento intrauterino", "Sepsis puerperal", "Síndrome de Sheehan", "Depresión posparto"] }, { subject: "HEMORRAGIAS OBSTÉTRICAS", topics: ["Generalidades de hemorragias", "Hemorragia postparto", "Desgarro perineal", "Amenaza de aborto", "Aborto espontáneo", "Acretismo placentario", "Atonía uterina", "Choque hemorrágico en obstetricia", "Desprendimiento prematuro de placenta normoinserta", "Embarazo ectópico", "Placenta previa", "Ruptura uterina", "Vasa previa", "Enfermedad trofoblástica gestacional"] }, { subject: "NEONATOLOGÍA", topics: ["APGAR", "Apnea del prematuro", "Asfixia neonatal", "Displasia broncopulmonar", "Silverman Anderson", "Síndrome de aspiración de meconio", "Maduración pulmonar", "Síndrome de dificultad respiratoria", "Encefalopatía hipóxica", "Enfermedad hemorrágica del recién nacido", "Enterocolitis necrotizante", "Hipoacusia neonatal", "Hipoglucemia neonatal", "Hirschsprung", "Ictericia neonatal", "Muerte súbita del lactante", "Prematuro sano", "Reanimación neonatal", "Recién nacido de término", "Sepsis neonatal", "Tamiz neonatal", "Taquipnea transitoria del recién nacido", "Lesiones de plexo braquial obstétrico", "Lesiones extracraneales", "Displasia del desarrollo de la cadera DDC"] }, { subject: "CONGENITAS", topics: ["Cardiopatías congénitas", "Tetralogía de Fallot", "Coartación aórtica", "Persistencia del conducto arterioso", "Fenilcetonuria", "Fibrosis quística", "Galactosemia clásica", "Storch", "Storch Citomegalovirus", "Storch herpes simple", "Storch rubéola congénita", "Storch sífilis congénita", "Storch toxoplasmosis", "Storch varicela congénita"] }, { subject: "ESCOLAR", topics: ["Control de niño sano", "Etapas del crecimiento", "Talla baja", "Alergia alimentaria", "Cuerpo extraño", "Dermatitis del pañal", "Estreñimiento funcional", "Hiperplasia adrenal congénita", "Hipotiroidismo congénito", "Maltrato infantil", "Mucopolisacaridosis", "Reflujo gastroesofágico del lactante"] }, { subject: "NUTRICIÓN PEDIÁTRICA", topics: ["Alimentación complementaria", "Deficiencia de vitamina A", "Desnutrición pediátrica", "Hipovitaminosis", "Intolerancia a la lactosa", "Lactancia materna", "Obesidad en escolares", "Pelagra en niños", "Raquitismo carencial", "Síndrome metabólico en niños"] }, { subject: "INFECTOLOGÍA PEDIÁTRICA", topics: ["Adenitis mesentérica", "Onfalitis", "Exantemáticas Diferencial", "Eritema infeccioso", "Escarlatina", "Exantema súbito", "Enfermedad de Kawasaki", "Síndrome mano pie boca", "Rubéola", "Sarampión", "Varicela", "Parotiditis", "Bronquiolitis", "Epiglotitis", "Laringotraqueitis CRUP", "Mononucleosis infecciosa", "Tos ferina", "IVU en menores"] }, { subject: "VACUNAS", topics: ["Vacunas generalidades", "Tipos de vacunas", "Vacunación universal", "Aplicación de vacunas", "Vacuna para personal de salud", "Vacunas en el embarazo", "Esquema de vacunación", "Bcg", "Hepatitis A", "Hepatitis B", "Hexavalente", "Influenza", "Neumocócica", "Rotavirus", "Sabin", "Salmonella", "Dpt", "Srp", "Tétanos", "Varicela", "Vph"] } ];
             
-            // Función para guardar el progreso
-            function saveProgress() {
-                const progress = {};
-                checkboxes.forEach(checkbox => {
-                    progress[checkbox.id] = checkbox.checked;
-                });
-                // Guardar en localStorage
-                localStorage.setItem('enarmStudyProgress', JSON.stringify(progress));
-                
-                // Mostrar notificación
-                toast.style.opacity = '1';
-                toast.style.bottom = '50px';
-                setTimeout(() => {
-                    toast.style.opacity = '0';
-                    toast.style.bottom = '30px';
-                }, 2000);
-                
-                // Actualizar hoja de tareas
-                updateTaskList();
-            }
-
-            // Función para cargar el progreso
-            function loadProgress() {
-                const progress = JSON.parse(localStorage.getItem('enarmStudyProgress'));
-                if (progress) {
-                    checkboxes.forEach(checkbox => {
-                        if (progress[checkbox.id] !== undefined) {
-                            checkbox.checked = progress[checkbox.id];
-                        }
-                    });
-                }
-                updateTaskList();
-            }
-
-            // Función para actualizar la hoja de tareas
-            function updateTaskList() {
-                taskList.innerHTML = '';
-                let hasUnchecked = false;
-                checkboxes.forEach(checkbox => {
-                    if (!checkbox.checked) {
-                        const label = document.querySelector(`label[for="${checkbox.id}"]`);
-                        if (label) {
-                            const dayHeader = checkbox.closest('.day').querySelector('h3').textContent;
-                            const listItem = document.createElement('li');
-                            listItem.textContent = `${label.textContent} (Pendiente de: ${dayHeader})`;
-                            taskList.appendChild(listItem);
-                            hasUnchecked = true;
-                        }
+            function generateUnifiedStudyPlan() {
+                const geneticaTopics = ["Síndrome de Down", "Síndrome de Klinefelter", "Síndrome de Turner", "Síndrome de Marfan", "Enfermedad de Wilson", "Síndrome de Dravet", "Síndrome de Lynch", "Síndrome de Peutz Jegher", "Von Hippel Lindau"];
+                const allLegacyTopics = [{ specialty: "GENÉTICA", topics: geneticaTopics }];
+                legacyProgressData.forEach(item => {
+                    let specialtyObj = allLegacyTopics.find(s => s.specialty === item.specialty);
+                    if (!specialtyObj) {
+                        specialtyObj = { specialty: item.specialty, topics: [] };
+                        allLegacyTopics.push(specialtyObj);
+                    }
+                    if (!specialtyObj.topics.includes(item.topic)) {
+                        specialtyObj.topics.push(item.topic);
                     }
                 });
+                const allFutureTopics = futureTopicsData.map(s => ({ specialty: s.subject, topics: s.topics }));
                 
-                if (!hasUnchecked) {
-                    const listItem = document.createElement('li');
-                    listItem.textContent = '¡Felicidades! Has completado todos los temas.';
-                    listItem.style.color = 'var(--accent-color)';
-                    listItem.style.backgroundColor = 'transparent';
-                    taskList.appendChild(listItem);
+                function distributeTopics(topicsToDistribute, startDateStr, endDateStr) {
+                    const plan = [];
+                    const startDate = new Date(startDateStr + 'T00:00:00');
+                    const endDate = new Date(endDateStr + 'T00:00:00');
+                    const totalDays = (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24) + 1;
+                    
+                    const flatTopics = [];
+                    topicsToDistribute.forEach(specialty => {
+                        specialty.topics.forEach(topic => {
+                            flatTopics.push({ specialty: specialty.specialty, topic: topic });
+                        });
+                    });
+
+                    if (flatTopics.length === 0) return [];
+                    const topicsPerDay = Math.ceil(flatTopics.length / totalDays);
+
+                    let topicIndex = 0;
+                    for (let d = 0; d < totalDays; d++) {
+                        const currentDate = new Date(startDate);
+                        currentDate.setDate(startDate.getDate() + d);
+                        const dateString = currentDate.toISOString().split('T')[0];
+                        const dayPlan = { date: dateString, blocks: [] };
+                        let lastSpecialty = null;
+                        
+                        for (let i = 0; i < topicsPerDay; i++) {
+                            if (topicIndex >= flatTopics.length) break;
+                            const currentItem = flatTopics[topicIndex];
+                            if (currentItem.specialty !== lastSpecialty) {
+                                dayPlan.blocks.push({ subject: currentItem.specialty, topics: [currentItem.topic] });
+                                lastSpecialty = currentItem.specialty;
+                            } else {
+                                dayPlan.blocks[dayPlan.blocks.length - 1].topics.push(currentItem.topic);
+                            }
+                            topicIndex++;
+                        }
+                        if (dayPlan.blocks.length > 0) {
+                           plan.push(dayPlan);
+                        }
+                    }
+                    return plan;
                 }
+
+                const phase1 = distributeTopics(allLegacyTopics, `${currentYear}-04-13`, `${currentYear}-06-14`);
+                const phase2Topics = allLegacyTopics.filter(s => ['ENDOCRINOLOGÍA', 'UROLOGÍA'].includes(s.specialty));
+                const phase2 = distributeTopics(phase2Topics, `${currentYear}-06-15`, `${currentYear}-06-25`);
+                const phase3Topics = allFutureTopics;
+                const phase3 = distributeTopics(phase3Topics, `${currentYear}-06-26`, `${currentYear}-09-20`);
+
+                const fullPlan = [...phase1, ...phase2, ...phase3];
+                
+                fullPlan.forEach(day => {
+                    const specialtyBlocks = new Map();
+                    day.blocks.forEach(block => {
+                        if (block.subject) {
+                            if (!specialtyBlocks.has(block.subject)) {
+                                specialtyBlocks.set(block.subject, []);
+                            }
+                            specialtyBlocks.get(block.subject).push(...(block.topics || []));
+                        }
+                    });
+                    const newBlocks = [];
+                    specialtyBlocks.forEach((topics, subject) => {
+                        newBlocks.push({ subject: subject, topics: topics });
+                    });
+                    day.blocks = newBlocks;
+                });
+
+                return fullPlan;
+            }
+
+            const defaultStudyPlan = generateUnifiedStudyPlan();
+            
+            const subjectToTopicsMap = new Map();
+            const motivationalQuotes = [ "La disciplina es el puente entre metas y logros.", "El éxito es la suma de pequeños esfuerzos repetidos día tras día.", "No te detengas hasta que te sientas orgulloso.", "Cree en ti mismo y todo será posible.", "El único modo de hacer un gran trabajo es amar lo que haces." ];
+            
+            let studyPlan; 
+            let userProgress = {};
+            let countdownTargetDateStr;
+            let countdownInterval = null;
+            const ALL_TASK_IDS = ['task-1-1', 'task-1-2', 'task-1-3', 'task-2-1', 'task-2-2', 'task-3-1', 'task-4-1', 'task-5-1', 'task-5-2', 'task-6-1'];
+            
+            let progressView, calendarView, boardView;
+            let tabBtnProgress, tabBtnCalendar, tabBtnBoard;
+            let accordionsContainer, globalScoreBar, globalAdvanceBar;
+            let calendarContainer, todoContainer, inprogressContainer, doneContainer;
+            let dayModal, dayModalOverlay, dayModalTitle, dayModalTopicsContainer, dayModalNotes, saveNoteButton;
+            let topicModal, topicModalOverlay, topicModalTitle, topicStepCards, topicTaskCheckboxes, aciertosInput, reactivosInput, percentageOutput, finishTopicButton;
+            let editCountdownBtn, countdownEditor, countdownDatePicker, saveCountdownBtn, quoteContainer;
+            
+            function assignDOMelements() {
+                progressView = document.getElementById('global-progress-view'); calendarView = document.getElementById('calendar-view'); boardView = document.getElementById('board-view');
+                tabBtnProgress = document.getElementById('tab-btn-progress'); tabBtnCalendar = document.getElementById('tab-btn-calendar'); tabBtnBoard = document.getElementById('tab-btn-board');
+                accordionsContainer = document.getElementById('specialty-accordions'); globalScoreBar = document.getElementById('global-score-bar'); globalAdvanceBar = document.getElementById('global-advance-bar');
+                calendarContainer = document.getElementById('calendar-container'); todoContainer = document.getElementById('col-todo-container'); inprogressContainer = document.getElementById('col-inprogress-container'); doneContainer = document.getElementById('col-done-container');
+                dayModal = document.getElementById('details-modal'); dayModalOverlay = document.getElementById('modal-overlay'); dayModalTitle = document.getElementById('modal-title'); dayModalTopicsContainer = document.getElementById('modal-topics'); dayModalNotes = document.getElementById('modal-notes'); saveNoteButton = document.getElementById('modal-save-btn');
+                topicModal = document.getElementById('topic-plan-modal'); topicModalOverlay = document.getElementById('topic-plan-overlay'); topicModalTitle = document.getElementById('topic-plan-title'); topicStepCards = topicModal.querySelectorAll('.step-card'); topicTaskCheckboxes = topicModal.querySelectorAll('.task-checkbox'); aciertosInput = document.getElementById('score-aciertos'); reactivosInput = document.getElementById('score-reactivos'); percentageOutput = document.getElementById('score-percentage'); finishTopicButton = document.getElementById('topic-finish-btn');
+                editCountdownBtn = document.getElementById('edit-countdown-btn'); countdownEditor = document.getElementById('countdown-editor'); countdownDatePicker = document.getElementById('countdown-date-picker'); saveCountdownBtn = document.getElementById('save-countdown-btn'); quoteContainer = document.getElementById('motivational-quote-container');
+            }
+
+            function switchView(viewName) {
+                [progressView, calendarView, boardView].forEach(v => v.classList.add('hidden'));
+                [tabBtnProgress, tabBtnCalendar, tabBtnBoard].forEach(b => b.classList.remove('active'));
+                let viewToShow, btnToActivate;
+                if(viewName === 'progress') { viewToShow = progressView; btnToActivate = tabBtnProgress; populateGlobalProgress(); }
+                else if(viewName === 'calendar') { viewToShow = calendarView; btnToActivate = tabBtnCalendar; populateCalendar(); }
+                else if(viewName === 'board') { viewToShow = boardView; btnToActivate = tabBtnBoard; populateKanbanBoard(); }
+                viewToShow.classList.remove('hidden'); btnToActivate.classList.add('active');
             }
             
-            // Event Listeners
-            saveButton.addEventListener('click', saveProgress);
+            function generateTopicId(topicName) { return `topic_${topicName.toLowerCase().replace(/[^a-z0-9]/g, '')}`; }
+            function getScoreColor(percentage) { if (percentage >= 80) return 'var(--vfd-green)'; if (percentage >= 60) return 'var(--warning-color)'; return 'var(--error-color)'; }
+            function loadUserProgress(data) { userProgress = data || {}; }
+            async function saveData(key, value) { if (!currentUser) return; const docRef = db.collection('userProgress').doc(currentUser.uid); const keys = key.split('.'); let currentLocal = userProgress; for (let i = 0; i < keys.length - 1; i++) { currentLocal = currentLocal[keys[i]] = currentLocal[keys[i]] || {}; } currentLocal[keys[keys.length - 1]] = value; const payload = {}; let currentPayload = payload; for (let i = 0; i < keys.length - 1; i++) { currentPayload = currentPayload[keys[i]] = {}; } currentPayload[keys[keys.length - 1]] = value; try { await docRef.set(payload, { merge: true }); } catch (error) { if (key === 'studyPlan') { await docRef.set({ studyPlan: value }, { merge: true }); } else { console.error("Error al guardar en Firestore:", error); } } }
+            function getData(key, defaultValue = null) { const keys = key.split('.'); let result = userProgress; for (const k of keys) { if (result && typeof result === 'object' && k in result) { result = result[k]; } else { return defaultValue; } } return result; }
+            function isTopicComplete(topicId) { return ALL_TASK_IDS.every(taskId => getData(`topicData.${topicId}.${taskId}`) === true); }
+            function getTopicKanbanState(topicId) { const progress = getTopicProgress(topicId); if (progress.completionPercentage === 100) return 'done'; if (progress.completionPercentage > 0) return 'inprogress'; return 'todo'; }
+            function getTopicProgress(topicId) { const checkedCount = ALL_TASK_IDS.filter(taskId => getData(`topicData.${topicId}.${taskId}`) === true).length; const completionPercentage = (checkedCount / ALL_TASK_IDS.length) * 100; const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`, '0')) || 0; const aciertos = parseInt(getData(`topicData.${topicId}.scoreAciertos`, '0')) || 0; const scorePercentage = reactivos > 0 ? (aciertos / reactivos) * 100 : 0; return { completionPercentage, scorePercentage }; }
+            function displayDailyQuote() { if (quoteContainer) { const randomIndex = Math.floor(Math.random() * motivationalQuotes.length); quoteContainer.textContent = motivationalQuotes[randomIndex]; } }
+            function startCountdown() { if (countdownInterval) clearInterval(countdownInterval); if (!countdownTargetDateStr) return; const targetDate = new Date(`${countdownTargetDateStr}T08:00:00`).getTime(); const daysEl = document.getElementById('countdown-days'); const hoursEl = document.getElementById('countdown-hours'); const minutesEl = document.getElementById('countdown-minutes'); const secondsEl = document.getElementById('countdown-seconds'); const update = () => { const now = new Date().getTime(); const distance = targetDate - now; if (distance < 0) { daysEl.textContent = "000"; hoursEl.textContent = "00"; minutesEl.textContent = "00"; secondsEl.textContent = "00"; clearInterval(countdownInterval); return; } daysEl.textContent = String(Math.floor(distance / (1000 * 60 * 60 * 24))).padStart(3, '0'); hoursEl.textContent = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0'); minutesEl.textContent = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0'); secondsEl.textContent = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2, '0'); }; update(); countdownInterval = setInterval(update, 1000); }
+            function createTopicListItem(topic) { const topicId = generateTopicId(topic); const isComplete = isTopicComplete(topicId); const liClass = `topic-item ${isComplete ? 'topic-completed' : ''}`; let scoreHTML = ''; const { scorePercentage } = getTopicProgress(topicId); const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`, '0')) || 0; if (reactivos > 0) { const color = getScoreColor(scorePercentage); scoreHTML = `<span class="topic-score" style="color: ${color};">(${scorePercentage.toFixed(0)}%)</span>`; } return `<li class="${liClass}" draggable="true" data-topic-id="${topicId}" data-topic-name="${topic}"><span>${topic}</span>${scoreHTML}</li>`; }
+            function buildSubjectMap() { subjectToTopicsMap.clear(); if (!studyPlan) return; studyPlan.forEach(day => { day.blocks.forEach(block => { if (block.subject) { if (!subjectToTopicsMap.has(block.subject)) { subjectToTopicsMap.set(block.subject, []); } if (block.topics) { const dayTopicIds = block.topics.map(generateTopicId); const topicsForSubject = subjectToTopicsMap.get(block.subject); dayTopicIds.forEach(id => { if (!topicsForSubject.includes(id)) { topicsForSubject.push(id); } }); } } }); }); }
+            function calculateSubjectScore(subjectName) { const topicIds = subjectToTopicsMap.get(subjectName); if (!topicIds || topicIds.length === 0) return null; let totalScoreSum = 0; let scoredTopicsCount = 0; topicIds.forEach(topicId => { const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`)) || 0; if (reactivos > 0) { const { scorePercentage } = getTopicProgress(topicId); totalScoreSum += scorePercentage; scoredTopicsCount++; } }); return scoredTopicsCount > 0 ? (totalScoreSum / scoredTopicsCount).toFixed(1) : null; }
+            function updateGlobalProgressBars() { if (!studyPlan) return; buildSubjectMap(); let totalTopics = 0; subjectToTopicsMap.forEach(topics => totalTopics += topics.length); let completedTopics = 0; subjectToTopicsMap.forEach(topicIds => { topicIds.forEach(topicId => { if (isTopicComplete(topicId)) { completedTopics++; } }); }); const advancePercentage = totalTopics > 0 ? (completedTopics / totalTopics) * 100 : 0; globalAdvanceBar.style.width = `${advancePercentage}%`; globalAdvanceBar.textContent = `${advancePercentage.toFixed(1)}%`; let totalSubjectScoreSum = 0; let subjectsWithScoresCount = 0; subjectToTopicsMap.forEach((_, subject) => { const subjectScoreStr = calculateSubjectScore(subject); if (subjectScoreStr !== null) { totalSubjectScoreSum += parseFloat(subjectScoreStr); subjectsWithScoresCount++; } }); const scorePercentage = subjectsWithScoresCount > 0 ? totalSubjectScoreSum / subjectsWithScoresCount : 0; globalScoreBar.style.width = `${scorePercentage}%`; globalScoreBar.textContent = `${scorePercentage.toFixed(1)}%`; }
             
-            // Cargar el progreso al iniciar
-            loadProgress();
+            function populateCalendar() { 
+                if (!studyPlan) return; 
+                buildSubjectMap(); 
+                const daysMap = new Map(studyPlan.map(day => [day.date, day])); 
+                const startDate = new Date(studyPlan[0].date + "T00:00:00");
+                const calendarEndDate = new Date(`${currentYear}-09-30T00:00:00`);
+                
+                const lastDayOfPlanStr = countdownTargetDateStr;
+                let dayBeforeTargetStr = '';
+                if (lastDayOfPlanStr) {
+                    const targetDateObj = new Date(lastDayOfPlanStr + 'T00:00:00');
+                    targetDateObj.setDate(targetDateObj.getDate() - 1);
+                    dayBeforeTargetStr = targetDateObj.toISOString().split('T')[0];
+                }
 
-            // Guardar progreso al marcar/desmarcar una casilla para una experiencia más fluida
-            checkboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', updateTaskList);
-            });
-        });
+                let weeks = []; 
+                let dateCursor = new Date(startDate); 
+                dateCursor.setDate(dateCursor.getDate() - dateCursor.getDay()); 
+                while (dateCursor <= calendarEndDate) { 
+                    let week = []; 
+                    for(let i=0; i < 7; i++) { 
+                        week.push(new Date(dateCursor)); 
+                        dateCursor.setDate(dateCursor.getDate() + 1); 
+                    } 
+                    weeks.push(week); 
+                } 
+                const monthLayout = new Map(); 
+                weeks.forEach((week, weekIndex) => { const firstDayOfWeek = week[0]; const monthName = firstDayOfWeek.toLocaleString('es-ES', { month: 'long' }); if (!monthLayout.has(monthName)) { monthLayout.set(monthName, { startRow: weekIndex + 2, rowSpan: 1 }); } else { monthLayout.get(monthName).rowSpan++; } }); 
+                calendarContainer.innerHTML = ''; 
+                calendarContainer.innerHTML += '<div class="header-cell meta-header">M</div><div class="header-cell meta-header">S</div>'; 
+                ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].forEach(day => calendarContainer.innerHTML += `<div class="header-cell day-header">${day}</div>`); 
+                monthLayout.forEach((layout, name) => { calendarContainer.innerHTML += `<div class="month-cell" style="grid-row: ${layout.startRow} / span ${layout.rowSpan}">${name}</div>`; }); 
+                weeks.forEach((week, weekIndex) => { 
+                    const getWeekNumber = (d) => { d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7)); var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1)); var weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7); return weekNo; }; 
+                    calendarContainer.innerHTML += `<div class="week-cell-container" style="grid-row: ${weekIndex + 2}"><span class="week-number">${getWeekNumber(week[0])}</span></div>`; 
+                    week.forEach(date => { 
+                        const cell = document.createElement('div'); 
+                        cell.className = 'day-cell'; 
+                        const dateString = date.toISOString().split('T')[0]; 
+                        const dayData = daysMap.get(dateString); 
+                        
+                        // CAMBIO 2: Renderizar el número del día para TODAS las celdas.
+                        cell.innerHTML = `<div class="calendar-day-number">${date.getDate()}</div>`;
+
+                        if (dayData) {
+                            cell.dataset.date = dateString; 
+                            let contentHTML = '<div class="day-content">'; 
+                            
+                            // CAMBIO 3: Agrupar temas por especialidad para evitar repetición de títulos.
+                            const topicsBySubject = new Map();
+                            dayData.blocks.forEach(block => {
+                                if (block.subject) {
+                                    if (!topicsBySubject.has(block.subject)) {
+                                        topicsBySubject.set(block.subject, []);
+                                    }
+                                    if(block.topics) {
+                                        topicsBySubject.get(block.subject).push(...block.topics);
+                                    }
+                                }
+                            });
+
+                            topicsBySubject.forEach((topics, subject) => {
+                                let allTopicsInBlockComplete = topics.length > 0 && topics.every(topic => isTopicComplete(generateTopicId(topic)));
+                                const completedClass = allTopicsInBlockComplete ? 'subject-completed' : '';
+                                const score = calculateSubjectScore(subject);
+                                const scoreText = score !== null ? `<span class="subject-score">(${score}%)</span>` : '';
+                                
+                                contentHTML += `<h3 class="subject-title ${completedClass}">${subject}${scoreText}</h3>`;
+                                contentHTML += '<ul class="topic-list">';
+                                contentHTML += topics.map(topic => createTopicListItem(topic)).join('');
+                                contentHTML += '</ul>';
+                            });
+
+                            contentHTML += '</div>'; 
+                            cell.innerHTML += contentHTML;
+                        } else {
+                            cell.classList.add('empty');
+                        }
+                        
+                        if (dateString === lastDayOfPlanStr) cell.classList.add('target-date');
+                        if (dateString === dayBeforeTargetStr) cell.classList.add('day-before-target');
+                        calendarContainer.appendChild(cell); 
+                    }); 
+                }); 
+                updateGlobalProgressBars(); 
+            }
+
+            function createSpecialtyHeaderHTML(specialtyName, colorVar) { const specialtyId = generateTopicId(specialtyName); return `<div class="specialty-header" data-specialty-header="${specialtyName}" style="border-left-color: var(${colorVar})"><div class="specialty-header-main"><h3 style="color: var(${colorVar})">${specialtyName}</h3></div><div class="specialty-progress-wrapper"><small>Avance</small><div class="specialty-progress-container"><div class="specialty-progress-bar" id="sp-progress-${specialtyId}"></div></div><span class="specialty-percentage-text" id="sp-progress-text-${specialtyId}">0%</span></div><div class="specialty-progress-wrapper"><small>Nota</small><div class="specialty-progress-container"><div class="specialty-score-bar" id="sp-score-${specialtyId}"></div></div><span class="specialty-percentage-text" id="sp-score-text-${specialtyId}">0%</span></div></div>`; }
+            function populateKanbanBoard() { todoContainer.innerHTML = ''; inprogressContainer.innerHTML = ''; doneContainer.innerHTML = ''; const specialtyColors = ['--step-1-color', '--step-2-color', '--step-3-color', '--step-4-color', '--step-5-color', '--step-6-color', '#FF69B4', '#8A2BE2']; let colorIndex = 0; const allSpecialties = {}; buildSubjectMap(); subjectToTopicsMap.forEach((topicIds, specialtyName) => { const topicNames = topicIds.map(id => { for (const day of studyPlan) { for (const block of day.blocks) { if (block.topics) { const foundTopic = block.topics.find(t => generateTopicId(t) === id); if (foundTopic) return foundTopic; } } } return null; }).filter(Boolean); if (topicNames.length > 0) { allSpecialties[specialtyName] = { topics: topicNames, color: specialtyColors[colorIndex % specialtyColors.length] }; colorIndex++; } }); for (const specialtyName in allSpecialties) { const specialtyData = allSpecialties[specialtyName]; const headerHTML = createSpecialtyHeaderHTML(specialtyName, specialtyData.color); const specialtyFragments = { todo: document.createDocumentFragment(), inprogress: document.createDocumentFragment(), done: document.createDocumentFragment() }; specialtyData.topics.forEach(topicName => { const topicId = generateTopicId(topicName); const state = getTopicKanbanState(topicId); const cardHTML = createKanbanCardHTML(topicName, topicId, specialtyName); const cardElement = document.createElement('div'); cardElement.innerHTML = cardHTML; specialtyFragments[state].appendChild(cardElement.firstChild); }); if (specialtyFragments.todo.hasChildNodes()) { todoContainer.innerHTML += headerHTML; todoContainer.appendChild(specialtyFragments.todo); } if (specialtyFragments.inprogress.hasChildNodes()) { inprogressContainer.innerHTML += headerHTML; inprogressContainer.appendChild(specialtyFragments.inprogress); } if (specialtyFragments.done.hasChildNodes()) { doneContainer.innerHTML += headerHTML; doneContainer.appendChild(specialtyFragments.done); } } updateAllSpecialtyProgressOnBoard(); }
+            function createKanbanCardHTML(topicName, topicId, specialtyName) { const { completionPercentage, scorePercentage } = getTopicProgress(topicId); const scoreColor = getScoreColor(scorePercentage); const state = getTopicKanbanState(topicId); let statusColorVar = '--color-todo'; if (state === 'inprogress') statusColorVar = '--color-inprogress'; if (state === 'done') statusColorVar = '--color-done'; return `<article class="kanban-card" data-topic-id="${topicId}" data-topic-name="${topicName}" data-specialty="${specialtyName}" style="border-left: 4px solid var(${statusColorVar});"><div class="card-summary"><div class="card-topic-name">${topicName}</div><div class="card-progress-display"><div class="card-progress-bar-container"><div class="card-progress-bar" style="width: ${completionPercentage}%; background-color: var(${statusColorVar});"></div></div><span class="card-progress-text">${completionPercentage.toFixed(0)}%</span><span class="card-score-text" style="color: ${scoreColor}">${scorePercentage.toFixed(0)}%</span></div></div></article>`; }
+            function populateGlobalProgress() { updateGlobalProgressBars(); accordionsContainer.innerHTML = ''; buildSubjectMap(); subjectToTopicsMap.forEach((topicIds, specialtyName) => { let specialtyScores = []; let completedTopicsInSpecialty = 0; let panelContent = ''; topicIds.forEach(topicId => { const topicData = getTopicProgress(topicId); const topicName = studyPlan.flatMap(d => d.blocks.flatMap(b => b.topics || [])).find(t => generateTopicId(t) === topicId); const reactivos = getData(`topicData.${topicId}.scoreReactivos`); let scoreText = 'No iniciado'; let scoreClass = 'not-started'; if (reactivos > 0) { scoreText = `Calificación: ${topicData.scorePercentage.toFixed(1)}%`; scoreClass = topicData.scorePercentage >= 80 ? 'score-green' : topicData.scorePercentage >= 60 ? 'score-yellow' : 'score-red'; specialtyScores.push(topicData.scorePercentage); } else if (topicData.completionPercentage === 100) { scoreText = `Completado (Sin calificar)`; scoreClass = 'score-yellow'; } else if (topicData.completionPercentage > 0) { scoreText = `Avance: ${topicData.completionPercentage.toFixed(0)}%`; scoreClass = 'score-yellow'; } if (topicData.completionPercentage === 100) { completedTopicsInSpecialty++; } panelContent += `<div class="topic-progress-item"><span class="topic-name">${topicName || 'Tema desconocido'}</span><span class="topic-score ${scoreClass}">${scoreText}</span></div>`; }); let specialtyScoreAvg = 0; if (specialtyScores.length > 0) { specialtyScoreAvg = specialtyScores.reduce((a, b) => a + b, 0) / specialtyScores.length; } const specialtyScoreClass = specialtyScoreAvg >= 80 ? 'score-green' : specialtyScoreAvg >= 60 ? 'score-yellow' : 'score-red'; const specialtyCompletionAvg = topicIds.length > 0 ? (completedTopicsInSpecialty / topicIds.length) * 100 : 0; const completionIconClass = specialtyCompletionAvg >= 80 ? 'score-green' : specialtyCompletionAvg >= 60 ? 'score-yellow' : 'score-red'; const accordionHTML = ` <div class="specialty-accordion"> <button class="accordion-header"> <span class="specialty-name">${specialtyName}</span> <div class="specialty-progress-indicators"> <div class="indicator score-indicator"><i class="fas fa-star"></i><span class="score-value ${specialtyScoreClass}">${specialtyScoreAvg.toFixed(1)}%</span></div> <div class="indicator completion-indicator"><i class="fas fa-check-double ${completionIconClass}"></i><span class="completion-value">${specialtyCompletionAvg.toFixed(0)}%</span></div> </div> <i class="fas fa-chevron-down"></i> </button> <div class="accordion-panel">${panelContent}</div> </div>`; accordionsContainer.innerHTML += accordionHTML; }); document.querySelectorAll('.accordion-header').forEach(button => { button.addEventListener('click', () => { button.classList.toggle('active'); const panel = button.nextElementSibling; panel.style.maxHeight = panel.style.maxHeight ? null : panel.scrollHeight + "px"; panel.style.padding = panel.style.maxHeight ? "10px 20px" : "0px 20px"; }); }); }
+            function showDayModal(dateString) { const dayData = studyPlan.find(d => d.date === dateString); const date = new Date(dateString + "T00:00:00"); dayModalTitle.textContent = date.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }); let topicsHTML = '<ul>'; if (dayData && dayData.blocks) { dayData.blocks.forEach(block => { if (block.subject) { const score = calculateSubjectScore(block.subject); const scoreText = score !== null ? `<span class="subject-score">(${score}%)</span>` : ''; topicsHTML += `<li><span class="subject-title">${block.subject}${scoreText}</span></li>`; } if(block.topics) { topicsHTML += block.topics.map(topic => createTopicListItem(topic)).join(''); } }); } topicsHTML += '</ul>'; dayModalTopicsContainer.innerHTML = topicsHTML; dayModalNotes.value = getData(`dayNotes.${dateString}`, ''); dayModal.dataset.currentDate = dateString; dayModalOverlay.classList.add('visible'); dayModal.classList.add('visible'); }
+            function closeDayModal() { dayModalOverlay.classList.remove('visible'); dayModal.classList.remove('visible'); }
+            async function saveDayNote() { const dateString = dayModal.dataset.currentDate; if (dateString) { await saveData(`dayNotes.${dateString}`, dayModalNotes.value); } closeDayModal(); }
+            function showTopicPlan(topicId, topicName) { topicModal.dataset.currentTopicId = topicId; topicModalTitle.textContent = topicName; loadTopicState(topicId); topicModalOverlay.classList.add('visible'); topicModal.classList.add('visible'); }
+            function closeTopicModal() { const topicId = topicModal.dataset.currentTopicId; topicModalOverlay.classList.remove('visible'); topicModal.classList.remove('visible'); if (topicId) { updateUIForTopic(topicId); } }
+            function loadTopicState(topicId) { topicTaskCheckboxes.forEach(checkbox => { checkbox.checked = getData(`topicData.${topicId}.${checkbox.id}`) === true; }); aciertosInput.value = getData(`topicData.${topicId}.scoreAciertos`, ''); reactivosInput.value = getData(`topicData.${topicId}.scoreReactivos`, ''); updateScorePercentage(); updateAllStepCardsStatus(); }
+            async function saveTopicState(key, value) { const topicId = topicModal.dataset.currentTopicId; if (topicId) { await saveData(`topicData.${topicId}.${key}`, value); } }
+            function updateScorePercentage() { const aciertos = parseInt(aciertosInput.value) || 0; const reactivos = parseInt(reactivosInput.value) || 0; let percentage = 0; if (reactivos > 0) { percentage = (aciertos / reactivos) * 100; } const color = getScoreColor(percentage); percentageOutput.value = percentage.toFixed(1) + "%"; percentageOutput.style.color = color; }
+            function updateStepCardStatus(cardElement) { const tasksInCard = cardElement.querySelectorAll('.task-checkbox'); const allTasksCompleted = Array.from(tasksInCard).every(task => task.checked); cardElement.classList.toggle('completed', allTasksCompleted); }
+            function updateAllStepCardsStatus() { topicStepCards.forEach(updateStepCardStatus); }
+            function finishTopicSession() { closeTopicModal(); }
+            function updateUIForTopic(topicId) { const isBoardVisible = !boardView.classList.contains('hidden'); const isProgressVisible = !progressView.classList.contains('hidden'); if(isProgressVisible) { populateGlobalProgress(); } else if (isBoardVisible) { populateKanbanBoard(); } else { populateCalendar(); } updateGlobalProgressBars(); }
+            function updateAllSpecialtyProgressOnBoard() { const headers = document.querySelectorAll('.specialty-header'); headers.forEach(header => { const specialtyName = header.dataset.specialtyHeader; const specialtyId = generateTopicId(specialtyName); const topicIds = subjectToTopicsMap.get(specialtyName) || []; const progressTextEl = document.getElementById(`sp-progress-text-${specialtyId}`); const scoreTextEl = document.getElementById(`sp-score-text-${specialtyId}`); const progressBar = document.getElementById(`sp-progress-${specialtyId}`); const scoreBar = document.getElementById(`sp-score-${specialtyId}`); if (!progressTextEl || !scoreTextEl || !progressBar || !scoreBar) return; let totalCompletion = 0, totalScore = 0, scoredTopics = 0; topicIds.forEach(topicId => { const { completionPercentage, scorePercentage } = getTopicProgress(topicId); totalCompletion += completionPercentage; const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`)) || 0; if (reactivos > 0 || isTopicComplete(topicId)) { totalScore += scorePercentage; scoredTopics++; } }); const avgCompletion = topicIds.length > 0 ? totalCompletion / topicIds.length : 0; const avgScore = scoredTopics > 0 ? totalScore / scoredTopics : 0; progressBar.style.width = `${avgCompletion}%`; progressTextEl.textContent = `${avgCompletion.toFixed(0)}%`; scoreBar.style.width = `${avgScore}%`; scoreTextEl.textContent = `${avgScore.toFixed(0)}%`; scoreBar.classList.remove('low', 'medium', 'high'); if (scoredTopics > 0 || avgCompletion === 100) { const colorClass = getScoreColor(avgScore); if(colorClass.includes('error')) scoreBar.classList.add('low'); if(colorClass.includes('warning')) scoreBar.classList.add('medium'); if(colorClass.includes('green')) scoreBar.classList.add('high'); } }); }
+            function getSubjectForTopic(topicName) { const topicId = generateTopicId(topicName); for (const [subject, topicIds] of subjectToTopicsMap.entries()) { if (topicIds.includes(topicId)) { return subject; } } return null; }
+            let draggedItem = null; let lastDragOverCell = null; let lastDragOverTopic = null; function clearDragStyles() { if (lastDragOverCell) lastDragOverCell.classList.remove('drag-over'); if (lastDragOverTopic) lastDragOverTopic.classList.remove('drag-over-top', 'drag-over-bottom'); lastDragOverCell = null; lastDragOverTopic = null; }
+            
+            async function main() {
+                assignDOMelements();
+                displayDailyQuote();
+                
+                const docRef = db.collection('userProgress').doc(currentUser.uid);
+                const doc = await docRef.get();
+                loadUserProgress(doc.data());
+                
+                const userPlan = getData('studyPlan');
+                // CAMBIO 1: Se actualiza la comprobación para la v3 del plan.
+                if (userPlan && userPlan.length > 0 && userPlan[userPlan.length - 1].date === `${currentYear}-09-20`) { 
+                    studyPlan = userPlan; 
+                } else { 
+                    studyPlan = defaultStudyPlan; 
+                    await saveData('studyPlan', defaultStudyPlan); 
+                    const initialProgress = {};
+                    const geneticaTopics = ["Síndrome de Down", "Síndrome de Klinefelter", "Síndrome de Turner", "Síndrome de Marfan", "Enfermedad de Wilson", "Síndrome de Dravet", "Síndrome de Lynch", "Síndrome de Peutz Jegher", "Von Hippel Lindau"];
+                    geneticaTopics.forEach(topic => { const topicId = generateTopicId(topic); initialProgress[topicId] = { scoreAciertos: '0', scoreReactivos: '0' }; ALL_TASK_IDS.forEach(taskId => { initialProgress[topicId][taskId] = true; }); });
+                    legacyProgressData.forEach(item => { const topicId = generateTopicId(item.topic); initialProgress[topicId] = { scoreAciertos: String(item.aciertos), scoreReactivos: String(item.reactivos) }; ALL_TASK_IDS.forEach(taskId => { initialProgress[topicId][taskId] = true; }); });
+                    await saveData('topicData', initialProgress);
+                    loadUserProgress((await docRef.get()).data());
+                }
+                
+                countdownTargetDateStr = getData('countdownTarget') || studyPlan[studyPlan.length - 1].date;
+                countdownDatePicker.value = countdownTargetDateStr;
+                startCountdown();
+                
+                switchView('progress'); 
+                
+                tabBtnProgress.addEventListener('click', () => switchView('progress'));
+                tabBtnCalendar.addEventListener('click', () => switchView('calendar'));
+                tabBtnBoard.addEventListener('click', () => switchView('board'));
+                boardView.addEventListener('click', e => { const card = e.target.closest('.kanban-card'); if (card) { const { topicId, topicName } = card.dataset; showTopicPlan(topicId, topicName); }});
+                calendarContainer.addEventListener('click', e => { const topicLi = e.target.closest('.topic-item'); if (topicLi && !draggedItem) { const { topicId, topicName } = topicLi.dataset; showTopicPlan(topicId, topicName); return; } const cell = e.target.closest('.day-cell:not(.empty)'); if (cell) showDayModal(cell.dataset.date); });
+                dayModalTopicsContainer.addEventListener('click', e => { const topicLi = e.target.closest('.topic-item'); if (topicLi) { const { topicId, topicName } = topicLi.dataset; showTopicPlan(topicId, topicName); } });
+                editCountdownBtn.addEventListener('click', () => { countdownEditor.style.display = countdownEditor.style.display === 'flex' ? 'none' : 'flex'; });
+                saveCountdownBtn.addEventListener('click', async () => { const newDate = countdownDatePicker.value; if (newDate) { countdownTargetDateStr = newDate; await saveData('countdownTarget', newDate); startCountdown(); if(!calendarView.classList.contains('hidden')) populateCalendar(); countdownEditor.style.display = 'none'; } });
+                dayModal.querySelector('#modal-close-day').addEventListener('click', closeDayModal);
+                dayModalOverlay.addEventListener('click', closeDayModal);
+                topicModal.querySelector('#modal-close-topic').addEventListener('click', closeTopicModal);
+                finishTopicButton.addEventListener('click', finishTopicSession);
+                document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (topicModal.classList.contains('visible')) closeTopicModal(); else if (dayModal.classList.contains('visible')) closeDayModal(); } });
+                saveNoteButton.addEventListener('click', saveDayNote);
+                topicTaskCheckboxes.forEach(checkbox => { checkbox.addEventListener('change', async function() { const topicId = topicModal.dataset.currentTopicId; await saveTopicState(this.id, this.checked); updateStepCardStatus(this.closest('.step-card')); updateUIForTopic(topicId); }); });
+                aciertosInput.addEventListener('input', async () => { const topicId = topicModal.dataset.currentTopicId; await saveTopicState('scoreAciertos', aciertosInput.value); updateScorePercentage(); updateUIForTopic(topicId); });
+                reactivosInput.addEventListener('input', async () => { const topicId = topicModal.dataset.currentTopicId; await saveTopicState('scoreReactivos', reactivosInput.value); updateScorePercentage(); updateUIForTopic(topicId); });
+                calendarContainer.addEventListener('dragstart', e => { if (e.target.classList.contains('topic-item')) { draggedItem = e.target; const topicName = draggedItem.dataset.topicName; const subjectTitle = getSubjectForTopic(topicName); e.dataTransfer.setData('application/json', JSON.stringify({ topicName: topicName, sourceSubject: subjectTitle })); setTimeout(() => e.target.classList.add('dragging'), 0); } });
+                calendarContainer.addEventListener('dragend', e => { if (draggedItem) { draggedItem.classList.remove('dragging'); draggedItem = null; clearDragStyles(); } });
+                calendarContainer.addEventListener('dragover', e => { e.preventDefault(); const targetCell = e.target.closest('.day-cell:not(.empty)'); if (!targetCell || !draggedItem) { clearDragStyles(); return; } const sourceDate = draggedItem.closest('.day-cell').dataset.date; const targetDate = targetCell.dataset.date; clearDragStyles(); if (sourceDate === targetDate) { const targetTopic = e.target.closest('.topic-item'); if (targetTopic && targetTopic !== draggedItem) { lastDragOverTopic = targetTopic; const rect = targetTopic.getBoundingClientRect(); const midpointY = rect.top + rect.height / 2; if (e.clientY < midpointY) { targetTopic.classList.add('drag-over-top'); } else { targetTopic.classList.add('drag-over-bottom'); } } } else { lastDragOverCell = targetCell; targetCell.classList.add('drag-over'); } });
+                calendarContainer.addEventListener('drop', async e => { e.preventDefault(); if (!draggedItem) return; const targetCell = e.target.closest('.day-cell'); if (!targetCell || targetCell.classList.contains('empty')) { clearDragStyles(); return; } const sourceCell = draggedItem.closest('.day-cell'); const sourceDate = sourceCell.dataset.date; const targetDate = targetCell.dataset.date; const { topicName, sourceSubject } = JSON.parse(e.dataTransfer.getData('application/json')); const sourceDay = studyPlan.find(d => d.date === sourceDate); if (!sourceDay) return; let removed = false; sourceDay.blocks.forEach(block => { if (block.topics) { const topicIndex = block.topics.indexOf(topicName); if (topicIndex > -1) { block.topics.splice(topicIndex, 1); removed = true; } } }); if (!removed) return; let targetDay = studyPlan.find(d => d.date === targetDate); if (!targetDay) { targetDay = { date: targetDate, blocks: [{ topics: [] }] }; studyPlan.push(targetDay); } let targetBlock = targetDay.blocks.find(b => getSubjectForTopic(b.topics?.[0]) === sourceSubject || b.subject === sourceSubject); if (!targetBlock) { targetBlock = { subject: sourceSubject, topics: [] }; targetDay.blocks.push(targetBlock); } const targetTopicEl = e.target.closest('.topic-item'); if (targetTopicEl && sourceDate === targetDate) { const targetTopicName = targetTopicEl.dataset.topicName; const rect = targetTopicEl.getBoundingClientRect(); const midpointY = rect.top + rect.height / 2; const insertBefore = e.clientY < midpointY; const targetIndex = targetBlock.topics.indexOf(targetTopicName); targetBlock.topics.splice(insertBefore ? targetIndex : targetIndex + 1, 0, topicName); } else { targetBlock.topics.push(topicName); } studyPlan.forEach(day => { day.blocks = day.blocks.filter(block => (block.subject && block.topics && block.topics.length > 0) || (!block.subject && block.topics && block.topics.length > 0) || (block.subject && !block.topics)); }); studyPlan = studyPlan.filter(day => day.blocks.length > 0 && day.blocks.some(b => (b.topics && b.topics.length > 0) || b.subject)); studyPlan.sort((a, b) => new Date(a.date) - new Date(b.date)); clearDragStyles(); await saveData('studyPlan', studyPlan); populateCalendar(); });
+            }
+            main();
+        }
     </script>
 </body>
 </html>
