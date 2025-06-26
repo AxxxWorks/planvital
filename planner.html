@@ -8,7 +8,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
 
-        /* --- VARIABLES GLOBALES (BASADAS EN CALENDARIO) --- */
+        /* --- VARIABLES GLOBALES --- */
         :root {
             --bg-color: #121212;
             --cell-bg: #1a1a1a;
@@ -16,7 +16,6 @@
             --text-color: #e0e0e0;
             --text-secondary: #a0a0a0;
             --accent-color: #00FF7F; /* Verde principal */
-            --subject-title-color: #ffffff;
             --subject-highlight-color: #ff9800; /* Naranja */
             --meta-bg: #181c25;
             --meta-header-bg: #101217;
@@ -32,88 +31,79 @@
             --error-color: #ff6b6b;
             --warning-color: #ff9800;
             --shadow-color: rgba(0, 0, 0, 0.4);
-
-            /* Colores de Pasos y Especialidades */
             --step-1-color: #03dac6; --step-2-color: #ffb74d; --step-3-color: #4fc3f7;
             --step-4-color: #ce93d8; --step-5-color: #ef9a9a; --step-6-color: #a5d6a7;
         }
 
-        /* --- ESTILOS BASE Y NAVEGACIÓN --- */
+        /* --- ESTRUCTURA PRINCIPAL DE LA PÁGINA --- */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: 'Source Sans Pro', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            overflow: hidden; /* Evita doble scrollbar */
+            overflow: hidden;
             height: 100vh;
             display: flex;
             flex-direction: column;
         }
 
-        .app-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 25px;
-            background-color: var(--meta-header-bg);
+        /* --- BANNER FIJO --- */
+        .app-banner {
+            padding: 20px 25px;
+            background-color: var(--bg-color);
             border-bottom: 1px solid var(--main-border);
             flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
         }
-        .app-header h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.6em;
-            color: var(--vfd-green);
-            text-shadow: 0 0 4px rgba(80, 224, 80, 0.6);
-            margin: 0;
+        .banner-bottom-row {
+            display: flex;
+            width: 100%;
+            align-items: center;
+            gap: 20px;
         }
-        .view-switcher {
-            background-color: var(--accent-color);
-            color: var(--bg-color);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-family: 'Orbitron', sans-serif;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .view-switcher:hover {
-            background-color: #39ff94;
-            transform: translateY(-2px);
+        .global-progress-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
-        .view-wrapper {
+        /* --- ÁREA DE CONTENIDO DESPLAZABLE --- */
+        .main-content-area {
             flex-grow: 1;
             overflow-y: auto;
-            padding: 20px;
         }
-        .view-wrapper.hidden {
-            display: none;
-        }
-
-        /* --- ESTILOS DEL CALENDARIO (ADAPTADOS) --- */
-        #calendar-view .main-header { text-align: center; margin-bottom: 25px; padding: 10px 0; }
-        .motivational-quote { font-family: 'Orbitron', sans-serif; color: var(--vfd-green); font-size: 1.5em; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; text-shadow: 0 0 4px rgba(80, 224, 80, 0.6), 0 0 8px rgba(80, 224, 80, 0.4); min-height: 1.2em; }
+        .view-wrapper { padding: 20px; }
+        .view-wrapper.hidden { display: none; }
+        
+        /* --- ELEMENTOS DEL BANNER --- */
+        .view-switcher { background-color: var(--accent-color); color: var(--bg-color); border: none; padding: 10px 20px; border-radius: 6px; font-family: 'Orbitron', sans-serif; font-weight: 700; cursor: pointer; transition: all 0.2s ease; flex-shrink: 0; }
+        .view-switcher:hover { background-color: #39ff94; transform: translateY(-2px); }
+        .motivational-quote { font-family: 'Orbitron', sans-serif; color: var(--vfd-green); font-size: 1.5em; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 4px rgba(80, 224, 80, 0.6), 0 0 8px rgba(80, 224, 80, 0.4); min-height: 1.2em; }
         .countdown-container { position: relative; display: inline-block; }
-        .countdown-timer-container { display: flex; justify-content: center; align-items: center; gap: 25px; margin-bottom: 25px; }
+        .countdown-timer-container { display: flex; justify-content: center; align-items: center; gap: 25px; }
         .countdown-unit { text-align: center; }
         .countdown-label { font-family: 'Orbitron', sans-serif; font-size: 0.8em; color: var(--vfd-green); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; opacity: 0.8; }
         .countdown-digits { font-family: 'Orbitron', sans-serif; font-size: 4em; color: var(--vfd-green); line-height: 1; text-shadow: 0 0 5px rgba(80, 224, 80, 0.7), 0 0 10px rgba(80, 224, 80, 0.5), 0 0 15px rgba(80, 224, 80, 0.3); }
         #edit-countdown-btn { position: absolute; top: -5px; right: -30px; background: none; border: none; color: var(--meta-text); font-size: 1.2em; cursor: pointer; transition: color 0.2s; }
         #edit-countdown-btn:hover { color: var(--accent-color); }
-        #countdown-editor { display: none; margin-top: -15px; margin-bottom: 20px; align-items: center; justify-content: center; gap: 10px; }
+        #countdown-editor { display: none; margin-top: 10px; align-items: center; justify-content: center; gap: 10px; }
         #countdown-date-picker { background-color: var(--cell-bg); border: 1px solid var(--main-border); color: var(--text-color); padding: 5px; border-radius: 4px; font-family: 'Source Sans Pro', sans-serif; }
         #countdown-date-picker::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
         #save-countdown-btn { background-color: var(--accent-color); color: var(--bg-color); border: none; padding: 6px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; }
-        .global-progress-container { max-width: 900px; margin: 30px auto; display: flex; flex-direction: column; gap: 12px; padding: 0 10px; }
         .progress-bar-wrapper { display: flex; flex-direction: column; gap: 4px; }
-        .progress-bar-wrapper label { font-size: 0.85em; color: var(--meta-text); font-weight: 600; }
+        .progress-bar-wrapper label { font-size: 0.85em; color: var(--meta-text); font-weight: 600; text-align: left; }
         .progress-bar-background { width: 100%; background-color: var(--main-border); border-radius: 8px; height: 22px; overflow: hidden; }
         .progress-bar-fill { height: 100%; width: 0%; border-radius: 8px; transition: width 0.5s ease-in-out; text-align: center; line-height: 22px; color: var(--bg-color); font-weight: bold; font-size: 0.8em; }
         #global-score-bar { background-color: var(--progress-score-bg); }
         #global-advance-bar { background-color: var(--progress-advance-bg); }
-        .calendar-container { display: grid; grid-template-columns: 40px 40px repeat(7, 1fr); gap: 2px; background-color: var(--main-border); margin-top: 25px; }
+
+        /* --- ESTILOS DEL CALENDARIO --- */
+        .calendar-container { display: grid; grid-template-columns: 40px 40px repeat(7, 1fr); gap: 2px; background-color: var(--main-border); }
         .header-cell, .day-header { text-align: center; padding: 12px 5px; font-weight: 600; font-family: 'Orbitron', sans-serif; text-transform: uppercase; font-size: 0.9em; }
         .meta-header { background-color: var(--meta-header-bg); color: var(--meta-text); border-bottom: 2px solid var(--main-border); }
         .day-header { background-color: var(--cell-bg); color: var(--accent-color); border-bottom: 2px solid var(--main-border); }
@@ -130,10 +120,10 @@
         .calendar-day-number { font-size: 0.9em; font-weight: 600; color: #777; position: absolute; top: 8px; right: 12px; z-index: 1; transition: color 0.2s; }
         .day-content ul { list-style-type: none; padding-left: 0; margin: 25px 0 0 0; }
         .day-content li { margin-bottom: 4px; padding-left: 14px; position: relative; font-size: 0.85em; }
-        .day-content .subject-title, #modal-topics .subject-title { color: var(--subject-highlight-color); font-weight: 700; display: block; margin-bottom: 6px; text-transform: uppercase; font-size: 1em; text-shadow: 0 0 5px rgba(255, 152, 0, 0.4); padding-left: 0; }
+        .day-content .subject-title { color: var(--subject-highlight-color); font-weight: 700; display: block; margin-bottom: 6px; text-transform: uppercase; font-size: 1em; text-shadow: 0 0 5px rgba(255, 152, 0, 0.4); padding-left: 0; }
         .subject-title::before { content: none !important; }
         .subject-score { color: var(--meta-text); font-size: 0.8em; font-weight: 400; margin-left: 8px; }
-        .topic-item { display: flex; align-items: center; justify-content: space-between; padding: 4px 6px; margin-left: -6px; border-radius: 4px; transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s, border-top 0.1s, border-bottom 0.1s; border-top: 2px solid transparent; border-bottom: 2px solid transparent; }
+        .topic-item { display: flex; align-items: center; justify-content: space-between; padding: 4px 6px; margin-left: -6px; border-radius: 4px; transition: all 0.2s; border-top: 2px solid transparent; border-bottom: 2px solid transparent; }
         .topic-item[draggable="true"] { cursor: grab; }
         .topic-item.dragging { opacity: 0.5; }
         .topic-item:not(.topic-completed):not(.dragging):hover { background-color: var(--meta-bg); color: var(--accent-color); }
@@ -145,17 +135,14 @@
         .topic-item.topic-completed:hover { color: var(--text-completed); background-color: transparent; }
         .topic-item.topic-completed::before { color: var(--bullet-completed); }
 
-        /* --- ESTILOS DEL KANBAN (INTEGRADOS) --- */
-        #board-view { padding: 0; }
-        .kanban-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 20px; height: 100%; }
+        /* --- ESTILOS DEL KANBAN --- */
+        .kanban-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; height: 100%; }
         .kanban-column { background-color: var(--plan-bg); border-radius: 12px; display: flex; flex-direction: column; max-height: 100%; }
         .kanban-column-header { padding: 15px 20px; border-bottom: 1px solid var(--main-border); display: flex; align-items: center; gap: 10px; position: sticky; top: 0; background-color: var(--plan-bg); z-index: 10; }
-        /* FIX: Styling for column headers based on user request */
         .kanban-column-header h2 { font-size: 1.1rem; font-weight: 600; }
         #col-todo .kanban-column-header h2, #col-todo .kanban-column-header i { color: var(--text-secondary); }
         #col-inprogress .kanban-column-header h2, #col-inprogress .kanban-column-header i { color: var(--step-3-color); }
         #col-done .kanban-column-header h2, #col-done .kanban-column-header i { color: var(--vfd-green); }
-        
         .cards-container { flex-grow: 1; padding: 10px 20px 20px 20px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--main-border) var(--plan-bg); }
         .specialty-header { display: flex; flex-direction: column; gap: 5px; margin: 20px 0 10px; padding: 10px; border-radius: 6px; background-color: var(--meta-bg); border-left: 4px solid; }
         .specialty-header-main { display: flex; justify-content: space-between; align-items: center; }
@@ -168,17 +155,7 @@
         .specialty-score-bar.low { background-color: var(--error-color); }
         .specialty-score-bar.medium { background-color: var(--warning-color); }
         .specialty-score-bar.high { background-color: var(--vfd-green); }
-
-        /* FIX: Added styling for the new percentage text spans */
-        .specialty-percentage-text {
-            font-size: 0.8em;
-            font-weight: 600;
-            color: var(--text-secondary);
-            width: 45px;
-            text-align: right;
-            flex-shrink: 0;
-        }
-
+        .specialty-percentage-text { font-size: 0.8em; font-weight: 600; color: var(--text-secondary); width: 45px; text-align: right; flex-shrink: 0; }
         .kanban-card { background-color: var(--cell-bg); border-radius: 8px; margin-bottom: 10px; box-shadow: 0 2px 8px var(--shadow-color); cursor: pointer; border-left: 4px solid var(--main-border); transition: border-left-color 0.3s; }
         .kanban-card:hover { background-color: var(--meta-bg); }
         .card-summary { padding: 12px 15px; }
@@ -188,7 +165,7 @@
         .card-progress-bar { height: 100%; width: 0%; border-radius: 3px; background-color: var(--progress-advance-bg); transition: width 0.3s ease; }
         .card-progress-text, .card-score-text { font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); }
         
-        /* --- ESTILOS DE MODALES (SIN CAMBIOS, YA GLOBALES) --- */
+        /* --- ESTILOS DE MODALES --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px); z-index: 998; display: none; opacity: 0; transition: opacity 0.3s ease; }
         .modal-overlay.visible { display: block; opacity: 1; }
         .modal-container { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: var(--cell-bg); border: 1px solid var(--main-border); border-radius: 12px; box-shadow: 0 5px 25px rgba(0,0,0,0.5); z-index: 1000; width: 90%; max-height: 90vh; display: none; flex-direction: column; transition: transform 0.3s ease, opacity 0.3s ease; }
@@ -253,71 +230,65 @@
         .topic-finish-btn:hover { background-color: #76ff76; transform: translateY(-2px); }
         
         @media (max-width: 768px) { .motivational-quote { font-size: 1.2em; } .countdown-digits { font-size: 3em; } .countdown-timer-container { gap: 15px; } .parallel-steps-container, .practice-step-layout, .kanban-board { flex-direction: column; display: block; } .kanban-column { margin-bottom: 20px; } .day-cell { min-height: 120px; } }
-        @media (max-width: 600px) { .app-header h1 {font-size: 1.2em; } .view-switcher { padding: 8px 15px; font-size: 0.9em;} .motivational-quote { font-size: 1em; letter-spacing: 1px; } .countdown-digits { font-size: 2.2em; } .countdown-label { font-size: 0.6em; } .countdown-timer-container { gap: 10px; } body { padding: 0; } .view-wrapper { padding: 10px; } .calendar-container { grid-template-columns: 30px 30px repeat(7, 1fr); } .modal-content { padding: 15px; } .step-card { flex-direction: column; } .step-icon-container { text-align: left; margin-bottom: 5px;} #edit-countdown-btn { right: -5px; top: -15px; } }
+        @media (max-width: 600px) { .motivational-quote { font-size: 1em; letter-spacing: 1px; } .countdown-digits { font-size: 2.2em; } .countdown-label { font-size: 0.6em; } .countdown-timer-container { gap: 10px; } body { padding: 0; } .view-wrapper { padding: 10px; } .calendar-container { grid-template-columns: 30px 30px repeat(7, 1fr); } .modal-content { padding: 15px; } .step-card { flex-direction: column; } .step-icon-container { text-align: left; margin-bottom: 5px;} #edit-countdown-btn { right: -5px; top: -15px; } }
     </style>
 </head>
 <body>
-    <header class="app-header">
-        <h1>Frecuencia Vital</h1>
-        <button id="view-switcher" class="view-switcher" data-current-view="calendar">
-            <i class="fas fa-columns"></i> Ver Tablero Vital
-        </button>
-    </header>
-
-    <!-- Vista de Calendario -->
-    <div id="calendar-view" class="view-wrapper">
-        <header class="main-header">
-            <div id="motivational-quote-container" class="motivational-quote"></div>
-            <div class="countdown-container">
-                <div class="countdown-timer-container">
-                    <div class="countdown-unit"> <div class="countdown-label">Days</div> <div class="countdown-digits" id="countdown-days">000</div> </div>
-                    <div class="countdown-unit"> <div class="countdown-label">Hours</div> <div class="countdown-digits" id="countdown-hours">00</div> </div>
-                    <div class="countdown-unit"> <div class="countdown-label">Minutes</div> <div class="countdown-digits" id="countdown-minutes">00</div> </div>
-                    <div class="countdown-unit"> <div class="countdown-label">Seconds</div> <div class="countdown-digits" id="countdown-seconds">00</div> </div>
-                </div>
-                <button id="edit-countdown-btn" title="Editar fecha final"><i class="fas fa-calendar-alt"></i></button>
+    <header class="app-banner">
+        <div id="motivational-quote-container" class="motivational-quote"></div>
+        <div class="countdown-container">
+            <div class="countdown-timer-container">
+                <div class="countdown-unit"><div class="countdown-label">Days</div><div class="countdown-digits" id="countdown-days">000</div></div>
+                <div class="countdown-unit"><div class="countdown-label">Hours</div><div class="countdown-digits" id="countdown-hours">00</div></div>
+                <div class="countdown-unit"><div class="countdown-label">Minutes</div><div class="countdown-digits" id="countdown-minutes">00</div></div>
+                <div class="countdown-unit"><div class="countdown-label">Seconds</div><div class="countdown-digits" id="countdown-seconds">00</div></div>
             </div>
-            <div id="countdown-editor">
-                <input type="date" id="countdown-date-picker">
-                <button id="save-countdown-btn">Guardar</button>
-            </div>
+            <button id="edit-countdown-btn" title="Editar fecha final"><i class="fas fa-calendar-alt"></i></button>
+        </div>
+        <div id="countdown-editor">
+            <input type="date" id="countdown-date-picker">
+            <button id="save-countdown-btn">Guardar</button>
+        </div>
+        <div class="banner-bottom-row">
             <div class="global-progress-container">
                 <div class="progress-bar-wrapper">
                     <label id="global-score-label">Puntuación Global (Promedio de Calificaciones)</label>
-                    <div class="progress-bar-background">
-                        <div class="progress-bar-fill" id="global-score-bar" role="progressbar" aria-labelledby="global-score-label">0%</div>
-                    </div>
+                    <div class="progress-bar-background"><div class="progress-bar-fill" id="global-score-bar" role="progressbar">0%</div></div>
                 </div>
                 <div class="progress-bar-wrapper">
                     <label id="global-advance-label">Avance Global (Temas Completados)</label>
-                    <div class="progress-bar-background">
-                        <div class="progress-bar-fill" id="global-advance-bar" role="progressbar" aria-labelledby="global-advance-label">0%</div>
-                    </div>
+                    <div class="progress-bar-background"><div class="progress-bar-fill" id="global-advance-bar" role="progressbar">0%</div></div>
                 </div>
             </div>
-        </header>
-        <div class="calendar-container" id="calendar-container"></div>
-    </div>
+            <button id="view-switcher" class="view-switcher" data-current-view="calendar">
+                <i class="fas fa-columns"></i> Tablero Vital
+            </button>
+        </div>
+    </header>
 
-    <!-- Vista de Tablero Kanban -->
-    <div id="board-view" class="view-wrapper hidden">
-        <main class="kanban-board">
-            <section class="kanban-column" id="col-todo">
-                <div class="kanban-column-header"><h2><i class="far fa-circle" style="margin-right: 8px;"></i>Sin Empezar</h2></div>
-                <div class="cards-container" id="col-todo-container"></div>
-            </section>
-            <section class="kanban-column" id="col-inprogress">
-                <div class="kanban-column-header"><h2><i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i>En Curso</h2></div>
-                <div class="cards-container" id="col-inprogress-container"></div>
-            </section>
-            <section class="kanban-column" id="col-done">
-                <div class="kanban-column-header"><h2><i class="fas fa-check-circle" style="margin-right: 8px;"></i>Listo</h2></div>
-                <div class="cards-container" id="col-done-container"></div>
-            </section>
-        </main>
-    </div>
+    <main class="main-content-area">
+        <div id="calendar-view" class="view-wrapper">
+            <div class="calendar-container" id="calendar-container"></div>
+        </div>
 
-    <!-- Modales (son globales y se mantienen igual) -->
+        <div id="board-view" class="view-wrapper hidden">
+            <main class="kanban-board">
+                <section class="kanban-column" id="col-todo">
+                    <div class="kanban-column-header"><h2><i class="far fa-circle" style="margin-right: 8px;"></i>Sin Empezar</h2></div>
+                    <div class="cards-container" id="col-todo-container"></div>
+                </section>
+                <section class="kanban-column" id="col-inprogress">
+                    <div class="kanban-column-header"><h2><i class="fas fa-spinner" style="margin-right: 8px;"></i>En Curso</h2></div>
+                    <div class="cards-container" id="col-inprogress-container"></div>
+                </section>
+                <section class="kanban-column" id="col-done">
+                    <div class="kanban-column-header"><h2><i class="fas fa-check-circle" style="margin-right: 8px;"></i>Listo</h2></div>
+                    <div class="cards-container" id="col-done-container"></div>
+                </section>
+            </main>
+        </div>
+    </main>
+
     <div class="modal-overlay" id="modal-overlay"></div>
     <div class="modal-container" id="details-modal">
         <div class="modal-header"> <h2 id="modal-title"></h2> <span class="modal-close" id="modal-close-day">×</span> </div>
@@ -337,14 +308,12 @@
             <div class="topic-modal-footer"> <button id="topic-finish-btn" class="topic-finish-btn">Terminar Tema</button> </div>
         </div>
     </div>
-
-    <!-- Scripts de Firebase -->
+    
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
     <script>
-    // --- Configuración de Firebase ---
     const firebaseConfig = {
         apiKey: "AIzaSyD4SjKhedm4ZWHed70_sjQgxPokjHvwvUc",
         authDomain: "frecuencia-vital.firebaseapp.com",
@@ -354,29 +323,27 @@
         appId: "1:492064882273:web:46ad9f9a66126bfdb53420",
         measurementId: "G-0C466YCX31"
     };
-    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
     const auth = firebase.auth();
     const db = firebase.firestore();
     let currentUser = null;
-
-    // --- Lógica de Autenticación ---
+    
     auth.onAuthStateChanged(user => {
         if (user) {
             currentUser = user;
             initializeAppLogic();
         } else {
-            window.location.href = 'index.html'; // O tu página de login
+            window.location.href = 'index.html';
         }
     });
 
-    // --- Lógica Principal de la Aplicación Unificada ---
     async function initializeAppLogic() {
-        // --- Constantes y Variables Globales ---
         const currentYear = new Date().getFullYear();
         const subjectToTopicsMap = new Map();
         const motivationalQuotes = [ "La disciplina es el puente entre metas y logros.", "El éxito es la suma de pequeños esfuerzos repetidos día tras día.", "No te detengas hasta que te sientas orgulloso.", "Cree en ti mismo y todo será posible.", "El único modo de hacer un gran trabajo es amar lo que haces." ];
         
-        // FIX: Moved the subject title for UROLOGY to the first day of its topics to ensure correct association.
         let defaultStudyPlan = [
             { date: "2025-06-19", blocks: [{ subject: "ENDOCRINOLOGÍA", topics: ["Dislipidemias", "Hipertiroidismo", "Hipotiroidismo", "Cáncer de tiroides (Enfoque en Papilar)"] }] },
             { date: "2025-06-20", blocks: [{ topics: ["Nódulo tiroideo", "Obesidad en adultos", "Síndrome metabólico", "Enfermedad de Cushing / Síndrome de Cushing", "Enfermedad de Addison"] }] },
@@ -503,11 +470,9 @@
         const saveCountdownBtn = document.getElementById('save-countdown-btn');
         const quoteContainer = document.getElementById('motivational-quote-container');
 
-        // --- (Las funciones JS que siguen son las mismas, pero las incluyo todas para que el archivo esté completo) ---
-        
-        function switchView() { const isCalendarVisible = !calendarView.classList.contains('hidden'); if (isCalendarVisible) { calendarView.classList.add('hidden'); boardView.classList.remove('hidden'); viewSwitcher.innerHTML = `<i class="far fa-calendar-alt"></i> Ver Tablero Vital`; viewSwitcher.dataset.currentView = 'board'; populateKanbanBoard(); } else { boardView.classList.add('hidden'); calendarView.classList.remove('hidden'); viewSwitcher.innerHTML = `<i class="fas fa-columns"></i> Ver Tablero Vital`; viewSwitcher.dataset.currentView = 'calendar'; populateCalendar(); } }
+        function switchView() { const isCalendarVisible = !calendarView.classList.contains('hidden'); if (isCalendarVisible) { calendarView.classList.add('hidden'); boardView.classList.remove('hidden'); viewSwitcher.innerHTML = `<i class="far fa-calendar-alt"></i> Calendario Vital`; viewSwitcher.dataset.currentView = 'board'; populateKanbanBoard(); } else { boardView.classList.add('hidden'); calendarView.classList.remove('hidden'); viewSwitcher.innerHTML = `<i class="fas fa-columns"></i> Tablero Vital`; viewSwitcher.dataset.currentView = 'calendar'; populateCalendar(); } }
         function generateTopicId(topicName) { return `topic_${topicName.toLowerCase().replace(/[^a-z0-9]/g, '')}`; }
-        function getScoreColor(percentage) { if (percentage < 60) return 'var(--error-color)'; if (percentage < 80) return 'var(--warning-color)'; return 'var(--vfd-green)'; }
+        function getScoreColor(percentage) { if (percentage >= 80) return 'var(--vfd-green)'; if (percentage >= 60) return 'var(--warning-color)'; return 'var(--error-color)'; }
         function loadUserProgress(data) { userProgress = data || {}; }
         async function saveData(key, value) { if (!currentUser) return; const docRef = db.collection('userProgress').doc(currentUser.uid); const keys = key.split('.'); let currentLocal = userProgress; for (let i = 0; i < keys.length - 1; i++) { currentLocal = currentLocal[keys[i]] = currentLocal[keys[i]] || {}; } currentLocal[keys[keys.length - 1]] = value; const payload = {}; let currentPayload = payload; for (let i = 0; i < keys.length - 1; i++) { currentPayload = currentPayload[keys[i]] = {}; } currentPayload[keys[keys.length - 1]] = value; try { await docRef.set(payload, { merge: true }); } catch (error) { if (key === 'studyPlan') { await docRef.set({ studyPlan: value }, { merge: true }); } else { console.error("Error al guardar en Firestore:", error); } } }
         function getData(key, defaultValue = null) { const keys = key.split('.'); let result = userProgress; for (const k of keys) { if (result && typeof result === 'object' && k in result) { result = result[k]; } else { return defaultValue; } } return result; }
@@ -517,32 +482,11 @@
         function displayDailyQuote() { if (quoteContainer) { const randomIndex = Math.floor(Math.random() * motivationalQuotes.length); quoteContainer.textContent = motivationalQuotes[randomIndex]; } }
         function startCountdown() { if (countdownInterval) clearInterval(countdownInterval); if (!countdownTargetDateStr) return; const targetDate = new Date(`${countdownTargetDateStr}T08:00:00`).getTime(); const daysEl = document.getElementById('countdown-days'); const hoursEl = document.getElementById('countdown-hours'); const minutesEl = document.getElementById('countdown-minutes'); const secondsEl = document.getElementById('countdown-seconds'); const update = () => { const now = new Date().getTime(); const distance = targetDate - now; if (distance < 0) { daysEl.textContent = "000"; hoursEl.textContent = "00"; minutesEl.textContent = "00"; secondsEl.textContent = "00"; clearInterval(countdownInterval); return; } daysEl.textContent = String(Math.floor(distance / (1000 * 60 * 60 * 24))).padStart(3, '0'); hoursEl.textContent = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0'); minutesEl.textContent = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0'); secondsEl.textContent = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2, '0'); }; update(); countdownInterval = setInterval(update, 1000); }
         function createTopicListItem(topic) { const topicId = generateTopicId(topic); const isComplete = isTopicComplete(topicId); const liClass = `topic-item ${isComplete ? 'topic-completed' : ''}`; let scoreHTML = ''; const { scorePercentage } = getTopicProgress(topicId); const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`, '0')) || 0; if (reactivos > 0) { const color = getScoreColor(scorePercentage); scoreHTML = `<span class="topic-score" style="color: ${color};">(${scorePercentage.toFixed(2)}%)</span>`; } return `<li class="${liClass}" draggable="true" data-topic-id="${topicId}" data-topic-name="${topic}"><span>${topic}</span>${scoreHTML}</li>`; }
-        function buildSubjectMap() { subjectToTopicsMap.clear(); if (!studyPlan) return; let lastSubject = null; studyPlan.forEach(day => { day.blocks.forEach(block => { if (block.subject) { lastSubject = block.subject; } if (lastSubject) { if (!subjectToTopicsMap.has(lastSubject)) { subjectToTopicsMap.set(lastSubject, []); } const dayTopicIds = block.topics.map(topicName => generateTopicId(topicName)); const topicsForSubject = subjectToTopicsMap.get(lastSubject); dayTopicIds.forEach(id => { if (!topicsForSubject.includes(id)) { topicsForSubject.push(id); } }); } }); }); }
+        function buildSubjectMap() { subjectToTopicsMap.clear(); if (!studyPlan) return; let lastSubject = null; studyPlan.forEach(day => { day.blocks.forEach(block => { if (block.subject) { lastSubject = block.subject; } if (lastSubject) { if (!subjectToTopicsMap.has(lastSubject)) { subjectToTopicsMap.set(lastSubject, []); } if (block.topics) { const dayTopicIds = block.topics.map(topicName => generateTopicId(topicName)); const topicsForSubject = subjectToTopicsMap.get(lastSubject); dayTopicIds.forEach(id => { if (!topicsForSubject.includes(id)) { topicsForSubject.push(id); } }); } } }); }); }
         function calculateSubjectScore(subjectName) { const topicIds = subjectToTopicsMap.get(subjectName); if (!topicIds || topicIds.length === 0) return null; let totalScoreSum = 0; let scoredTopicsCount = 0; topicIds.forEach(topicId => { const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`)) || 0; if (reactivos > 0) { const { scorePercentage } = getTopicProgress(topicId); totalScoreSum += scorePercentage; scoredTopicsCount++; } }); return scoredTopicsCount > 0 ? (totalScoreSum / scoredTopicsCount).toFixed(2) : null; }
         function updateGlobalProgressBars() { if (!studyPlan) return; buildSubjectMap(); let totalTopics = 0; subjectToTopicsMap.forEach(topics => totalTopics += topics.length); let completedTopics = 0; subjectToTopicsMap.forEach(topicIds => { topicIds.forEach(topicId => { if (isTopicComplete(topicId)) { completedTopics++; } }); }); const advancePercentage = totalTopics > 0 ? (completedTopics / totalTopics) * 100 : 0; globalAdvanceBar.style.width = `${advancePercentage}%`; globalAdvanceBar.textContent = `${advancePercentage.toFixed(1)}%`; let totalSubjectScoreSum = 0; let subjectsWithScoresCount = 0; subjectToTopicsMap.forEach((_, subject) => { const subjectScoreStr = calculateSubjectScore(subject); if (subjectScoreStr !== null) { totalSubjectScoreSum += parseFloat(subjectScoreStr); subjectsWithScoresCount++; } }); const scorePercentage = subjectsWithScoresCount > 0 ? totalSubjectScoreSum / subjectsWithScoresCount : 0; globalScoreBar.style.width = `${scorePercentage}%`; globalScoreBar.textContent = `${scorePercentage.toFixed(1)}%`; }
         function populateCalendar() { if (!studyPlan || studyPlan.length === 0) return; buildSubjectMap(); const daysMap = new Map(studyPlan.map(day => [day.date, day])); const startDate = new Date(studyPlan[0].date + "T00:00:00"); const lastDayInPlan = new Date(studyPlan[studyPlan.length - 1].date + "T23:59:59"); const calendarGridEndDate = new Date(lastDayInPlan.getFullYear(), lastDayInPlan.getMonth() + 1, 0, 23, 59, 59); let dayBeforeTargetStr = ''; if (countdownTargetDateStr) { const targetDateObj = new Date(countdownTargetDateStr + 'T00:00:00'); targetDateObj.setDate(targetDateObj.getDate() - 1); dayBeforeTargetStr = targetDateObj.toISOString().split('T')[0]; } let weeks = []; let dateCursor = new Date(startDate); dateCursor.setDate(dateCursor.getDate() - dateCursor.getDay()); while (dateCursor <= calendarGridEndDate) { let week = []; for(let i=0; i < 7; i++) { week.push(new Date(dateCursor)); dateCursor.setDate(dateCursor.getDate() + 1); } weeks.push(week); } const monthLayout = new Map(); weeks.forEach((week, weekIndex) => { const firstDayOfWeek = week[0]; const monthName = firstDayOfWeek.toLocaleString('es-ES', { month: 'long' }); if (!monthLayout.has(monthName)) { monthLayout.set(monthName, { startRow: weekIndex + 2, rowSpan: 1 }); } else { monthLayout.get(monthName).rowSpan++; } }); calendarContainer.innerHTML = ''; calendarContainer.innerHTML += '<div class="header-cell meta-header">M</div><div class="header-cell meta-header">S</div>'; ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].forEach(day => calendarContainer.innerHTML += `<div class="header-cell day-header">${day}</div>`); monthLayout.forEach((layout, name) => { calendarContainer.innerHTML += `<div class="month-cell" style="grid-row: ${layout.startRow} / span ${layout.rowSpan}">${name}</div>`; }); weeks.forEach((week, weekIndex) => { calendarContainer.innerHTML += `<div class="week-cell-container" style="grid-row: ${weekIndex + 2}"><span class="week-number">${weekIndex + 1}</span></div>`; week.forEach(date => { const cell = document.createElement('div'); cell.className = 'day-cell'; const dateString = date.toISOString().split('T')[0]; if (date < startDate || date > lastDayInPlan) { cell.classList.add('empty'); } else { cell.dataset.date = dateString; cell.innerHTML = `<div class="calendar-day-number">${date.getDate()}</div>`; const dayData = daysMap.get(dateString); if (dayData && dayData.blocks) { let contentHTML = '<ul>'; dayData.blocks.forEach(block => { if (block.subject) { const score = calculateSubjectScore(block.subject); const scoreText = score !== null ? `<span class="subject-score">(${score}%)</span>` : ''; contentHTML += `<li><span class="subject-title">${block.subject}${scoreText}</span></li>`; } if (block.topics) { contentHTML += block.topics.map(topic => createTopicListItem(topic)).join(''); } }); contentHTML += '</ul>'; cell.innerHTML += `<div class="day-content">${contentHTML}</div>`; } if (dateString === countdownTargetDateStr) cell.classList.add('target-date'); if (dateString === dayBeforeTargetStr) cell.classList.add('day-before-target'); } calendarContainer.appendChild(cell); }); }); updateGlobalProgressBars(); }
-        
-        // FIX: Added percentage spans to the HTML generation
-        function createSpecialtyHeaderHTML(specialtyName, colorVar) {
-            const specialtyId = generateTopicId(specialtyName);
-            return `
-                <div class="specialty-header" data-specialty-header="${specialtyName}" style="border-left-color: var(${colorVar})">
-                    <div class="specialty-header-main">
-                        <h3 style="color: var(${colorVar})">${specialtyName}</h3>
-                    </div>
-                    <div class="specialty-progress-wrapper">
-                        <small>Avance</small>
-                        <div class="specialty-progress-container"><div class="specialty-progress-bar" id="sp-progress-${specialtyId}"></div></div>
-                        <span class="specialty-percentage-text" id="sp-progress-text-${specialtyId}">0%</span>
-                    </div>
-                    <div class="specialty-progress-wrapper">
-                        <small>Nota</small>
-                        <div class="specialty-progress-container"><div class="specialty-score-bar" id="sp-score-${specialtyId}"></div></div>
-                        <span class="specialty-percentage-text" id="sp-score-text-${specialtyId}">0%</span>
-                    </div>
-                </div>`;
-        }
-
+        function createSpecialtyHeaderHTML(specialtyName, colorVar) { const specialtyId = generateTopicId(specialtyName); return `<div class="specialty-header" data-specialty-header="${specialtyName}" style="border-left-color: var(${colorVar})"><div class="specialty-header-main"><h3 style="color: var(${colorVar})">${specialtyName}</h3></div><div class="specialty-progress-wrapper"><small>Avance</small><div class="specialty-progress-container"><div class="specialty-progress-bar" id="sp-progress-${specialtyId}"></div></div><span class="specialty-percentage-text" id="sp-progress-text-${specialtyId}">0%</span></div><div class="specialty-progress-wrapper"><small>Nota</small><div class="specialty-progress-container"><div class="specialty-score-bar" id="sp-score-${specialtyId}"></div></div><span class="specialty-percentage-text" id="sp-score-text-${specialtyId}">0%</span></div></div>`; }
         function populateKanbanBoard() { todoContainer.innerHTML = ''; inprogressContainer.innerHTML = ''; doneContainer.innerHTML = ''; const specialtyColors = ['--step-1-color', '--step-2-color', '--step-3-color', '--step-4-color', '--step-5-color', '--step-6-color']; let colorIndex = 0; const allSpecialties = {}; buildSubjectMap(); subjectToTopicsMap.forEach((topicIds, specialtyName) => { const topicNames = topicIds.map(id => { for (const day of studyPlan) { for (const block of day.blocks) { if (block.topics) { const foundTopic = block.topics.find(t => generateTopicId(t) === id); if (foundTopic) return foundTopic; } } } return null; }).filter(Boolean); if (topicNames.length > 0) { allSpecialties[specialtyName] = { topics: topicNames, color: specialtyColors[colorIndex % specialtyColors.length] }; colorIndex++; } }); for (const specialtyName in allSpecialties) { const specialtyData = allSpecialties[specialtyName]; const headerHTML = createSpecialtyHeaderHTML(specialtyName, specialtyData.color); const specialtyFragments = { todo: document.createDocumentFragment(), inprogress: document.createDocumentFragment(), done: document.createDocumentFragment() }; specialtyData.topics.forEach(topicName => { const topicId = generateTopicId(topicName); const state = getTopicKanbanState(topicId); const cardHTML = createKanbanCardHTML(topicName, topicId, specialtyName, specialtyData.color); const cardElement = document.createElement('div'); cardElement.innerHTML = cardHTML; specialtyFragments[state].appendChild(cardElement.firstChild); }); if (specialtyFragments.todo.hasChildNodes()) { todoContainer.innerHTML += headerHTML; todoContainer.appendChild(specialtyFragments.todo); } if (specialtyFragments.inprogress.hasChildNodes()) { inprogressContainer.innerHTML += headerHTML; inprogressContainer.appendChild(specialtyFragments.inprogress); } if (specialtyFragments.done.hasChildNodes()) { doneContainer.innerHTML += headerHTML; doneContainer.appendChild(specialtyFragments.done); } } updateAllSpecialtyProgressOnBoard(); }
         function createKanbanCardHTML(topicName, topicId, specialtyName, colorVar) { const { completionPercentage, scorePercentage } = getTopicProgress(topicId); const scoreColor = getScoreColor(scorePercentage); return `<article class="kanban-card" data-topic-id="${topicId}" data-topic-name="${topicName}" data-specialty="${specialtyName}" style="border-left-color: var(${colorVar})"><div class="card-summary"><div class="card-topic-name">${topicName}</div><div class="card-progress-display"><div class="card-progress-bar-container"><div class="card-progress-bar" style="width: ${completionPercentage}%;"></div></div><span class="card-progress-text">${completionPercentage.toFixed(0)}%</span><span class="card-score-text" style="color: ${scoreColor}">${scorePercentage.toFixed(0)}%</span></div></div></article>`; }
         function showDayModal(dateString) { const dayData = studyPlan.find(d => d.date === dateString); if (!dayData) return; const date = new Date(dateString + "T00:00:00"); dayModalTitle.textContent = date.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }); let topicsHTML = '<ul>'; dayData.blocks.forEach(block => { if (block.subject) { const score = calculateSubjectScore(block.subject); const scoreText = score !== null ? `<span class="subject-score">(${score}%)</span>` : ''; topicsHTML += `<li><span class="subject-title">${block.subject}${scoreText}</span></li>`; } if(block.topics) { topicsHTML += block.topics.map(topic => createTopicListItem(topic)).join(''); } }); topicsHTML += '</ul>'; dayModalTopicsContainer.innerHTML = topicsHTML; dayModalNotes.value = getData(`dayNotes.${dateString}`, ''); dayModal.dataset.currentDate = dateString; dayModalOverlay.classList.add('visible'); dayModal.classList.add('visible'); }
@@ -557,52 +501,7 @@
         function updateAllStepCardsStatus() { topicStepCards.forEach(updateStepCardStatus); }
         function finishTopicSession() { closeTopicModal(); }
         function updateUIForTopic(topicId) { const isBoardVisible = !boardView.classList.contains('hidden'); if (isBoardVisible) { populateKanbanBoard(); } else { populateCalendar(); } updateGlobalProgressBars(); }
-        
-        // FIX: Logic updated to set percentages and apply semaphore classes
-        function updateAllSpecialtyProgressOnBoard() {
-            const headers = document.querySelectorAll('.specialty-header');
-            headers.forEach(header => {
-                const specialtyName = header.dataset.specialtyHeader;
-                const specialtyId = generateTopicId(specialtyName);
-                const topicIds = subjectToTopicsMap.get(specialtyName) || [];
-                
-                const progressTextEl = document.getElementById(`sp-progress-text-${specialtyId}`);
-                const scoreTextEl = document.getElementById(`sp-score-text-${specialtyId}`);
-                const progressBar = document.getElementById(`sp-progress-${specialtyId}`);
-                const scoreBar = document.getElementById(`sp-score-${specialtyId}`);
-
-                if (!progressTextEl || !scoreTextEl || !progressBar || !scoreBar) return;
-
-                let totalCompletion = 0, totalScore = 0, scoredTopics = 0;
-                
-                topicIds.forEach(topicId => {
-                    const { completionPercentage, scorePercentage } = getTopicProgress(topicId);
-                    totalCompletion += completionPercentage;
-                    const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`)) || 0;
-                    if (reactivos > 0) {
-                        totalScore += scorePercentage;
-                        scoredTopics++;
-                    }
-                });
-
-                const avgCompletion = topicIds.length > 0 ? totalCompletion / topicIds.length : 0;
-                const avgScore = scoredTopics > 0 ? totalScore / scoredTopics : 0;
-                
-                progressBar.style.width = `${avgCompletion}%`;
-                progressTextEl.textContent = `${avgCompletion.toFixed(0)}%`;
-                
-                scoreBar.style.width = `${avgScore}%`;
-                scoreTextEl.textContent = `${avgScore.toFixed(0)}%`;
-                
-                scoreBar.classList.remove('low', 'medium', 'high');
-                if (scoredTopics > 0) {
-                    if (avgScore >= 80) scoreBar.classList.add('high');
-                    else if (avgScore >= 60) scoreBar.classList.add('medium');
-                    else scoreBar.classList.add('low');
-                }
-            });
-        }
-        
+        function updateAllSpecialtyProgressOnBoard() { const headers = document.querySelectorAll('.specialty-header'); headers.forEach(header => { const specialtyName = header.dataset.specialtyHeader; const specialtyId = generateTopicId(specialtyName); const topicIds = subjectToTopicsMap.get(specialtyName) || []; const progressTextEl = document.getElementById(`sp-progress-text-${specialtyId}`); const scoreTextEl = document.getElementById(`sp-score-text-${specialtyId}`); const progressBar = document.getElementById(`sp-progress-${specialtyId}`); const scoreBar = document.getElementById(`sp-score-${specialtyId}`); if (!progressTextEl || !scoreTextEl || !progressBar || !scoreBar) return; let totalCompletion = 0, totalScore = 0, scoredTopics = 0; topicIds.forEach(topicId => { const { completionPercentage, scorePercentage } = getTopicProgress(topicId); totalCompletion += completionPercentage; const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`)) || 0; if (reactivos > 0) { totalScore += scorePercentage; scoredTopics++; } }); const avgCompletion = topicIds.length > 0 ? totalCompletion / topicIds.length : 0; const avgScore = scoredTopics > 0 ? totalScore / scoredTopics : 0; progressBar.style.width = `${avgCompletion}%`; progressTextEl.textContent = `${avgCompletion.toFixed(0)}%`; scoreBar.style.width = `${avgScore}%`; scoreTextEl.textContent = `${avgScore.toFixed(0)}%`; scoreBar.classList.remove('low', 'medium', 'high'); if (scoredTopics > 0 || avgCompletion === 100) { const colorClass = getScoreColor(avgScore); if(colorClass.includes('error')) scoreBar.classList.add('low'); if(colorClass.includes('warning')) scoreBar.classList.add('medium'); if(colorClass.includes('green')) scoreBar.classList.add('high'); } }); }
         function getSubjectForTopic(topicName) { const topicId = generateTopicId(topicName); for (const [subject, topicIds] of subjectToTopicsMap.entries()) { if (topicIds.includes(topicId)) { return subject; } } return 'Sin Asignar'; }
         
         let draggedItem = null; let lastDragOverCell = null; let lastDragOverTopic = null; function clearDragStyles() { if (lastDragOverCell) lastDragOverCell.classList.remove('drag-over'); if (lastDragOverTopic) lastDragOverTopic.classList.remove('drag-over-top', 'drag-over-bottom'); lastDragOverCell = null; lastDragOverTopic = null; }
