@@ -419,21 +419,44 @@
             let countdownInterval = null;
             const ALL_TASK_IDS = ['task-1-1', 'task-1-2', 'task-1-3', 'task-2-1', 'task-2-2', 'task-3-1', 'task-4-1', 'task-5-1', 'task-5-2', 'task-6-1'];
             
-            const calendarView = document.getElementById('calendar-view');
-            const boardView = document.getElementById('board-view');
-            const viewSwitcher = document.getElementById('view-switcher');
-            const calendarContainer = document.getElementById('calendar-container');
-            const todoContainer = document.getElementById('col-todo-container');
-            const inprogressContainer = document.getElementById('col-inprogress-container');
-            const doneContainer = document.getElementById('col-done-container');
-            const dayModal = document.getElementById('details-modal'), dayModalOverlay = document.getElementById('modal-overlay'), dayModalTitle = document.getElementById('modal-title'), dayModalTopicsContainer = document.getElementById('modal-topics'), dayModalNotes = document.getElementById('modal-notes'), saveNoteButton = document.getElementById('modal-save-btn');
-            const topicModal = document.getElementById('topic-plan-modal'), topicModalOverlay = document.getElementById('topic-plan-overlay'), topicModalTitle = document.getElementById('topic-plan-title'), topicStepCards = topicModal.querySelectorAll('.step-card'), topicTaskCheckboxes = topicModal.querySelectorAll('.task-checkbox'), aciertosInput = document.getElementById('score-aciertos'), reactivosInput = document.getElementById('score-reactivos'), percentageOutput = document.getElementById('score-percentage'), finishTopicButton = document.getElementById('topic-finish-btn');
-            const globalScoreBar = document.getElementById('global-score-bar'), globalAdvanceBar = document.getElementById('global-advance-bar');
-            const editCountdownBtn = document.getElementById('edit-countdown-btn');
-            const countdownEditor = document.getElementById('countdown-editor');
-            const countdownDatePicker = document.getElementById('countdown-date-picker');
-            const saveCountdownBtn = document.getElementById('save-countdown-btn');
-            const quoteContainer = document.getElementById('motivational-quote-container');
+            // FIX: DOM element variables are declared here, but assigned inside main() after the DOM is ready.
+            let calendarView, boardView, viewSwitcher, calendarContainer, todoContainer, inprogressContainer, doneContainer;
+            let dayModal, dayModalOverlay, dayModalTitle, dayModalTopicsContainer, dayModalNotes, saveNoteButton;
+            let topicModal, topicModalOverlay, topicModalTitle, topicStepCards, topicTaskCheckboxes, aciertosInput, reactivosInput, percentageOutput, finishTopicButton;
+            let globalScoreBar, globalAdvanceBar;
+            let editCountdownBtn, countdownEditor, countdownDatePicker, saveCountdownBtn, quoteContainer;
+            
+            function assignDOMelements() {
+                calendarView = document.getElementById('calendar-view');
+                boardView = document.getElementById('board-view');
+                viewSwitcher = document.getElementById('view-switcher');
+                calendarContainer = document.getElementById('calendar-container');
+                todoContainer = document.getElementById('col-todo-container');
+                inprogressContainer = document.getElementById('col-inprogress-container');
+                doneContainer = document.getElementById('col-done-container');
+                dayModal = document.getElementById('details-modal');
+                dayModalOverlay = document.getElementById('modal-overlay');
+                dayModalTitle = document.getElementById('modal-title');
+                dayModalTopicsContainer = document.getElementById('modal-topics');
+                dayModalNotes = document.getElementById('modal-notes');
+                saveNoteButton = document.getElementById('modal-save-btn');
+                topicModal = document.getElementById('topic-plan-modal');
+                topicModalOverlay = document.getElementById('topic-plan-overlay');
+                topicModalTitle = document.getElementById('topic-plan-title');
+                topicStepCards = topicModal.querySelectorAll('.step-card');
+                topicTaskCheckboxes = topicModal.querySelectorAll('.task-checkbox');
+                aciertosInput = document.getElementById('score-aciertos');
+                reactivosInput = document.getElementById('score-reactivos');
+                percentageOutput = document.getElementById('score-percentage');
+                finishTopicButton = document.getElementById('topic-finish-btn');
+                globalScoreBar = document.getElementById('global-score-bar');
+                globalAdvanceBar = document.getElementById('global-advance-bar');
+                editCountdownBtn = document.getElementById('edit-countdown-btn');
+                countdownEditor = document.getElementById('countdown-editor');
+                countdownDatePicker = document.getElementById('countdown-date-picker');
+                saveCountdownBtn = document.getElementById('save-countdown-btn');
+                quoteContainer = document.getElementById('motivational-quote-container');
+            }
 
             function switchView() { const isCalendarVisible = !calendarView.classList.contains('hidden'); if (isCalendarVisible) { calendarView.classList.add('hidden'); boardView.classList.remove('hidden'); viewSwitcher.innerHTML = `<i class="far fa-calendar-alt"></i> Calendario Vital`; viewSwitcher.dataset.currentView = 'board'; populateKanbanBoard(); } else { boardView.classList.add('hidden'); calendarView.classList.remove('hidden'); viewSwitcher.innerHTML = `<i class="fas fa-columns"></i> Tablero Vital`; viewSwitcher.dataset.currentView = 'calendar'; populateCalendar(); } }
             function generateTopicId(topicName) { return `topic_${topicName.toLowerCase().replace(/[^a-z0-9]/g, '')}`; }
@@ -472,9 +495,10 @@
             let draggedItem = null; let lastDragOverCell = null; let lastDragOverTopic = null; function clearDragStyles() { if (lastDragOverCell) lastDragOverCell.classList.remove('drag-over'); if (lastDragOverTopic) lastDragOverTopic.classList.remove('drag-over-top', 'drag-over-bottom'); lastDragOverCell = null; lastDragOverTopic = null; }
             
             async function main() {
+                assignDOMelements();
                 displayDailyQuote();
                 const docRef = db.collection('userProgress').doc(currentUser.uid);
-                const doc = await doc.get();
+                const doc = await docRef.get();
                 loadUserProgress(doc.data());
                 const userPlan = getData('studyPlan');
                 if (userPlan && userPlan.length > 0 && new Date(userPlan[0].date).getFullYear() === currentYear) { studyPlan = userPlan; } else { studyPlan = defaultStudyPlan; await saveData('studyPlan', defaultStudyPlan); }
