@@ -8,6 +8,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
 
+        /* --- VARIABLES GLOBALES --- */
         :root {
             --bg-main: #121212;
             --bg-board: #1E1E1E;
@@ -18,31 +19,34 @@
             --border-color: #444;
             --shadow-color: rgba(0, 0, 0, 0.4);
             --accent-color: #00FF7F;
-            --subject-title-color: #ffffff;
-            --subject-highlight-color: #ff9800;
-            --meta-bg: #181c25;
-            --meta-header-bg: #101217;
-            --meta-border: #2c3240;
-            --meta-text: #a9bce2;
-            --plan-bg: #1e1e1e;
             --vfd-green: #50E050;
-            --color-progress: #3b82f6;
+            
+            --color-progress-completion: #3b82f6;
             --color-progress-low: #ef4444;
             --color-progress-medium: #f59e0b;
             --color-progress-high: #22c55e;
+
             --color-1: #00A9FF; --color-2: #FFA500; --color-3: #32C8CD;
             --color-4: #A855F7; --color-5: #E11D48; --color-6: #16A34A;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-main); color: var(--text-primary); line-height: 1.6; }
-        
-        .main-header { padding: 15px 20px; background-color: var(--bg-board); border-bottom: 1px solid var(--border-color); display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px; }
-        .header-title-section { display: flex; align-items: center; gap: 20px; flex-grow: 1; }
-        .main-header h1 { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; color: var(--text-primary); margin: 0; letter-spacing: 1px; }
-        .view-toggle-btn { background-color: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border-color); padding: 8px 15px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: background-color 0.2s, color 0.2s; }
-        .view-toggle-btn:hover { background-color: var(--accent-color); color: var(--bg-main); }
-        .global-progress-wrapper { width: 100%; max-width: 450px; display: flex; flex-direction: column; gap: 8px; }
+
+        /* --- CABECERA PRINCIPAL Y SWITCHER DE VISTAS --- */
+        .app-header { padding: 15px 40px; background-color: var(--bg-board); border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+        .app-header h1 { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; color: var(--text-primary); margin: 0; flex-grow: 1; }
+        .view-switcher-btn { background-color: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border-color); padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: background-color 0.2s, color 0.2s; }
+        .view-switcher-btn:hover { background-color: var(--bg-card-hover); }
+        .view-switcher-btn .fas { margin-right: 8px; }
+
+        /* --- CONTENEDORES DE VISTAS --- */
+        .view-container { display: none; }
+        .view-container.active { display: block; }
+        #kanban-view { height: calc(100vh - 80px); }
+
+        /* --- ESTILOS COMPARTIDOS (Progreso Global) --- */
+        .global-progress-wrapper { width: 40%; max-width: 500px; display: flex; flex-direction: column; gap: 8px; }
         .global-progress-section { display: flex; align-items: center; gap: 10px; }
         .global-progress-section small { font-size: 0.7rem; color: var(--text-secondary); width: 80px; }
         .global-progress-container { flex-grow: 1; background-color: #333; border-radius: 8px; height: 12px; overflow: hidden; }
@@ -50,32 +54,34 @@
         .global-progress-bar.low { background-color: var(--color-progress-low); }
         .global-progress-bar.medium { background-color: var(--color-progress-medium); }
         .global-progress-bar.high { background-color: var(--color-progress-high); }
+        #global-progress-bar { background-color: var(--color-progress-completion); }
         .global-progress-text { font-size: 0.8rem; font-weight: bold; color: var(--text-secondary); width: 60px; text-align: right; }
-        .hidden { display: none !important; }
 
-        #calendar-view { padding: 20px; }
-        .motivational-quote { font-family: 'Orbitron', sans-serif; color: var(--vfd-green); font-size: 1.5em; text-align: center; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; text-shadow: 0 0 4px rgba(80, 224, 80, 0.6), 0 0 8px rgba(80, 224, 80, 0.4); min-height: 1.2em; }
-        .countdown-container { position: relative; display: inline-block; text-align: center; }
+        /* --- ESTILOS VISTA CALENDARIO --- */
+        .calendar-header { text-align: center; padding: 20px; }
+        .motivational-quote { font-family: 'Orbitron', sans-serif; color: var(--vfd-green); font-size: 1.5em; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; text-shadow: 0 0 4px rgba(80, 224, 80, 0.6), 0 0 8px rgba(80, 224, 80, 0.4); min-height: 1.2em; }
+        .countdown-container { position: relative; display: inline-block; }
         .countdown-timer-container { display: flex; justify-content: center; align-items: center; gap: 25px; margin-bottom: 25px; }
         .countdown-unit { text-align: center; }
         .countdown-label { font-family: 'Orbitron', sans-serif; font-size: 0.8em; color: var(--vfd-green); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; opacity: 0.8; }
         .countdown-digits { font-family: 'Orbitron', sans-serif; font-size: 4em; color: var(--vfd-green); line-height: 1; text-shadow: 0 0 5px rgba(80, 224, 80, 0.7), 0 0 10px rgba(80, 224, 80, 0.5), 0 0 15px rgba(80, 224, 80, 0.3); }
-        #edit-countdown-btn { position: absolute; top: -5px; right: -30px; background: none; border: none; color: var(--meta-text); font-size: 1.2em; cursor: pointer; transition: color 0.2s; }
+        #edit-countdown-btn { position: absolute; top: -5px; right: -30px; background: none; border: none; color: var(--text-secondary); font-size: 1.2em; cursor: pointer; transition: color 0.2s; }
         #edit-countdown-btn:hover { color: var(--accent-color); }
         #countdown-editor { display: none; margin-top: -15px; margin-bottom: 20px; align-items: center; justify-content: center; gap: 10px; }
         #countdown-date-picker { background-color: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-primary); padding: 5px; border-radius: 4px; font-family: 'Source Sans Pro', sans-serif; }
         #countdown-date-picker::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
         #save-countdown-btn { background-color: var(--accent-color); color: var(--bg-main); border: none; padding: 6px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; }
-        .calendar-container { display: grid; grid-template-columns: 40px 40px repeat(7, 1fr); gap: 2px; background-color: var(--border-color); margin-top: 25px; }
-        .header-cell, .day-header { text-align: center; padding: 12px 5px; font-weight: 600; font-family: 'Orbitron', sans-serif; text-transform: uppercase; font-size: 0.9em; }
+        .calendar-board { padding: 0 20px 20px; }
+        .calendar-container { display: grid; grid-template-columns: 40px 40px repeat(7, 1fr); gap: 2px; background-color: var(--border-color); }
+        .header-cell, .day-header { text-align: center; padding: 12px 5px; font-weight: 600; font-family: 'Orbitron', sans-serif; text-transform: uppercase; font-size: 0.9em; background-color: var(--bg-board); }
         .meta-header { background-color: var(--meta-header-bg); color: var(--meta-text); border-bottom: 2px solid var(--border-color); }
-        .day-header { background-color: var(--bg-card); color: var(--accent-color); border-bottom: 2px solid var(--border-color); }
-        .month-cell { grid-column: 1; background-color: var(--meta-bg); color: var(--meta-text); font-family: 'Orbitron', sans-serif; writing-mode: vertical-rl; text-transform: uppercase; letter-spacing: 2px; display: flex; align-items: center; justify-content: center; border-right: 1px solid var(--meta-border); }
-        .week-cell-container { grid-column: 2; background-color: var(--meta-bg); position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--meta-border); }
+        .day-header { color: var(--accent-color); border-bottom: 2px solid var(--border-color); }
+        .month-cell { grid-column: 1; background-color: var(--meta-header-bg); color: var(--meta-text); font-family: 'Orbitron', sans-serif; writing-mode: vertical-rl; text-transform: uppercase; letter-spacing: 2px; display: flex; align-items: center; justify-content: center; border-right: 1px solid var(--meta-border); }
+        .week-cell-container { grid-column: 2; background-color: var(--meta-header-bg); position: relative; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--meta-border); }
         .week-number { font-family: 'Orbitron', sans-serif; font-size: 1.6em; color: var(--meta-text); }
         .day-cell { background-color: var(--bg-card); min-height: 160px; padding: 8px 12px; position: relative; overflow-y: auto; cursor: pointer; transition: all 0.2s; border: 2px solid transparent; }
         .day-cell.empty { background-color: var(--bg-board); cursor: default; }
-        .day-cell.drag-over { background-color: var(--meta-bg); border-color: var(--accent-color); }
+        .day-cell.drag-over { background-color: var(--bg-card-hover); border-color: var(--accent-color); }
         .day-cell.target-date { border-color: var(--color-progress-low); box-shadow: 0 0 10px rgba(239, 68, 68, 0.4); }
         .day-cell.target-date .calendar-day-number { color: var(--color-progress-low); font-weight: bold; }
         .day-cell.day-before-target { border-color: var(--color-progress-medium); }
@@ -83,20 +89,22 @@
         .calendar-day-number { font-size: 0.9em; font-weight: 600; color: #777; position: absolute; top: 8px; right: 12px; z-index: 1; transition: color 0.2s; }
         .day-content ul { list-style-type: none; padding-left: 0; margin: 25px 0 0 0; }
         .day-content li { margin-bottom: 4px; padding-left: 14px; position: relative; font-size: 0.85em; }
-        .day-content .subject-title, #modal-topics .subject-title { color: var(--subject-highlight-color); font-weight: 700; display: block; margin-bottom: 6px; text-transform: uppercase; font-size: 1em; text-shadow: 0 0 5px rgba(255, 152, 0, 0.4); padding-left: 0; }
+        .day-content .subject-title, #modal-topics .subject-title { color: #ff9800; font-weight: 700; display: block; margin-bottom: 6px; text-transform: uppercase; font-size: 1em; text-shadow: 0 0 5px rgba(255, 152, 0, 0.4); padding-left: 0; }
         .subject-title::before { content: none !important; }
         .subject-score { color: var(--meta-text); font-size: 0.8em; font-weight: 400; margin-left: 8px; }
         .topic-item { display: flex; align-items: center; justify-content: space-between; padding: 4px 6px; margin-left: -6px; border-radius: 4px; transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s, border-top 0.1s, border-bottom 0.1s; border-top: 2px solid transparent; border-bottom: 2px solid transparent; }
         .topic-item[draggable="true"] { cursor: grab; }
         .topic-item.dragging { opacity: 0.5; }
-        .topic-item:not(.topic-completed):not(.dragging):hover { background-color: var(--meta-bg); color: var(--accent-color); }
+        .topic-item:not(.topic-completed):not(.dragging):hover { background-color: var(--bg-card-hover); color: var(--accent-color); }
         .topic-item.drag-over-top { border-top-color: var(--accent-color); }
         .topic-item.drag-over-bottom { border-bottom-color: var(--accent-color); }
         .topic-item::before { content: '■'; position: absolute; left: 0; top: 5px; color: var(--accent-color); font-size: 0.8em; line-height: 1.5; transition: color 0.3s ease; }
         .topic-score { font-size: 0.85em; font-weight: bold; margin-left: 10px; flex-shrink: 0; }
-        .kanban-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 20px; height: calc(100vh - 105px); }
-        .kanban-column { background-color: var(--bg-board); border-radius: 12px; display: flex; flex-direction: column; max-height: 100%; border-top: 3px solid transparent; transition: border-top-color 0.4s ease; }
-        .kanban-column.inprogress { border-top-color: var(--color-progress); }
+
+        /* --- ESTILOS VISTA KANBAN --- */
+        .kanban-board-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; padding: 20px; height: 100%; }
+        .kanban-column { background-color: var(--bg-board); border-radius: 12px; display: flex; flex-direction: column; max-height: 100%; border-top: 3px solid var(--border-color); transition: border-top-color 0.4s ease; }
+        .kanban-column.inprogress { border-top-color: var(--color-progress-completion); }
         .kanban-column.done { border-top-color: var(--color-progress-high); }
         .kanban-column-header { padding: 15px 20px; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 10px; position: sticky; top: 0; background-color: var(--bg-board); z-index: 10; }
         .kanban-column-header h2 { font-size: 1.1rem; font-weight: 600; }
@@ -106,12 +114,9 @@
         .specialty-progress-bars-container { display: flex; flex-direction: column; gap: 4px; }
         .specialty-progress-wrapper { display: flex; align-items: center; gap: 8px; }
         .specialty-progress-container { width: 80px; height: 8px; background-color: #444; border-radius: 4px; }
-        .specialty-progress-bar { height: 100%; width: 0%; border-radius: 4px; background-color: var(--color-1); transition: width 0.3s ease; }
+        .specialty-progress-bar { height: 100%; width: 0%; border-radius: 4px; transition: width 0.3s ease; }
         .specialty-score-progress-bar { height: 100%; width: 0%; border-radius: 4px; transition: width 0.3s ease; }
         .specialty-progress-text, .specialty-score-text { font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); width: 50px; text-align: right; }
-        .specialty-score-progress-bar.low { background-color: var(--color-progress-low); }
-        .specialty-score-progress-bar.medium { background-color: var(--color-progress-medium); }
-        .specialty-score-progress-bar.high { background-color: var(--color-progress-high); }
         .kanban-card { background-color: var(--bg-card); border-radius: 8px; margin-bottom: 10px; box-shadow: 0 2px 8px var(--shadow-color); overflow: hidden; }
         .card-summary { padding: 12px 15px; cursor: pointer; }
         .card-summary-content { display: flex; justify-content: space-between; align-items: center; }
@@ -120,9 +125,9 @@
         .kanban-card.has-progress .card-progress-wrapper { display: flex; }
         .card-progress-container { width: 80px; height: 8px; background-color: #444; border-radius: 4px; }
         .card-progress-bar { height: 100%; width: 0%; border-radius: 4px; transition: width 0.3s ease; }
-        .card-progress-text { font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); width: 50px; text-align: right; }
-        #col-inprogress-container .card-progress-bar { background-color: var(--color-progress); }
+        #col-inprogress-container .card-progress-bar { background-color: var(--color-progress-completion); }
         #col-done-container .card-progress-bar { background-color: var(--color-progress-high); }
+        .card-progress-text { font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); width: 50px; text-align: right; }
         .card-details { max-height: 0; overflow: hidden; transition: max-height 0.5s cubic-bezier(0.25, 0.1, 0.25, 1.0); padding: 0 15px; }
         .kanban-card.is-open .card-details { max-height: 1000px; padding: 0 15px 15px; }
         .task-section { padding: 12px 0 12px 15px; border-left: 3px solid; margin: 15px 0; background-color: rgba(0,0,0,0.1); border-radius: 0 6px 6px 0; }
@@ -134,44 +139,36 @@
         .score-inputs input, .score-percentage { width: 60px; background-color: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-primary); padding: 5px; border-radius: 4px; text-align: center; font-size: 0.9rem; }
         .score-percentage { font-weight: bold; color: var(--color-progress-medium); display: inline-block; line-height: 1.5; }
         .tag { font-size: 0.7rem; font-weight: 600; padding: 2px 8px; background-color: var(--bg-card); color: var(--text-primary); border-radius: 10px; border: 1px solid var(--border-color); }
+
+        /* MODALES (compartidos) */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px); z-index: 998; display: none; opacity: 0; transition: opacity 0.3s ease; }
         .modal-overlay.visible { display: block; opacity: 1; }
         .modal-container { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 5px 25px rgba(0,0,0,0.5); z-index: 1000; width: 90%; max-height: 90vh; display: none; flex-direction: column; transition: transform 0.3s ease, opacity 0.3s ease; }
         .modal-container.visible { display: flex; }
         .modal-header { padding: 15px 25px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
-        .modal-header h2 { margin: 0; font-family: 'Orbitron', sans-serif; font-size: 1.5em; }
+        .modal-header h2 { font-family: 'Orbitron', sans-serif; font-size: 1.5em; }
         .modal-close { font-size: 2em; color: #888; cursor: pointer; line-height: 1; transition: color 0.2s; }
         .modal-close:hover { color: var(--text-primary); }
         .modal-content { padding: 25px; overflow-y: auto; }
         #details-modal { max-width: 650px; z-index: 1000; }
         #details-modal .modal-header h2 { color: var(--accent-color); }
-        #modal-notes { width: 100%; box-sizing: border-box; min-height: 120px; background-color: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-primary); padding: 10px; resize: vertical; border-radius: 4px; }
+        #modal-notes { width: 100%; box-sizing: border-box; min-height: 120px; background-color: #333; border: 1px solid var(--border-color); color: var(--text-primary); padding: 10px; resize: vertical; border-radius: 4px; }
         #modal-save-btn { width: 100%; padding: 12px; margin-top: 10px; background-color: var(--accent-color); color: var(--bg-main); border: none; cursor: pointer; font-family: 'Orbitron', sans-serif; font-size: 1em; border-radius: 4px; transition: background-color 0.2s, transform 0.1s; }
         #modal-save-btn:hover { background-color: #39ff94; }
         #modal-save-btn:active { transform: scale(0.98); }
         #topic-plan-modal { max-width: 900px; z-index: 1001; background-color: var(--bg-board); }
         #topic-plan-modal .modal-header h2 { color: var(--vfd-green); font-size: 1.3em; }
         #topic-plan-modal .modal-content { padding: 15px 25px; }
-        #topic-plan-modal .step-card { background-color: var(--plan-bg); border-left-width: 5px; }
-
-        @media (max-width: 900px) { .kanban-board { grid-template-columns: 1fr; height: auto; } .main-header { flex-direction: column; } .global-progress-wrapper { width: 100%; } }
-        @media (max-width: 600px) { .motivational-quote { font-size: 1em; } .countdown-digits { font-size: 2.2em; } #edit-countdown-btn { right: -5px; top: -15px; } }
     </style>
 </head>
 <body>
-    <header class="main-header">
-        <div class="header-title-section">
-            <h1>FRECUENCIA VITAL</h1>
-            <button id="view-toggle-btn" class="view-toggle-btn">Progreso Vital</button>
-        </div>
-        <div class="global-progress-wrapper">
-            <div class="global-progress-section"><small>Avance Total</small><div class="global-progress-container"><div class="global-progress-bar" id="global-progress-bar"></div></div><span class="global-progress-text" id="global-progress-text">0.00%</span></div>
-            <div class="global-progress-section"><small>Promedio Vital</small><div class="global-progress-container"><div class="global-progress-bar" id="promedio-vital-bar"></div></div><span class="global-progress-text" id="promedio-vital-text">0.00%</span></div>
-        </div>
+    <header class="app-header">
+        <h1>FRECUENCIA VITAL</h1>
+        <button id="view-switcher" class="view-switcher-btn"><i class="fas fa-columns"></i> Ver Tablero Vital</button>
     </header>
-    
-    <main id="main-content">
-        <div id="calendar-view">
+
+    <div id="calendar-view" class="view-container active">
+        <div class="calendar-header">
             <div id="motivational-quote-container" class="motivational-quote"></div>
             <div class="countdown-container">
                 <div class="countdown-timer-container">
@@ -186,18 +183,25 @@
                 <input type="date" id="countdown-date-picker">
                 <button id="save-countdown-btn">Guardar</button>
             </div>
+            <div class="global-progress-wrapper">
+                 <div class="global-progress-section"><small>Progreso Total</small><div class="global-progress-container"><div class="global-progress-bar" id="global-progress-bar-calendar"></div></div><span class="global-progress-text" id="global-progress-text-calendar">0.00%</span></div>
+                 <div class="global-progress-section"><small>Promedio Vital</small><div class="global-progress-container"><div class="global-progress-bar" id="promedio-vital-bar-calendar"></div></div><span class="global-progress-text" id="promedio-vital-text-calendar">0.00%</span></div>
+            </div>
+        </div>
+        <main class="calendar-board">
             <div class="calendar-container" id="calendar-container"></div>
-        </div>
+        </main>
+    </div>
 
-        <div id="kanban-view" class="hidden">
-            <main class="kanban-board">
-                <section class="kanban-column todo"><div class="kanban-column-header"><h2>Sin Empezar</h2></div><div class="cards-container" id="col-todo-container"></div></section>
-                <section class="kanban-column inprogress"><div class="kanban-column-header"><h2>En Curso</h2></div><div class="cards-container" id="col-inprogress-container"></div></section>
-                <section class="kanban-column done"><div class="kanban-column-header"><h2>Listo</h2></div><div class="cards-container" id="col-done-container"></div></section>
-            </main>
-        </div>
-    </main>
+    <div id="kanban-view" class="view-container">
+        <main class="kanban-board-container">
+            <section class="kanban-column todo"><div class="kanban-column-header"><h2>Sin Empezar</h2></div><div class="cards-container" id="col-todo-container"></div></section>
+            <section class="kanban-column inprogress"><div class="kanban-column-header"><h2>En Curso</h2></div><div class="cards-container" id="col-inprogress-container"></div></section>
+            <section class="kanban-column done"><div class="kanban-column-header"><h2>Listo</h2></div><div class="cards-container" id="col-done-container"></div></section>
+        </main>
+    </div>
 
+    <!-- Modales (se usarán en ambas vistas) -->
     <div class="modal-overlay" id="modal-overlay"></div>
     <div class="modal-container" id="details-modal">
         <div class="modal-header"> <h2 id="modal-title"></h2> <span class="modal-close" id="modal-close-day">×</span> </div>
@@ -208,10 +212,11 @@
         <div class="modal-header"> <h2 id="topic-plan-title"></h2> <span class="modal-close" id="modal-close-topic">×</span> </div>
         <div class="modal-content">
             <div class="study-flow-diagram">
-                <div class="step-card step-1"> <div class="step-icon-container"><i class="fas fa-binoculars"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">1</span>VISTA RÁPIDA</h2> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-1-1"><i class="fas fa-list-ul task-icon"></i><span class="task-text">Índice</span><span class="tag">MADERA</span></label></li> <li><label><input type="checkbox" class="task-checkbox" id="task-1-2"><i class="fas fa-download task-icon"></i><span class="task-text">Descargar guías</span><span class="optional-tag">* opcional</span></label></li> <li><label><input type="checkbox" class="task-checkbox" id="task-1-3"><i class="fas fa-brain task-icon"></i><span class="task-text">CREA resúmenes + casos con IA (5min)</span><span class="tag">IAGOOGLE</span></label></li> </ul> </div> </div>
-                <div class="parallel-steps-container"> <div class="step-card step-2"> <div class="step-icon-container"><i class="fas fa-magic"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">2</span>CREAR</h2> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-2-1"><i class="fas fa-chalkboard-teacher task-icon"></i><span class="task-text">Presentación</span><span class="tag">Genspark</span></label></li> <li><label><input type="checkbox" class="task-checkbox" id="task-2-2"><i class="fas fa-microphone-alt task-icon"></i><span class="task-text">Podcast MP3</span><span class="tag">NOTEBOOKLM</span></label></li> </ul> </div> </div> <div class="step-card step-3"> <div class="step-icon-container"><i class="fas fa-book-reader"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">3</span>LEER</h2> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-3-1"><i class="fas fa-file-alt task-icon"></i><span class="task-text">Leer Resumen</span></label></li> </ul> </div> </div> </div>
-                <div class="step-card step-4"> <div class="step-icon-container"><i class="fas fa-puzzle-piece"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">4</span>UNIFICAR<span class="subtitle">(resumen + presentación + simular + enlaces)</span></h2> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-4-1"><i class="fas fa-code task-icon"></i><span class="task-text">HTML</span><span class="tag">IAGOOGLE</span></label></li> </ul> </div> </div>
-                <div class="step-card step-5"> <div class="step-icon-container"><i class="fas fa-tasks"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">5</span>PRACTICAR</h2> <div class="practice-step-layout"> <div class="practice-tasks-column"> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-5-1"><i class="fas fa-notes-medical task-icon"></i><span class="task-text">Realiza CASOS CLÍNICOS</span></label></li> <li><label><input type="checkbox" class="task-checkbox" id="task-5-2"><i class="fas fa-redo-alt task-icon"></i><span class="task-text">Repasar</span><span class="tag">GENSPARK</span><span class="tag">MADERAS</span></label></li> </ul> </div> <div class="practice-score-column"> <h3>PUNTUACIÓN</h3> <div class="score-inputs-row"> <div class="score-input-group"><label for="score-aciertos">Aciertos:</label><input type="number" id="score-aciertos" min="0"></div> <div class="score-input-group"><label for="score-reactivos">Reactivos:</label><input type="number" id="score-reactivos" min="0"></div> <div class="score-input-group"><label for="score-percentage">%:</label><input type="text" id="score-percentage" class="percentage-output" readonly value="0%"></div> </div> </div> </div> </div> </div>
+                <div class="step-card step-1"> <div class="step-icon-container"><i class="fas fa-binoculars"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">1</span>VISTA RÁPIDA</h2> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-1-1"><i class="fas fa-list-ul task-icon"></i><span class="task-text">Índice</span><span class="tag">MADERA</span></label></li> <li><label><input type="checkbox" class="task-checkbox" id="task-1-2"><i class="fas fa-download task-icon"></i><span class="task-text">Descargar guías</span></label></li> <li><label><input type="checkbox" class="task-checkbox" id="task-1-3"><i class="fas fa-brain task-icon"></i><span class="task-text">CREA resúmenes + casos con IA</span><span class="tag">IAGOOGLE</span></label></li> </ul> </div> </div>
+                <div class="step-card step-2"> <div class="step-icon-container"><i class="fas fa-magic"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">2</span>CREAR</h2> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-2-1"><i class="fas fa-chalkboard-teacher task-icon"></i><span class="task-text">Presentación</span><span class="tag">Genspark</span></label></li> <li><label><input type="checkbox" class="task-checkbox" id="task-2-2"><i class="fas fa-microphone-alt task-icon"></i><span class="task-text">Podcast MP3</span><span class="tag">NOTEBOOKLM</span></label></li> </ul> </div> </div>
+                <div class="step-card step-3"> <div class="step-icon-container"><i class="fas fa-book-reader"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">3</span>LEER</h2> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-3-1"><i class="fas fa-file-alt task-icon"></i><span class="task-text">Leer Resumen</span></label></li> </ul> </div> </div>
+                <div class="step-card step-4"> <div class="step-icon-container"><i class="fas fa-puzzle-piece"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">4</span>UNIFICAR</h2> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-4-1"><i class="fas fa-code task-icon"></i><span class="task-text">HTML</span><span class="tag">IAGOOGLE</span></label></li> </ul> </div> </div>
+                <div class="step-card step-5"> <div class="step-icon-container"><i class="fas fa-tasks"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">5</span>PRACTICAR</h2> <div class="practice-step-layout"> <div class="practice-tasks-column"> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-5-1"><i class="fas fa-notes-medical task-icon"></i><span class="task-text">Realiza CASOS CLÍNICOS</span></label></li> <li><label><input type="checkbox" class="task-checkbox" id="task-5-2"><i class="fas fa-redo-alt task-icon"></i><span class="task-text">Repasar</span><span class="tag">GENSPARK</span><span class="tag">MADERAS</span></label></li> </ul> </div> <div class="practice-score-column"> <h3>PUNTUACIÓN</h3> <div class="score-inputs"> <label>Aciertos:</label><input type="number" class="score-aciertos" min="0"> <label>Reactivos:</label><input type="number" class="score-reactivos" min="0"> <label>%:</label><div class="score-percentage" data-score="0">0.00%</div></div> </div> </div> </div> </div>
                 <div class="step-card step-6"> <div class="step-icon-container"><i class="fas fa-head-side-headphones"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">6</span>MEMORIZAR</h2> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-6-1"><i class="fas fa-headphones-alt task-icon"></i><span class="task-text">Escuchar MP3</span></label></li> </ul> </div> </div>
             </div>
             <div class="topic-modal-footer"> <button id="topic-finish-btn" class="topic-finish-btn">Terminar Tema</button> </div>
@@ -221,9 +226,9 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
+    
     <script>
-    const firebaseConfig = {
+        const firebaseConfig = {
         apiKey: "AIzaSyD4SjKhedm4ZWHed70_sjQgxPokjHvwvUc",
         authDomain: "frecuencia-vital.firebaseapp.com",
         projectId: "frecuencia-vital",
@@ -289,7 +294,7 @@
             { date: "2025-07-20", blocks: [{ topics: ["Trauma esplénico", "Trauma obstétrico", "Trauma pélvico"] }, { subject: "TOXICOLOGÍA", topics: ["Manejo de intoxicaciones", "Toxíndromes"] }] },
             { date: "2025-07-21", blocks: [{ topics: ["Intoxicación por benzodiacepinas", "Intoxicación por organofosforados", "Intoxicación por paracetamol", "Intoxicación por salicilatos"] }] },
             { date: "2025-07-22", blocks: [{ topics: ["Lactrodectus", "Loxosceles", "Mordedura de serpiente", "Picadura de alacrán"] }] },
-            { date: "2025-07-23", blocks: [{ topics: ["Golpe de calor", "Intoxicación por etanol", "Intoxicación por monoxido de carbono", "Intoxicación por opiáceos"] }] },
+            { date: "2025-07-23", blocks: [{ topics: ["Golpe de calor", "Intoxicación por etanol", "Intoxicación por monóxido de carbono", "Intoxicación por opiáceos"] }] },
             { date: "2025-07-24", blocks: [{ topics: ["Anafilaxia", "Ingesta de cáusticos", "Intoxicación alimentaria", "Intoxicación por alcoholes"] }] },
             { date: "2025-07-25", blocks: [{ topics: ["Intoxicación por anfetaminas", "Intoxicación por DMT", "Intoxicación por fentanilo", "Intoxicación por hidrocarburos"] }] },
             { date: "2025-07-26", blocks: [{ topics: ["Intoxicación por metales pesados", "Intoxicación por plomo", "Picadura de himenópteros"] }, { subject: "GASTROENTEROLOGÍA", topics: ["Absceso hepático amebiano"] }] },
@@ -364,33 +369,135 @@
         let countdownInterval = null;
         const ALL_TASK_IDS = ['task-1-1', 'task-1-2', 'task-1-3', 'task-2-1', 'task-2-2', 'task-3-1', 'task-4-1', 'task-5-1', 'task-5-2', 'task-6-1'];
         
-        const calendarView = document.getElementById('calendar-view');
-        const kanbanView = document.getElementById('kanban-view');
-        const viewToggleBtn = document.getElementById('view-toggle-btn');
         const calendarContainer = document.getElementById('calendar-container');
         const dayModal = document.getElementById('details-modal'), dayModalOverlay = document.getElementById('modal-overlay'), dayModalTitle = document.getElementById('modal-title'), dayModalTopicsContainer = document.getElementById('modal-topics'), dayModalNotes = document.getElementById('modal-notes'), saveNoteButton = document.getElementById('modal-save-btn');
         const topicModal = document.getElementById('topic-plan-modal'), topicModalOverlay = document.getElementById('topic-plan-overlay'), topicModalTitle = document.getElementById('topic-plan-title'), topicStepCards = topicModal.querySelectorAll('.step-card'), topicTaskCheckboxes = topicModal.querySelectorAll('.task-checkbox'), aciertosInput = document.getElementById('score-aciertos'), reactivosInput = document.getElementById('score-reactivos'), percentageOutput = document.getElementById('score-percentage'), finishTopicButton = document.getElementById('topic-finish-btn');
-        const globalProgressBar = document.getElementById('global-progress-bar'), globalProgressText = document.getElementById('global-progress-text');
-        const promedioVitalBar = document.getElementById('promedio-vital-bar'), promedioVitalText = document.getElementById('promedio-vital-text');
+        const globalScoreBar = document.getElementById('global-score-bar'), globalAdvanceBar = document.getElementById('global-advance-bar');
         const editCountdownBtn = document.getElementById('edit-countdown-btn');
         const countdownEditor = document.getElementById('countdown-editor');
         const countdownDatePicker = document.getElementById('countdown-date-picker');
         const saveCountdownBtn = document.getElementById('save-countdown-btn');
         const quoteContainer = document.getElementById('motivational-quote-container');
 
-        function displayDailyQuote() { if (quoteContainer) { const randomIndex = Math.floor(Math.random() * motivationalQuotes.length); quoteContainer.textContent = motivationalQuotes[randomIndex]; } }
-        function startCountdown() { if (countdownInterval) clearInterval(countdownInterval); if (!countdownTargetDateStr) return; const targetDate = new Date(`${countdownTargetDateStr}T08:00:00`).getTime(); const daysEl = document.getElementById('countdown-days'); const hoursEl = document.getElementById('countdown-hours'); const minutesEl = document.getElementById('countdown-minutes'); const secondsEl = document.getElementById('countdown-seconds'); const update = () => { const now = new Date().getTime(); const distance = targetDate - now; if (distance < 0) { daysEl.textContent = "000"; hoursEl.textContent = "00"; minutesEl.textContent = "00"; secondsEl.textContent = "00"; clearInterval(countdownInterval); return; } daysEl.textContent = String(Math.floor(distance / (1000 * 60 * 60 * 24))).padStart(3, '0'); hoursEl.textContent = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0'); minutesEl.textContent = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0'); secondsEl.textContent = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2, '0'); }; update(); countdownInterval = setInterval(update, 1000); }
-        function populateCalendar() { if (!studyPlan || studyPlan.length === 0) return; buildSubjectMap(); const daysMap = new Map(studyPlan.map(day => [day.date, day])); const startDate = new Date(studyPlan[0].date + "T00:00:00"); const lastDayInPlan = new Date(studyPlan[studyPlan.length - 1].date + "T23:59:59"); const calendarGridEndDate = new Date(lastDayInPlan.getFullYear(), lastDayInPlan.getMonth() + 1, 0, 23, 59, 59); let dayBeforeTargetStr = ''; if (countdownTargetDateStr) { const targetDateObj = new Date(countdownTargetDateStr + 'T00:00:00'); targetDateObj.setDate(targetDateObj.getDate() - 1); dayBeforeTargetStr = targetDateObj.toISOString().split('T')[0]; } let weeks = []; let dateCursor = new Date(startDate); dateCursor.setDate(dateCursor.getDate() - dateCursor.getDay()); while (dateCursor <= calendarGridEndDate) { let week = []; for(let i=0; i < 7; i++) { week.push(new Date(dateCursor)); dateCursor.setDate(dateCursor.getDate() + 1); } weeks.push(week); } const monthLayout = new Map(); weeks.forEach((week, weekIndex) => { const firstDayOfWeek = week[0]; const monthName = firstDayOfWeek.toLocaleString('es-ES', { month: 'long' }); if (!monthLayout.has(monthName)) { monthLayout.set(monthName, { startRow: weekIndex + 2, rowSpan: 1 }); } else { monthLayout.get(monthName).rowSpan++; } }); calendarContainer.innerHTML = ''; calendarContainer.innerHTML += '<div class="header-cell meta-header">M</div><div class="header-cell meta-header">S</div>'; ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].forEach(day => calendarContainer.innerHTML += `<div class="header-cell day-header">${day}</div>`); monthLayout.forEach((layout, name) => { calendarContainer.innerHTML += `<div class="month-cell" style="grid-row: ${layout.startRow} / span ${layout.rowSpan}">${name}</div>`; }); weeks.forEach((week, weekIndex) => { calendarContainer.innerHTML += `<div class="week-cell-container" style="grid-row: ${weekIndex + 2}"><span class="week-number">${weekIndex + 1}</span></div>`; week.forEach(date => { const cell = document.createElement('div'); cell.className = 'day-cell'; const dateString = date.toISOString().split('T')[0]; const startMonth = startDate.getMonth(); const endMonth = lastDayInPlan.getMonth(); const currentMonth = date.getMonth(); if (date.getFullYear() !== currentYear || !(currentMonth >= startMonth && currentMonth <= endMonth)) { cell.classList.add('empty'); } else { cell.dataset.date = dateString; cell.innerHTML = `<div class="calendar-day-number">${date.getDate()}</div>`; const dayData = daysMap.get(dateString); if (dayData && dayData.blocks) { let contentHTML = '<ul>'; dayData.blocks.forEach(block => { if (block.subject) { const score = calculateSubjectScore(block.subject); const scoreText = score !== null ? `<span class="subject-score">(${score}%)</span>` : ''; contentHTML += `<li><span class="subject-title">${block.subject}${scoreText}</span></li>`; } contentHTML += block.topics.map(topic => createTopicListItem(topic)).join(''); }); contentHTML += '</ul>'; cell.innerHTML += `<div class="day-content">${contentHTML}</div>`; } if (dateString === countdownTargetDateStr) cell.classList.add('target-date'); if (dateString === dayBeforeTargetStr) cell.classList.add('day-before-target'); } calendarContainer.appendChild(cell); }); }); updateAllGlobalProgress(); }
-        function getScoreColor(percentage) { if (percentage < 60) return 'var(--color-progress-low)'; if (percentage < 80) return 'var(--color-progress-medium)'; return 'var(--color-progress-high)'; }
+        // --- Inicio de Definiciones de Funciones ---
+
+        function displayDailyQuote() {
+            if (quoteContainer) {
+                const randomIndex = Math.floor(Math.random() * motivationalQuotes.length);
+                quoteContainer.textContent = motivationalQuotes[randomIndex];
+            }
+        }
+
+        function startCountdown() {
+            if (countdownInterval) clearInterval(countdownInterval);
+            if (!countdownTargetDateStr) return;
+            
+            const targetDate = new Date(`${countdownTargetDateStr}T08:00:00`).getTime();
+            const daysEl = document.getElementById('countdown-days');
+            const hoursEl = document.getElementById('countdown-hours');
+            const minutesEl = document.getElementById('countdown-minutes');
+            const secondsEl = document.getElementById('countdown-seconds');
+
+            const update = () => {
+                const now = new Date().getTime();
+                const distance = targetDate - now;
+                if (distance < 0) {
+                    daysEl.textContent = "000"; hoursEl.textContent = "00"; minutesEl.textContent = "00"; secondsEl.textContent = "00";
+                    clearInterval(countdownInterval);
+                    return;
+                }
+                daysEl.textContent = String(Math.floor(distance / (1000 * 60 * 60 * 24))).padStart(3, '0');
+                hoursEl.textContent = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+                minutesEl.textContent = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+                secondsEl.textContent = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2, '0');
+            };
+            update();
+            countdownInterval = setInterval(update, 1000);
+        }
+
+        function populateCalendar() {
+            if (!studyPlan || studyPlan.length === 0) return;
+            buildSubjectMap();
+            const daysMap = new Map(studyPlan.map(day => [day.date, day]));
+            const startDate = new Date(studyPlan[0].date + "T00:00:00");
+            const lastDayInPlan = new Date(studyPlan[studyPlan.length - 1].date + "T23:59:59");
+            const calendarGridEndDate = new Date(lastDayInPlan.getFullYear(), lastDayInPlan.getMonth() + 1, 0, 23, 59, 59);
+            
+            let dayBeforeTargetStr = '';
+            if (countdownTargetDateStr) {
+                const targetDateObj = new Date(countdownTargetDateStr + 'T00:00:00');
+                targetDateObj.setDate(targetDateObj.getDate() - 1);
+                dayBeforeTargetStr = targetDateObj.toISOString().split('T')[0];
+            }
+            
+            let weeks = []; 
+            let dateCursor = new Date(startDate);
+            dateCursor.setDate(dateCursor.getDate() - dateCursor.getDay());
+            
+            while (dateCursor <= calendarGridEndDate) { let week = []; for(let i=0; i < 7; i++) { week.push(new Date(dateCursor)); dateCursor.setDate(dateCursor.getDate() + 1); } weeks.push(week); }
+            
+            const monthLayout = new Map(); 
+            weeks.forEach((week, weekIndex) => { 
+                const firstDayOfWeek = week[0]; 
+                const monthName = firstDayOfWeek.toLocaleString('es-ES', { month: 'long' }); 
+                if (!monthLayout.has(monthName)) { monthLayout.set(monthName, { startRow: weekIndex + 2, rowSpan: 1 }); } else { monthLayout.get(monthName).rowSpan++; } 
+            });
+
+            calendarContainer.innerHTML = ''; 
+            calendarContainer.innerHTML += '<div class="header-cell meta-header">M</div><div class="header-cell meta-header">S</div>'; 
+            ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].forEach(day => calendarContainer.innerHTML += `<div class="header-cell day-header">${day}</div>`);
+            
+            monthLayout.forEach((layout, name) => { calendarContainer.innerHTML += `<div class="month-cell" style="grid-row: ${layout.startRow} / span ${layout.rowSpan}">${name}</div>`; });
+            
+            weeks.forEach((week, weekIndex) => {
+                calendarContainer.innerHTML += `<div class="week-cell-container" style="grid-row: ${weekIndex + 2}"><span class="week-number">${weekIndex + 1}</span></div>`;
+                week.forEach(date => {
+                    const cell = document.createElement('div');
+                    cell.className = 'day-cell';
+                    const dateString = date.toISOString().split('T')[0];
+                    
+                    const startMonth = startDate.getMonth();
+                    const endMonth = lastDayInPlan.getMonth();
+                    const currentMonth = date.getMonth();
+
+                    if (date.getFullYear() !== currentYear || !(currentMonth >= startMonth && currentMonth <= endMonth)) {
+                        cell.classList.add('empty');
+                    } else {
+                        cell.dataset.date = dateString;
+                        cell.innerHTML = `<div class="calendar-day-number">${date.getDate()}</div>`;
+                        const dayData = daysMap.get(dateString);
+                        if (dayData && dayData.blocks) {
+                            let contentHTML = '<ul>';
+                            dayData.blocks.forEach(block => {
+                                if (block.subject) {
+                                    const score = calculateSubjectScore(block.subject);
+                                    const scoreText = score !== null ? `<span class="subject-score">(${score}%)</span>` : '';
+                                    contentHTML += `<li><span class="subject-title">${block.subject}${scoreText}</span></li>`;
+                                }
+                                contentHTML += block.topics.map(topic => createTopicListItem(topic)).join('');
+                            });
+                            contentHTML += '</ul>';
+                            cell.innerHTML += `<div class="day-content">${contentHTML}</div>`;
+                        }
+                        if (dateString === countdownTargetDateStr) cell.classList.add('target-date');
+                        if (dateString === dayBeforeTargetStr) cell.classList.add('day-before-target');
+                    }
+                    calendarContainer.appendChild(cell);
+                });
+            });
+            updateGlobalProgressBars();
+        }
+        
+        function getScoreColor(percentage) { if (percentage < 60) return 'var(--error-color)'; if (percentage < 80) return 'var(--warning-color)'; return 'var(--vfd-green)'; }
         function loadUserProgress(data) { userProgress = data || {}; }
         async function saveData(key, value) { if (!currentUser) return; const docRef = db.collection('userProgress').doc(currentUser.uid); const keys = key.split('.'); let current = userProgress; for (let i = 0; i < keys.length - 1; i++) { current = current[keys[i]] = current[keys[i]] || {}; } current[keys[keys.length - 1]] = value; try { await docRef.update({ [key]: value }); } catch (error) { if (error.code === 'not-found') { try { await docRef.set({ [key]: value }); } catch (setError) { console.error("Error al crear el documento en Firestore:", setError); } } else if (key === 'studyPlan') { try { await docRef.set({ studyPlan: value }, { merge: true }); } catch (setError) { console.error("Error al guardar el plan de estudios en Firestore:", setError); } } else { console.error("Error al actualizar Firestore:", error); } } }
         function getData(key, defaultValue = null) { const keys = key.split('.'); let result = userProgress; for (const k of keys) { if (result && typeof result === 'object' && k in result) { result = result[k]; } else { return defaultValue; } } return result; }
         function isTopicComplete(topicId) { return ALL_TASK_IDS.every(taskId => getData(`topicData.${topicId}.${taskId}`) === true); }
-        function generateTopicId(topicName) { return `topic_${topicName.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, '-')}`; }
+        function generateTopicId(topicName) { return `topic_${topicName.toLowerCase().replace(/[^a-z0-9]/g, '')}`; }
         function createTopicListItem(topic) { const topicId = generateTopicId(topic); const isComplete = isTopicComplete(topicId); const liClass = `topic-item ${isComplete ? 'topic-completed' : ''}`; let scoreHTML = ''; const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`)) || 0; if (reactivos > 0) { const aciertos = parseInt(getData(`topicData.${topicId}.scoreAciertos`)) || 0; const percentage = (aciertos / reactivos) * 100; const color = getScoreColor(percentage); scoreHTML = `<span class="topic-score" style="color: ${color};">(${percentage.toFixed(2)}%)</span>`; } return `<li class="${liClass}" draggable="true" data-topic-id="${topicId}" data-topic-name="${topic}"><span>${topic}</span>${scoreHTML}</li>`; }
         function buildSubjectMap() { subjectToTopicsMap.clear(); let lastSubject = null; if (!studyPlan) return; studyPlan.forEach(day => { day.blocks.forEach(block => { if (block.subject) { lastSubject = block.subject; } if (lastSubject) { if (!subjectToTopicsMap.has(lastSubject)) { subjectToTopicsMap.set(lastSubject, []); } const dayTopicIds = block.topics.map(topicName => generateTopicId(topicName)); const currentTopics = subjectToTopicsMap.get(lastSubject); const updatedTopics = new Set([...currentTopics, ...dayTopicIds]); subjectToTopicsMap.set(lastSubject, Array.from(updatedTopics)); } }); }); }
         function calculateSubjectScore(subjectName) { const topicIds = subjectToTopicsMap.get(subjectName); if (!topicIds || topicIds.length === 0) return null; let totalScoreSum = 0; let scoredTopicsCount = 0; topicIds.forEach(topicId => { const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`)) || 0; if (reactivos > 0) { const aciertos = parseInt(getData(`topicData.${topicId}.scoreAciertos`)) || 0; totalScoreSum += (aciertos / reactivos) * 100; scoredTopicsCount++; } }); return scoredTopicsCount > 0 ? (totalScoreSum / scoredTopicsCount).toFixed(2) : null; }
-        function updateAllGlobalProgress() { if (!studyPlan) return; let totalTasks = 0; let completedTasks = 0; let totalScore = 0; let scoredTopics = 0; studyPlan.forEach(day => { day.blocks.forEach(block => { block.topics.forEach(topic => { const topicId = generateTopicId(topic); totalTasks += ALL_TASK_IDS.length; ALL_TASK_IDS.forEach(taskId => { if (getData(`topicData.${topicId}.${taskId}`) === true) completedTasks++; }); const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`)) || 0; if (reactivos > 0) { const aciertos = parseInt(getData(`topicData.${topicId}.scoreAciertos`)) || 0; totalScore += (aciertos / reactivos) * 100; scoredTopics++; } }); }); }); const advancePercentage = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0; const promedioPercentage = scoredTopics > 0 ? totalScore / scoredTopics : 0; applySemaforization(globalProgressBar, advancePercentage); globalProgressText.textContent = `${advancePercentage.toFixed(2)}%`; applySemaforization(promedioVitalBar, promedioPercentage); promedioVitalText.textContent = `${promedioPercentage.toFixed(2)}%`; }
+        function updateGlobalProgressBars() { if (!studyPlan) return; let totalTopics = studyPlan.reduce((acc, day) => acc + day.blocks.reduce((blockAcc, block) => blockAcc + block.topics.length, 0), 0); let completedTopics = 0; studyPlan.forEach(day => { day.blocks.forEach(block => { block.topics.forEach(topic => { const topicId = generateTopicId(topic); if (isTopicComplete(topicId)) { completedTopics++; } }); }); }); const advancePercentage = totalTopics > 0 ? (completedTopics / totalTopics) * 100 : 0; globalAdvanceBar.style.width = `${Math.round(advancePercentage)}%`; globalAdvanceBar.textContent = `${advancePercentage.toFixed(2)}%`; let totalSubjectScoreSum = 0; let subjectsWithScoresCount = 0; const allSubjects = Array.from(subjectToTopicsMap.keys()); allSubjects.forEach(subject => { const subjectScoreStr = calculateSubjectScore(subject); if (subjectScoreStr !== null) { totalSubjectScoreSum += parseFloat(subjectScoreStr); subjectsWithScoresCount++; } }); const scorePercentage = subjectsWithScoresCount > 0 ? totalSubjectScoreSum / subjectsWithScoresCount : 0; globalScoreBar.style.width = `${Math.round(scorePercentage)}%`; globalScoreBar.textContent = `${scorePercentage.toFixed(2)}%`; }
         function showDayModal(dateString) { const dayData = studyPlan.find(d => d.date === dateString); const date = new Date(dateString + "T00:00:00"); dayModalTitle.textContent = date.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }); let topicsHTML = '<ul>'; if (dayData && dayData.blocks) { dayData.blocks.forEach(block => { if (block.subject) { const score = calculateSubjectScore(block.subject); const scoreText = score !== null ? `<span class="subject-score">(${score}%)</span>` : ''; topicsHTML += `<li><span class="subject-title">${block.subject}${scoreText}</span></li>`; } topicsHTML += block.topics.map(topic => createTopicListItem(topic)).join(''); }); } topicsHTML += '</ul>'; dayModalTopicsContainer.innerHTML = topicsHTML; dayModalNotes.value = getData(`dayNotes.${dateString}`, ''); dayModal.dataset.currentDate = dateString; dayModalOverlay.classList.add('visible'); dayModal.classList.add('visible'); }
         function closeDayModal() { dayModalOverlay.classList.remove('visible'); dayModal.classList.remove('visible'); }
         function saveDayNote() { const dateString = dayModal.dataset.currentDate; if (dateString) { saveData(`dayNotes.${dateString}`, dayModalNotes.value); } closeDayModal(); }
@@ -401,142 +508,11 @@
         function updateScorePercentage() { const aciertos = parseInt(aciertosInput.value) || 0; const reactivos = parseInt(reactivosInput.value) || 0; let percentage = 0; if (reactivos > 0) { percentage = (aciertos / reactivos) * 100; } const color = getScoreColor(percentage); percentageOutput.value = percentage.toFixed(2) + "%"; percentageOutput.style.color = color; }
         function updateStepCardStatus(cardElement) { const tasksInCard = cardElement.querySelectorAll('.task-checkbox'); const allTasksCompleted = Array.from(tasksInCard).every(task => task.checked); cardElement.classList.toggle('completed', allTasksCompleted); }
         function updateAllStepCardsStatus() { topicStepCards.forEach(updateStepCardStatus); }
-        function finishTopicSession() { const topicId = topicModal.dataset.currentTopicId; if (!topicId) return; closeTopicModal(); populateCalendar(); updateAllGlobalProgress(); }
+        function finishTopicSession() { const topicId = topicModal.dataset.currentTopicId; if (!topicId) return; closeTopicModal(); populateCalendar(); }
         let draggedItem = null; let lastDragOverCell = null; let lastDragOverTopic = null; function clearDragStyles() { if (lastDragOverCell) lastDragOverCell.classList.remove('drag-over'); if (lastDragOverTopic) lastDragOverTopic.classList.remove('drag-over-top', 'drag-over-bottom'); lastDragOverCell = null; lastDragOverTopic = null; }
-        
-        // --- Kanban View Functions ---
-        function generateKanbanSpecialtyHeaderHTML(specialty) { return `<div class="specialty-header" data-specialty="${specialty}"><h3>${specialty}</h3><div class="specialty-progress-bars-container"><div class="specialty-progress-wrapper"><div class="specialty-progress-container"><div class="specialty-progress-bar"></div></div><span class="specialty-progress-text">0.00%</span></div><div class="specialty-progress-wrapper"><div class="specialty-progress-container"><div class="specialty-score-progress-bar"></div></div><span class="specialty-score-text">0.00%</span></div></div></div>`; }
-        function generateKanbanCardHTML(topicName, specialty) {
-            const topicId = generateTopicId(topicName);
-            return `<article class="kanban-card" data-topic-id="${topicId}" data-specialty="${specialty}">
-                <div class="card-summary">
-                    <div class="card-summary-content">
-                        <span class="card-topic-name">${topicName}</span>
-                        <div class="card-progress-wrapper">
-                            <div class="card-progress-container"><div class="card-progress-bar"></div></div>
-                            <span class="card-progress-text"></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-details">
-                    <!-- El contenido del checklist se generará dinámicamente si es necesario -->
-                </div>
-            </article>`;
-        }
-        function populateKanbanBoard() {
-            if (!studyPlan) return;
-            const todoContainer = document.getElementById('col-todo-container');
-            const inprogressContainer = document.getElementById('col-inprogress-container');
-            const doneContainer = document.getElementById('col-done-container');
-            todoContainer.innerHTML = '';
-            inprogressContainer.innerHTML = '';
-            doneContainer.innerHTML = '';
 
-            const allTopics = new Map();
-            let lastSpecialty = '';
-            studyPlan.forEach(day => {
-                day.blocks.forEach(block => {
-                    if (block.subject) lastSpecialty = block.subject;
-                    block.topics.forEach(topic => {
-                        if (!allTopics.has(topic)) allTopics.set(topic, lastSpecialty);
-                    });
-                });
-            });
-
-            const topicsBySpecialty = {};
-            allTopics.forEach((specialty, topic) => {
-                if (!topicsBySpecialty[specialty]) topicsBySpecialty[specialty] = [];
-                topicsBySpecialty[specialty].push(topic);
-            });
-
-            for (const specialty in topicsBySpecialty) {
-                const headerHTML = generateKanbanSpecialtyHeaderHTML(specialty);
-                todoContainer.insertAdjacentHTML('beforeend', headerHTML);
-                topicsBySpecialty[specialty].forEach(topic => {
-                    const cardHTML = generateKanbanCardHTML(topic, specialty);
-                    const tempDiv = document.createElement('div');
-                    tempDiv.innerHTML = cardHTML;
-                    const cardElement = tempDiv.firstElementChild;
-                    placeKanbanCard(cardElement);
-                });
-            }
-            updateAllKanbanProgress();
-        }
-        function placeKanbanCard(card) {
-            const topicId = card.dataset.topicId;
-            let checkedCount = 0;
-            ALL_TASK_IDS.forEach(taskId => { if (getData(`topicData.${topicId}.${taskId}`) === true) checkedCount++; });
-            const percentage = ALL_TASK_IDS.length > 0 ? (checkedCount / ALL_TASK_IDS.length) * 100 : 0;
-            
-            let targetContainerId = 'col-todo-container';
-            if (percentage === 100) targetContainerId = 'col-done-container';
-            else if (percentage > 0) targetContainerId = 'col-inprogress-container';
-            
-            document.getElementById(targetContainerId).appendChild(card);
-            updateKanbanCardProgress(card);
-        }
-        function updateKanbanCardProgress(card) {
-            const topicId = card.dataset.topicId;
-            let checkedCount = 0;
-            ALL_TASK_IDS.forEach(taskId => { if (getData(`topicData.${topicId}.${taskId}`) === true) checkedCount++; });
-            const percentage = ALL_TASK_IDS.length > 0 ? (checkedCount / ALL_TASK_IDS.length) * 100 : 0;
-            
-            const progressBar = card.querySelector('.card-progress-bar');
-            const progressText = card.querySelector('.card-progress-text');
-
-            if (progressBar && progressText) {
-                progressBar.style.width = `${percentage}%`;
-                progressText.textContent = `${percentage.toFixed(2)}%`;
-                if (percentage > 0) card.classList.add('has-progress'); else card.classList.remove('has-progress');
-            }
-        }
-        function updateAllKanbanProgress() {
-            document.querySelectorAll('.specialty-header').forEach(header => {
-                const specialty = header.dataset.specialty;
-                updateSpecialtyCompletion(specialty);
-                updateSpecialtyScore(specialty);
-            });
-            updateAllGlobalProgress();
-        }
-        function updateSpecialtyCompletion(specialty) {
-            const header = document.querySelector(`.specialty-header[data-specialty="${specialty}"]`);
-            if(!header) return;
-            const allCardsInSpecialty = Array.from(allTopics.keys()).filter(topic => allTopics.get(topic) === specialty);
-            if (allCardsInSpecialty.length === 0) return;
-            let totalPercentage = 0;
-            allCardsInSpecialty.forEach(topic => {
-                const topicId = generateTopicId(topic);
-                let checkedCount = 0;
-                ALL_TASK_IDS.forEach(taskId => { if (getData(`topicData.${topicId}.${taskId}`) === true) checkedCount++; });
-                totalPercentage += (checkedCount / ALL_TASK_IDS.length) * 100;
-            });
-            const average = totalPercentage / allCardsInSpecialty.length;
-            header.querySelector('.specialty-progress-bar').style.width = `${average}%`;
-            header.querySelector('.specialty-progress-text').textContent = `${average.toFixed(2)}%`;
-        }
-        function updateSpecialtyScore(specialty) {
-            const header = document.querySelector(`.specialty-header[data-specialty="${specialty}"]`);
-            if(!header) return;
-            const allCardsInSpecialty = Array.from(allTopics.keys()).filter(topic => allTopics.get(topic) === specialty);
-            let totalScore = 0, scoredCount = 0;
-            allCardsInSpecialty.forEach(topic => {
-                const topicId = generateTopicId(topic);
-                const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`)) || 0;
-                if (reactivos > 0) {
-                    const aciertos = parseInt(getData(`topicData.${topicId}.scoreAciertos`)) || 0;
-                    totalScore += (aciertos / reactivos) * 100;
-                    scoredCount++;
-                }
-            });
-            const average = scoredCount > 0 ? totalScore / scoredCount : 0;
-            applySemaforization(header.querySelector('.specialty-score-progress-bar'), average);
-            header.querySelector('.specialty-score-text').textContent = `${average.toFixed(2)}%`;
-        }
-        function applySemaforization(barElement, percentage) { if(!barElement) return; barElement.style.width = `${percentage}%`; barElement.classList.remove('low', 'medium', 'high'); if (percentage >= 67) barElement.classList.add('high'); else if (percentage >= 34) barElement.classList.add('medium'); else if (percentage > 0) barElement.classList.add('low'); }
-        
         async function main() {
             displayDailyQuote();
-            
             const docRef = db.collection('userProgress').doc(currentUser.uid);
             const doc = await docRef.get();
             loadUserProgress(doc.data());
@@ -551,75 +527,104 @@
             countdownTargetDateStr = getData('countdownTarget') || studyPlan[studyPlan.length - 1].date;
             countdownDatePicker.value = countdownTargetDateStr;
 
-            const savedView = getData('currentView', 'calendar');
-            if (savedView === 'kanban') {
-                calendarView.classList.add('hidden');
-                kanbanView.classList.remove('hidden');
-                viewToggleBtn.textContent = 'Vista Calendario';
-                populateKanbanBoard();
-            } else {
-                populateCalendar();
-            }
             startCountdown();
-
-            viewToggleBtn.addEventListener('click', () => {
-                const isCalendarVisible = !calendarView.classList.contains('hidden');
-                if (isCalendarVisible) {
-                    calendarView.classList.add('hidden');
-                    kanbanView.classList.remove('hidden');
-                    viewToggleBtn.textContent = 'Vista Calendario';
-                    saveData('currentView', 'kanban');
-                    populateKanbanBoard();
-                } else {
-                    kanbanView.classList.add('hidden');
-                    calendarView.classList.remove('hidden');
-                    viewToggleBtn.textContent = 'Progreso Vital';
-                    saveData('currentView', 'calendar');
-                    populateCalendar();
-                }
-            });
-
+            populateCalendar();
+            
             editCountdownBtn.addEventListener('click', () => { countdownEditor.style.display = countdownEditor.style.display === 'flex' ? 'none' : 'flex'; });
             saveCountdownBtn.addEventListener('click', async () => { const newDate = countdownDatePicker.value; if (newDate) { countdownTargetDateStr = newDate; await saveData('countdownTarget', newDate); startCountdown(); populateCalendar(); countdownEditor.style.display = 'none'; } });
-            
-            const mainContent = document.getElementById('main-content');
-            mainContent.addEventListener('click', e => {
-                const calendarTopic = e.target.closest('.topic-item');
-                const kanbanCard = e.target.closest('.kanban-card');
-                
-                if (calendarTopic && !draggedItem) { const { topicId, topicName } = calendarTopic.dataset; showTopicPlan(topicId, topicName); return; }
-                if (kanbanCard && !e.target.closest('.card-details')) { const topicName = kanbanCard.querySelector('.card-topic-name').textContent; const topicId = generateTopicId(topicName); showTopicPlan(topicId, topicName); }
-                
-                const dayCell = e.target.closest('.day-cell:not(.empty)');
-                if (dayCell) showDayModal(dayCell.dataset.date);
-            });
-            
+            calendarContainer.addEventListener('click', e => { const topicLi = e.target.closest('.topic-item'); if (topicLi && !draggedItem) { const { topicId, topicName } = topicLi.dataset; showTopicPlan(topicId, topicName); return; } const cell = e.target.closest('.day-cell:not(.empty)'); if (cell) showDayModal(cell.dataset.date); });
             dayModalTopicsContainer.addEventListener('click', e => { const topicLi = e.target.closest('.topic-item'); if (topicLi) { const { topicId, topicName } = topicLi.dataset; showTopicPlan(topicId, topicName); } });
             dayModal.querySelector('#modal-close-day').addEventListener('click', closeDayModal);
             dayModalOverlay.addEventListener('click', closeDayModal);
             topicModal.querySelector('#modal-close-topic').addEventListener('click', closeTopicModal);
-            finishTopicButton.addEventListener('click', () => { 
-                finishTopicSession(); 
-                if(!kanbanView.classList.contains('hidden')) {
-                    const topicId = topicModal.dataset.currentTopicId;
-                    const card = document.querySelector(`.kanban-card[data-topic-id="${topicId}"]`);
-                    if(card) placeKanbanCard(card);
-                    updateAllKanbanProgress();
-                }
-            });
+            finishTopicButton.addEventListener('click', finishTopicSession);
             document.addEventListener('keydown', e => { if (e.key === 'Escape') { if (topicModal.classList.contains('visible')) closeTopicModal(); else if (dayModal.classList.contains('visible')) closeDayModal(); } });
             saveNoteButton.addEventListener('click', saveDayNote);
             topicTaskCheckboxes.forEach(checkbox => { checkbox.addEventListener('change', function() { saveTopicState(this.id, this.checked); updateStepCardStatus(this.closest('.step-card')); }); });
             aciertosInput.addEventListener('input', () => { saveTopicState('scoreAciertos', aciertosInput.value); updateScorePercentage(); });
             reactivosInput.addEventListener('input', () => { saveTopicState('scoreReactivos', reactivosInput.value); updateScorePercentage(); });
             
-            calendarContainer.addEventListener('dragstart', e => { if (e.target.classList.contains('topic-item')) { draggedItem = e.target; let subjectTitle = 'default'; let currentElement = draggedItem.previousElementSibling; while(currentElement) { if(currentElement.querySelector('.subject-title')) { subjectTitle = currentElement.querySelector('.subject-title').textContent.split('(')[0].trim(); break; } currentElement = currentElement.previousElementSibling; } e.dataTransfer.setData('application/json', JSON.stringify({ topicName: draggedItem.dataset.topicName, sourceSubject: subjectTitle })); setTimeout(() => e.target.classList.add('dragging'), 0); } });
+            calendarContainer.addEventListener('dragstart', e => {
+                if (e.target.classList.contains('topic-item')) {
+                    draggedItem = e.target;
+                    
+                    let subjectTitle = 'default';
+                    let currentElement = draggedItem.previousElementSibling;
+                    while(currentElement) {
+                        if(currentElement.querySelector('.subject-title')) {
+                            subjectTitle = currentElement.querySelector('.subject-title').textContent.split('(')[0].trim();
+                            break;
+                        }
+                        currentElement = currentElement.previousElementSibling;
+                    }
+                    e.dataTransfer.setData('application/json', JSON.stringify({
+                        topicName: draggedItem.dataset.topicName,
+                        sourceSubject: subjectTitle
+                    }));
+
+                    setTimeout(() => e.target.classList.add('dragging'), 0);
+                }
+            });
+
             calendarContainer.addEventListener('dragend', e => { if (draggedItem) { draggedItem.classList.remove('dragging'); draggedItem = null; clearDragStyles(); } });
             calendarContainer.addEventListener('dragover', e => { e.preventDefault(); const targetCell = e.target.closest('.day-cell:not(.empty)'); if (!targetCell || !draggedItem) { clearDragStyles(); return; } const sourceDate = draggedItem.closest('.day-cell').dataset.date; const targetDate = targetCell.dataset.date; clearDragStyles(); if (sourceDate === targetDate) { const targetTopic = e.target.closest('.topic-item'); if (targetTopic && targetTopic !== draggedItem) { lastDragOverTopic = targetTopic; const rect = targetTopic.getBoundingClientRect(); const midpointY = rect.top + rect.height / 2; if (e.clientY < midpointY) { targetTopic.classList.add('drag-over-top'); } else { targetTopic.classList.add('drag-over-bottom'); } } } else { lastDragOverCell = targetCell; targetCell.classList.add('drag-over'); } });
-            calendarContainer.addEventListener('drop', e => { e.preventDefault(); if (!draggedItem) return; const targetCell = e.target.closest('.day-cell'); if (!targetCell || targetCell.classList.contains('empty')) { clearDragStyles(); return; } const sourceCell = draggedItem.closest('.day-cell'); const sourceDate = sourceCell.dataset.date; const targetDate = targetCell.dataset.date; const { topicName, sourceSubject } = JSON.parse(e.dataTransfer.getData('application/json')); const sourceDay = studyPlan.find(d => d.date === sourceDate); if (!sourceDay) return; let removed = false; sourceDay.blocks.forEach(block => { const topicIndex = block.topics.indexOf(topicName); if (topicIndex > -1) { block.topics.splice(topicIndex, 1); removed = true; } }); if (!removed) return; if (sourceDate === targetDate) { const targetTopicEl = e.target.closest('.topic-item'); let reinserted = false; if (targetTopicEl && targetTopicEl !== draggedItem) { const targetTopicName = targetTopicEl.dataset.topicName; const rect = targetTopicEl.getBoundingClientRect(); const midpointY = rect.top + rect.height / 2; const insertBefore = e.clientY < midpointY; sourceDay.blocks.forEach(block => { const targetIndex = block.topics.indexOf(targetTopicName); if (targetIndex > -1) { block.topics.splice(insertBefore ? targetIndex : targetIndex + 1, 0, topicName); reinserted = true; } }); } if (!reinserted) { sourceDay.blocks[sourceDay.blocks.length - 1].topics.push(topicName); } } else { let targetDay = studyPlan.find(d => d.date === targetDate); if (!targetDay) { targetDay = { date: targetDate, blocks: [] }; studyPlan.push(targetDay); } let targetBlock = targetDay.blocks.find(b => b.subject === sourceSubject); if (!targetBlock) { targetBlock = { subject: sourceSubject, topics: [] }; targetDay.blocks.push(targetBlock); } targetBlock.topics.push(topicName); } studyPlan.forEach(day => { day.blocks = day.blocks.filter(block => (block.subject && block.topics.length >= 0) || block.topics.length > 0); }); studyPlan = studyPlan.filter(day => day.blocks.length > 0); studyPlan.sort((a, b) => new Date(a.date) - new Date(b.date)); clearDragStyles(); saveData('studyPlan', studyPlan).then(populateCalendar); });
+            
+            calendarContainer.addEventListener('drop', e => {
+                e.preventDefault();
+                if (!draggedItem) return;
+
+                const targetCell = e.target.closest('.day-cell');
+                if (!targetCell || targetCell.classList.contains('empty')) { clearDragStyles(); return; }
+                
+                const sourceCell = draggedItem.closest('.day-cell');
+                const sourceDate = sourceCell.dataset.date;
+                const targetDate = targetCell.dataset.date;
+                const { topicName, sourceSubject } = JSON.parse(e.dataTransfer.getData('application/json'));
+                
+                const sourceDay = studyPlan.find(d => d.date === sourceDate);
+                if (!sourceDay) return;
+                let removed = false;
+                sourceDay.blocks.forEach(block => { const topicIndex = block.topics.indexOf(topicName); if (topicIndex > -1) { block.topics.splice(topicIndex, 1); removed = true; } });
+                if (!removed) return;
+                
+                if (sourceDate === targetDate) {
+                    const targetTopicEl = e.target.closest('.topic-item');
+                    let reinserted = false;
+                    if(targetTopicEl && targetTopicEl !== draggedItem) {
+                        const targetTopicName = targetTopicEl.dataset.topicName;
+                        const rect = targetTopicEl.getBoundingClientRect();
+                        const midpointY = rect.top + rect.height / 2;
+                        const insertBefore = e.clientY < midpointY;
+                        sourceDay.blocks.forEach(block => {
+                            const targetIndex = block.topics.indexOf(targetTopicName);
+                            if(targetIndex > -1) {
+                                block.topics.splice(insertBefore ? targetIndex : targetIndex + 1, 0, topicName);
+                                reinserted = true;
+                            }
+                        });
+                    }
+                    if(!reinserted) { sourceDay.blocks[sourceDay.blocks.length-1].topics.push(topicName); }
+                } else {
+                    let targetDay = studyPlan.find(d => d.date === targetDate);
+                    if (!targetDay) { targetDay = { date: targetDate, blocks: [] }; studyPlan.push(targetDay); }
+                    let targetBlock = targetDay.blocks.find(b => b.subject === sourceSubject);
+                    if (!targetBlock) {
+                        targetBlock = { subject: sourceSubject, topics: [] };
+                        targetDay.blocks.push(targetBlock);
+                    }
+                    targetBlock.topics.push(topicName);
+                }
+
+                studyPlan.forEach(day => { day.blocks = day.blocks.filter(block => (block.subject && block.topics.length >= 0) || block.topics.length > 0); });
+                studyPlan = studyPlan.filter(day => day.blocks.length > 0);
+                studyPlan.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+                clearDragStyles();
+                saveData('studyPlan', studyPlan).then(populateCalendar);
+            });
         }
         main();
-    }
+    }// ... El script completo y unificado irá aquí ...
     </script>
 </body>
 </html>
