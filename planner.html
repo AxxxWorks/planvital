@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Frecuencia Vital - Estudio Unificado</title>
+    <title>Frecuencia Vital - Estudio Unificado v2</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
@@ -16,7 +16,8 @@
             --text-secondary: #a0a0a0;
             --text-muted: #777;
             --accent-color: #00FF7F;
-            --subject-highlight-color: #ff9800;
+            /* CAMBIO 5: Color de especialidad por defecto a blanco */
+            --subject-highlight-color: #e0e0e0; 
             --meta-bg: #181c25;
             --meta-header-bg: #101217;
             --meta-border: #2c3240;
@@ -108,6 +109,7 @@
         .day-cell { background-color: var(--cell-bg); min-height: 160px; padding: 8px 12px; position: relative; overflow-y: auto; cursor: pointer; transition: all 0.2s; border: 2px solid transparent; }
         .day-cell.empty { background-color: var(--bg-color); cursor: default; }
         .day-cell.drag-over { background-color: var(--meta-bg); border-color: var(--accent-color); }
+        /* CAMBIO 4: Estilos para el día final y el día anterior */
         .day-cell.target-date { border-color: var(--error-color); box-shadow: 0 0 10px rgba(255, 107, 107, 0.4); }
         .day-cell.target-date .calendar-day-number { color: var(--error-color); font-weight: bold; }
         .day-cell.day-before-target { border-color: var(--warning-color); }
@@ -116,6 +118,8 @@
         .day-content ul { list-style-type: none; padding-left: 0; margin: 25px 0 0 0; }
         .day-content li { margin-bottom: 4px; padding-left: 14px; position: relative; font-size: 0.85em; }
         .day-content .subject-title { color: var(--subject-highlight-color); font-weight: 700; display: block; margin-bottom: 6px; text-transform: uppercase; font-size: 1em; text-shadow: 0 0 5px rgba(255, 152, 0, 0.4); padding-left: 0; }
+        /* CAMBIO 5: Estilo para la especialidad completada */
+        .day-content .subject-title.subject-completed { color: var(--text-muted) !important; text-shadow: none; }
         .subject-title::before { content: none !important; }
         .subject-score { color: var(--meta-text); font-size: 0.8em; font-weight: 400; margin-left: 8px; }
         .topic-item { display: flex; align-items: center; justify-content: space-between; padding: 4px 6px; margin-left: -6px; border-radius: 4px; transition: all 0.2s; border-top: 2px solid transparent; border-bottom: 2px solid transparent; }
@@ -320,7 +324,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
-        // Frecuencia Vital - Lógica de Aplicación Unificada
+        // Frecuencia Vital - Lógica de Aplicación Unificada v2
         const firebaseConfig = {
             apiKey: "AIzaSyD4SjKhedm4ZWHed70_sjQgxPokjHvwvUc",
             authDomain: "frecuencia-vital.firebaseapp.com",
@@ -345,25 +349,13 @@
         });
 
         async function initializeAppLogic() {
-            console.log("Iniciando Frecuencia Vital...");
+            console.log("Iniciando Frecuencia Vital v2...");
             const currentYear = new Date().getFullYear();
 
             // --- SECCIÓN 1: FUENTE DE DATOS UNIFICADA ---
-
-            // Base de datos de temas y progreso inicial de "2listado.html"
-            const legacyProgressData = [
-                { specialty: "Geriatría", topic: "Valoración geriátrica", aciertos: 18, reactivos: 21 }, { specialty: "Geriatría", topic: "Alzheimer", aciertos: 12, reactivos: 15 }, { specialty: "Geriatría", topic: "Delirium", aciertos: 7, reactivos: 15 }, { specialty: "Geriatría", topic: "Demencia vascular", aciertos: 8, reactivos: 9 }, { specialty: "Geriatría", topic: "Deterioro cognitivo", aciertos: 15, reactivos: 21 }, { specialty: "Geriatría", topic: "Insomnio en el adulto mayor", aciertos: 9, reactivos: 9 }, { specialty: "Geriatría", topic: "Síndrome de caídas", aciertos: 7, reactivos: 9 }, { specialty: "Geriatría", topic: "Síndrome de fragilidad", aciertos: 15, reactivos: 21 }, { specialty: "Geriatría", topic: "Maltrato en el adulto mayor", aciertos: 8, reactivos: 9 }, { specialty: "Geriatría", topic: "Colapso del cuidador", aciertos: 15, reactivos: 21 }, { specialty: "Geriatría", topic: "Depresión mayor", aciertos: 9, reactivos: 9 },
-                { specialty: "Psiquiatría", topic: "Abuso de sustancias", aciertos: 11, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Abstinencia alcohólica", aciertos: 12, reactivos: 12 }, { specialty: "Psiquiatría", topic: "Trastorno por alcohol", aciertos: 9, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Esquizofrenia", aciertos: 10, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Estrés post traumático", aciertos: 3, reactivos: 9 }, { specialty: "Psiquiatría", topic: "Trastornos del sueño", aciertos: 10, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Intento de suicidio", aciertos: 8, reactivos: 9 }, { specialty: "Psiquiatría", topic: "Tdha", aciertos: 8, reactivos: 12 }, { specialty: "Psiquiatría", topic: "Trastorno bipolar", aciertos: 13, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Trastornos de ansiedad", aciertos: 10, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Trastornos c. alimentaria", aciertos: 13, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Consumo de mariguana", aciertos: 14, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Violencia contra la mujer", aciertos: 12, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Autismo", aciertos: 8, reactivos: 9 }, { specialty: "Psiquiatría", topic: "Síndrome de Munchausen", aciertos: 8, reactivos: 9 }, { specialty: "Psiquiatría", topic: "Depresion", aciertos: 13, reactivos: 15 },
-                { specialty: "Dermatología", topic: "Dermatitis atópica", aciertos: 18, reactivos: 18 }, { specialty: "Dermatología", topic: "Dermatofitosis", aciertos: 16, reactivos: 18 }, { specialty: "Dermatología", topic: "SSJ y NET", aciertos: 12, reactivos: 12 }, { specialty: "Dermatología", topic: "Escabiosis - Sarna", aciertos: 12, reactivos: 12 }, { specialty: "Dermatología", topic: "Impétigo", aciertos: 7, reactivos: 12 }, { specialty: "Dermatología", topic: "Melanoma", aciertos: 8, reactivos: 12 }, { specialty: "Dermatología", topic: "Psoriasis", aciertos: 8, reactivos: 12 }, { specialty: "Dermatología", topic: "Carcinoma basocelular", aciertos: 10, reactivos: 12 }, { specialty: "Dermatología", topic: "Acné vulgar", aciertos: 9, reactivos: 9 }, { specialty: "Dermatología", topic: "Erisipela", aciertos: 7, reactivos: 9 }, { specialty: "Dermatología", topic: "Urticaria", aciertos: 7, reactivos: 9 }, { specialty: "Dermatología", topic: "Dermatitis por contacto", aciertos: 6, reactivos: 9 }, { specialty: "Dermatología", topic: "Pediculosis capitis", aciertos: 11, reactivos: 12 }, { specialty: "Dermatología", topic: "Síndrome de Ritter", aciertos: 10, reactivos: 12 }, { specialty: "Dermatología", topic: "Carcinoma espinocelular", aciertos: 9, reactivos: 12 },
-                { specialty: "Nefrología", topic: "Lesión renal aguda", aciertos: 7, reactivos: 12 }, { specialty: "Nefrología", topic: "Enfermedad renal crónica 1", aciertos: 10, reactivos: 12 }, { specialty: "Nefrología", topic: "Nefropatía diabética", aciertos: 7, reactivos: 12 }, { specialty: "Nefrología", topic: "Síndrome nefrítico y nefrootico", aciertos: 17, reactivos: 24 }, { specialty: "Nefrología", topic: "Trastorno ácido-base", aciertos: 11, reactivos: 12 }, { specialty: "Nefrología", topic: "Nefritis lúpica", aciertos: 9, reactivos: 12 },
-                { specialty: "Reumatología", topic: "Artritis reactiva", aciertos: 8, reactivos: 12 }, { specialty: "Reumatología", topic: "Artritis reumatoide", aciertos: 10, reactivos: 15 }, { specialty: "Reumatología", topic: "Espondilitis anquilosante", aciertos: 11, reactivos: 12 }, { specialty: "Reumatología", topic: "Gota", aciertos: 6, reactivos: 12 }, { specialty: "Reumatología", topic: "Lupus eritematoso sistémico", aciertos: 12, reactivos: 15 }, { specialty: "Reumatología", topic: "Arteritis de la temporal", aciertos: 9, reactivos: 9 }, { specialty: "Reumatología", topic: "Granulomatosis de Wegener", aciertos: 6, reactivos: 9 }, { specialty: "Reumatología", topic: "Artritis Septica", aciertos: 9, reactivos: 12 },
-                { specialty: "Neumología", topic: "Asma en pediátricos", aciertos: 11, reactivos: 21 }, { specialty: "Neumología", topic: "Exacerbación de asma", aciertos: 8, reactivos: 9 }, { specialty: "Neumología", topic: "Cáncer de pulmón", aciertos: 4, reactivos: 12 }, { specialty: "Neumología", "topic": "Epoc1", "aciertos": 3, "reactivos": 12 }, { "specialty": "Neumología", "topic": "Derrame pleural", "aciertos": 10, "reactivos": 12 }, { "specialty": "Neumología", "topic": "Tabaquismo", "aciertos": 5, "reactivos": 9 },
-                { specialty: "Neurología", topic: "Cefalea Secundarias", aciertos: 12, reactivos: 12 }, { specialty: "Neurología", topic: "Cefaleas Tensional y Migraña", aciertos: 9, reactivos: 12 }, { specialty: "Neurología", topic: "Crisis convulsivas", aciertos: 4, reactivos: 12 }, { specialty: "Neurología", topic: "Estatus epiléptico", aciertos: 9, reactivos: 12 }, { specialty: "Neurología", topic: "Crisis febriles", aciertos: 5, reactivos: 12 }, { specialty: "Neurología", topic: "Enfermedad de Parkinson", aciertos: 6, reactivos: 9 }, { specialty: "Neurología", topic: "EVC isquémico", aciertos: 10, reactivos: 12 }, { specialty: "Neurología", topic: "Hemorragia subaracnoidea 1", aciertos: 9, reactivos: 9 }, { specialty: "Neurología", topic: "Guillain Barré", aciertos: 8, reactivos: 9 }, { specialty: "Neurología", topic: "Esclerosis múltiple", aciertos: 5, reactivos: 12 }, { specialty: "Neurología", topic: "EVC hemorrágico", aciertos: 6, reactivos: 12 }, { specialty: "Neurología", topic: "Miastenia gravis", aciertos: 5, reactivos: 9 }, { specialty: "Neurología", topic: "Muerte encefálica", aciertos: 6, reactivos: 9 },
-                { specialty: "Hematología", topic: "Anemia generalidades 1", aciertos: 8, reactivos: 18 }, { specialty: "Hematología", topic: "Anemia ferropénica Adultos", aciertos: 8, reactivos: 12 }, { specialty: "Hematología", topic: "Leucemias", aciertos: 8, reactivos: 12 }, { specialty: "Hematología", topic: "Linfomas", aciertos: 10, reactivos: 15 }, { specialty: "Hematología", topic: "Trombocitopenia inmune", aciertos: 5, reactivos: 9 },
-                { specialty: "Infectología", topic: "Brucelosis", aciertos: 3, reactivos: 3 }, { specialty: "Infectología", topic: "Cisticercosis", aciertos: 7, reactivos: 9 }, { specialty: "Infectología", topic: "Clostridium y teniasis", aciertos: 8, reactivos: 9 }, { specialty: "Infectología", topic: "Diarrea aguda en adultos 1", aciertos: 9, reactivos: 12 }, { specialty: "Infectología", topic: "Diarrea en niños", aciertos: 10, reactivos: 12 }, { specialty: "Infectología", topic: "Chinkungunya", aciertos: 7, reactivos: 9 }, { specialty: "Infectología", topic: "Dengue 1", aciertos: 6, reactivos: 9 }, { specialty: "Infectología", topic: "Zika", aciertos: 8, reactivos: 9 }, { specialty: "Infectología", topic: "Paludismo", aciertos: 7, reactivos: 9 }, { specialty: "Infectología", topic: "Salmonella Fiebre tifoidea", aciertos: 7, reactivos: 9 }, { specialty: "Infectología", topic: "Sepsis y choque séptico", aciertos: 7, reactivos: 9 }, { specialty: "Infectología", topic: "Tuberculosis pulmonar", aciertos: 14, reactivos: 21 }, { specialty: "Infectología", topic: "ETS Generalidades", aciertos: 14, reactivos: 18 }, { specialty: "Infectología", topic: "VIH Adultos", aciertos: 16, reactivos: 21 }, { specialty: "Infectología", topic: "VIH Madre e hijo", aciertos: 17, reactivos: 21 }, { specialty: "Infectología", topic: "RV yOportunistas", aciertos: 14, reactivos: 21 }, { specialty: "Infectología", topic: "Sarcoma de Kaposi", aciertos: 6, reactivos: 9 }, { specialty: "Infectología", topic: "Giardiasis", aciertos: 8, reactivos: 9 }, { specialty: "Infectología", topic: "Tuberculosis extrapulmonar", aciertos: 10, reactivos: 12 }, { specialty: "Infectología", topic: "Lepra", aciertos: 5, reactivos: 9 }, { specialty: "Infectología", topic: "Medios de cultivo", aciertos: 5, reactivos: 9 }, { specialty: "Infectología", topic: "Actinomicosis", aciertos: 6, reactivos: 9 }, { specialty: "Infectología", topic: "Amebiasis intestinal", aciertos: 7, reactivos: 9 }, { specialty: "Infectología", topic: "Anquilostomiasis", aciertos: 9, reactivos: 9 }, { specialty: "Infectología", topic: "Ascariasis", aciertos: 9, reactivos: 9 }, { specialty: "Infectología", topic: "Aspergilosis", aciertos: 7, reactivos: 9 }, { "specialty": "Infectología", "topic": "Coccidioidomicosis", "aciertos": 8, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Difteria", "aciertos": 9, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Enfermedad de Chagas 1", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Enfermedad de Lyme", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Estrongiloidiasis", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Fascitis necrosante", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Fiebre de origen desconocido", "aciertos": 5, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Filariasis linfática", "aciertos": 4, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Filariasis ocular Loasis", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Infecciones odontogénicas", "aciertos": 6, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Leishmaniasis", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Leptospirosis", "aciertos": 8, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Mucormicosis", "aciertos": 9, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Oncocercosis", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Oxiuriasis o enterobiasis", "aciertos": 5, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Poliomielitis", "aciertos": 8, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Rabia", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Tricuriasis", "aciertos": 9, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Triquinosis", "aciertos": 8, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Neumonía adquirida en la comunidad", "aciertos": 3, "reactivos": 12 }, { "specialty": "Infectología", "topic": "Neumonía bacteriana adquirida en la comunidad Niños", "aciertos": 7, "reactivos": 12 }, { "specialty": "Infectología", "topic": "Influenza", "aciertos": 6, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Meningitis", "aciertos": 10, "reactivos": 12 }, { "specialty": "Infectología", "topic": "Encefalitis viral", "aciertos": 8, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Absceso cerebral", "aciertos": 8, "reactivos": 9 },
-                { specialty: "Endocrinología", topic: "INTRO DM", aciertos: 10, reactivos: 12 }, { specialty: "Endocrinología", topic: "Prediabetes", aciertos: 15, reactivos: 15 }, { specialty: "Endocrinología", topic: "Diabetes mellitus", aciertos: 12, reactivos: 15 }, { specialty: "Endocrinología", topic: "Diabetes en el adulto mayor", aciertos: 6, reactivos: 9 }, { specialty: "Endocrinología", topic: "Diabetes en pediatría", aciertos: 5, reactivos: 9 }, { specialty: "Endocrinología", topic: "Cetoacidosis diabética y EHH", aciertos: 13, reactivos: 18 }, { specialty: "Endocrinología", topic: "Hipoglucemia", aciertos: 6, reactivos: 9 }
-            ];
-             // Temario de "1estructura.html" para fases posteriores
+            const legacyProgressData = [ { specialty: "Geriatría", topic: "Valoración geriátrica", aciertos: 18, reactivos: 21 }, { specialty: "Geriatría", topic: "Alzheimer", aciertos: 12, reactivos: 15 }, { specialty: "Geriatría", topic: "Delirium", aciertos: 7, reactivos: 15 }, { specialty: "Geriatría", topic: "Demencia vascular", aciertos: 8, reactivos: 9 }, { specialty: "Geriatría", topic: "Deterioro cognitivo", aciertos: 15, reactivos: 21 }, { specialty: "Geriatría", topic: "Insomnio en el adulto mayor", aciertos: 9, reactivos: 9 }, { specialty: "Geriatría", topic: "Síndrome de caídas", aciertos: 7, reactivos: 9 }, { specialty: "Geriatría", topic: "Síndrome de fragilidad", aciertos: 15, reactivos: 21 }, { specialty: "Geriatría", topic: "Maltrato en el adulto mayor", aciertos: 8, reactivos: 9 }, { specialty: "Geriatría", topic: "Colapso del cuidador", aciertos: 15, reactivos: 21 }, { specialty: "Geriatría", topic: "Depresión mayor", aciertos: 9, reactivos: 9 }, { specialty: "Psiquiatría", topic: "Abuso de sustancias", aciertos: 11, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Abstinencia alcohólica", aciertos: 12, reactivos: 12 }, { specialty: "Psiquiatría", topic: "Trastorno por alcohol", aciertos: 9, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Esquizofrenia", aciertos: 10, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Estrés post traumático", aciertos: 3, reactivos: 9 }, { specialty: "Psiquiatría", topic: "Trastornos del sueño", aciertos: 10, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Intento de suicidio", aciertos: 8, reactivos: 9 }, { specialty: "Psiquiatría", topic: "Tdha", aciertos: 8, reactivos: 12 }, { specialty: "Psiquiatría", topic: "Trastorno bipolar", aciertos: 13, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Trastornos de ansiedad", aciertos: 10, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Trastornos c. alimentaria", aciertos: 13, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Consumo de mariguana", aciertos: 14, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Violencia contra la mujer", aciertos: 12, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Autismo", aciertos: 8, reactivos: 9 }, { specialty: "Psiquiatría", topic: "Síndrome de Munchausen", aciertos: 8, reactivos: 9 }, { specialty: "Psiquiatría", topic: "Depresion", aciertos: 13, reactivos: 15 }, { specialty: "Dermatología", topic: "Dermatitis atópica", aciertos: 18, reactivos: 18 }, { specialty: "Dermatología", topic: "Dermatofitosis", aciertos: 16, reactivos: 18 }, { specialty: "Dermatología", topic: "SSJ y NET", aciertos: 12, reactivos: 12 }, { specialty: "Dermatología", topic: "Escabiosis - Sarna", aciertos: 12, reactivos: 12 }, { specialty: "Dermatología", topic: "Impétigo", aciertos: 7, reactivos: 12 }, { specialty: "Dermatología", topic: "Melanoma", aciertos: 8, reactivos: 12 }, { specialty: "Dermatología", topic: "Psoriasis", aciertos: 8, reactivos: 12 }, { specialty: "Dermatología", topic: "Carcinoma basocelular", aciertos: 10, reactivos: 12 }, { specialty: "Dermatología", topic: "Acné vulgar", aciertos: 9, reactivos: 9 }, { specialty: "Dermatología", topic: "Erisipela", aciertos: 7, reactivos: 9 }, { specialty: "Dermatología", topic: "Urticaria", aciertos: 7, reactivos: 9 }, { specialty: "Dermatología", topic: "Dermatitis por contacto", aciertos: 6, reactivos: 9 }, { specialty: "Dermatología", topic: "Pediculosis capitis", aciertos: 11, reactivos: 12 }, { specialty: "Dermatología", topic: "Síndrome de Ritter", aciertos: 10, reactivos: 12 }, { specialty: "Dermatología", topic: "Carcinoma espinocelular", aciertos: 9, reactivos: 12 }, { specialty: "Nefrología", topic: "Lesión renal aguda", aciertos: 7, reactivos: 12 }, { specialty: "Nefrología", topic: "Enfermedad renal crónica 1", aciertos: 10, reactivos: 12 }, { specialty: "Nefrología", topic: "Nefropatía diabética", aciertos: 7, reactivos: 12 }, { specialty: "Nefrología", topic: "Síndrome nefrítico y nefrootico", aciertos: 17, reactivos: 24 }, { specialty: "Nefrología", topic: "Trastorno ácido-base", aciertos: 11, reactivos: 12 }, { specialty: "Nefrología", topic: "Nefritis lúpica", aciertos: 9, reactivos: 12 }, { specialty: "Reumatología", topic: "Artritis reactiva", aciertos: 8, reactivos: 12 }, { specialty: "Reumatología", topic: "Artritis reumatoide", aciertos: 10, reactivos: 15 }, { specialty: "Reumatología", topic: "Espondilitis anquilosante", aciertos: 11, reactivos: 12 }, { specialty: "Reumatología", topic: "Gota", aciertos: 6, reactivos: 12 }, { specialty: "Reumatología", topic: "Lupus eritematoso sistémico", aciertos: 12, reactivos: 15 }, { specialty: "Reumatología", topic: "Arteritis de la temporal", aciertos: 9, reactivos: 9 }, { specialty: "Reumatología", topic: "Granulomatosis de Wegener", aciertos: 6, reactivos: 9 }, { specialty: "Reumatología", topic: "Artritis Septica", aciertos: 9, reactivos: 12 }, { specialty: "Neumología", topic: "Asma en pediátricos", aciertos: 11, reactivos: 21 }, { specialty: "Neumología", topic: "Exacerbación de asma", aciertos: 8, reactivos: 9 }, { specialty: "Neumología", topic: "Cáncer de pulmón", aciertos: 4, reactivos: 12 }, { specialty: "Neumología", "topic": "Epoc1", "aciertos": 3, "reactivos": 12 }, { "specialty": "Neumología", "topic": "Derrame pleural", "aciertos": 10, "reactivos": 12 }, { "specialty": "Neumología", "topic": "Tabaquismo", "aciertos": 5, "reactivos": 9 }, { specialty: "Neurología", topic: "Cefalea Secundarias", aciertos: 12, reactivos: 12 }, { specialty: "Neurología", topic: "Cefaleas Tensional y Migraña", aciertos: 9, reactivos: 12 }, { specialty: "Neurología", topic: "Crisis convulsivas", aciertos: 4, reactivos: 12 }, { specialty: "Neurología", topic: "Estatus epiléptico", aciertos: 9, reactivos: 12 }, { specialty: "Neurología", topic: "Crisis febriles", aciertos: 5, reactivos: 12 }, { specialty: "Neurología", topic: "Enfermedad de Parkinson", aciertos: 6, reactivos: 9 }, { specialty: "Neurología", topic: "EVC isquémico", aciertos: 10, reactivos: 12 }, { specialty: "Neurología", topic: "Hemorragia subaracnoidea 1", aciertos: 9, reactivos: 9 }, { specialty: "Neurología", topic: "Guillain Barré", aciertos: 8, reactivos: 9 }, { specialty: "Neurología", topic: "Esclerosis múltiple", aciertos: 5, reactivos: 12 }, { specialty: "Neurología", topic: "EVC hemorrágico", aciertos: 6, reactivos: 12 }, { specialty: "Neurología", topic: "Miastenia gravis", aciertos: 5, reactivos: 9 }, { specialty: "Neurología", topic: "Muerte encefálica", aciertos: 6, reactivos: 9 }, { specialty: "Hematología", topic: "Anemia generalidades 1", aciertos: 8, reactivos: 18 }, { specialty: "Hematología", topic: "Anemia ferropénica Adultos", aciertos: 8, reactivos: 12 }, { specialty: "Hematología", topic: "Leucemias", aciertos: 8, reactivos: 12 }, { specialty: "Hematología", topic: "Linfomas", aciertos: 10, reactivos: 15 }, { specialty: "Hematología", topic: "Trombocitopenia inmune", aciertos: 5, reactivos: 9 }, { specialty: "Infectología", topic: "Brucelosis", aciertos: 3, reactivos: 3 }, { specialty: "Infectología", topic: "Cisticercosis", aciertos: 7, reactivos: 9 }, { specialty: "Infectología", topic: "Clostridium y teniasis", aciertos: 8, reactivos: 9 }, { specialty: "Infectología", topic: "Diarrea aguda en adultos 1", aciertos: 9, reactivos: 12 }, { specialty: "Infectología", topic: "Diarrea en niños", aciertos: 10, reactivos: 12 }, { specialty: "Infectología", topic: "Chinkungunya", aciertos: 7, reactivos: 9 }, { specialty: "Infectología", topic: "Dengue 1", aciertos: 6, reactivos: 9 }, { specialty: "Infectología", topic: "Zika", aciertos: 8, reactivos: 9 }, { specialty: "Infectología", topic: "Paludismo", aciertos: 7, reactivos: 9 }, { specialty: "Infectología", topic: "Salmonella Fiebre tifoidea", aciertos: 7, reactivos: 9 }, { specialty: "Infectología", topic: "Sepsis y choque séptico", aciertos: 7, reactivos: 9 }, { specialty: "Infectología", topic: "Tuberculosis pulmonar", aciertos: 14, reactivos: 21 }, { specialty: "Infectología", topic: "ETS Generalidades", aciertos: 14, reactivos: 18 }, { specialty: "Infectología", topic: "VIH Adultos", aciertos: 16, reactivos: 21 }, { specialty: "Infectología", topic: "VIH Madre e hijo", aciertos: 17, reactivos: 21 }, { specialty: "Infectología", topic: "RV yOportunistas", aciertos: 14, reactivos: 21 }, { specialty: "Infectología", topic: "Sarcoma de Kaposi", aciertos: 6, reactivos: 9 }, { specialty: "Infectología", topic: "Giardiasis", aciertos: 8, reactivos: 9 }, { specialty: "Infectología", topic: "Tuberculosis extrapulmonar", aciertos: 10, reactivos: 12 }, { specialty: "Infectología", topic: "Lepra", aciertos: 5, reactivos: 9 }, { specialty: "Infectología", topic: "Medios de cultivo", aciertos: 5, reactivos: 9 }, { specialty: "Infectología", topic: "Actinomicosis", aciertos: 6, reactivos: 9 }, { specialty: "Infectología", topic: "Amebiasis intestinal", aciertos: 7, reactivos: 9 }, { specialty: "Infectología", topic: "Anquilostomiasis", aciertos: 9, reactivos: 9 }, { specialty: "Infectología", topic: "Ascariasis", aciertos: 9, reactivos: 9 }, { specialty: "Infectología", topic: "Aspergilosis", aciertos: 7, reactivos: 9 }, { "specialty": "Infectología", "topic": "Coccidioidomicosis", "aciertos": 8, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Difteria", "aciertos": 9, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Enfermedad de Chagas 1", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Enfermedad de Lyme", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Estrongiloidiasis", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Fascitis necrosante", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Fiebre de origen desconocido", "aciertos": 5, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Filariasis linfática", "aciertos": 4, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Filariasis ocular Loasis", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Infecciones odontogénicas", "aciertos": 6, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Leishmaniasis", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Leptospirosis", "aciertos": 8, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Mucormicosis", "aciertos": 9, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Oncocercosis", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Oxiuriasis o enterobiasis", "aciertos": 5, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Poliomielitis", "aciertos": 8, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Rabia", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Tricuriasis", "aciertos": 9, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Triquinosis", "aciertos": 8, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Neumonía adquirida en la comunidad", "aciertos": 3, "reactivos": 12 }, { "specialty": "Infectología", "topic": "Neumonía bacteriana adquirida en la comunidad Niños", "aciertos": 7, "reactivos": 12 }, { "specialty": "Infectología", "topic": "Influenza", "aciertos": 6, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Meningitis", "aciertos": 10, "reactivos": 12 }, { "specialty": "Infectología", "topic": "Encefalitis viral", "aciertos": 8, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Absceso cerebral", "aciertos": 8, "reactivos": 9 }, { specialty: "Endocrinología", topic: "INTRO DM", aciertos: 10, reactivos: 12 }, { specialty: "Endocrinología", topic: "Prediabetes", aciertos: 15, reactivos: 15 }, { specialty: "Endocrinología", topic: "Diabetes mellitus", aciertos: 12, reactivos: 15 }, { specialty: "Endocrinología", topic: "Diabetes en el adulto mayor", aciertos: 6, reactivos: 9 }, { specialty: "Endocrinología", topic: "Diabetes en pediatría", aciertos: 5, reactivos: 9 }, { specialty: "Endocrinología", topic: "Cetoacidosis diabética y EHH", aciertos: 13, reactivos: 18 }, { specialty: "Endocrinología", topic: "Hipoglucemia", aciertos: 6, reactivos: 9 } ];
+            
+            // CAMBIO 2: Se eliminan REPASOS y SIMULACIÓN FINAL de la fuente de datos.
             const futureTopicsData = [
                 { subject: "ENDOCRINOLOGÍA", topics: ["Dislipidemias", "Hipertiroidismo", "Hipotiroidismo", "Cáncer de tiroides (Enfoque en Papilar)", "Nódulo tiroideo", "Obesidad en adultos", "Síndrome metabólico", "Enfermedad de Cushing / Síndrome de Cushing", "Enfermedad de Addison"] },
                 { subject: "UROLOGÍA", topics: ["Escroto agudo y Torsión testicular", "Hiperplasia prostática benigna", "Cáncer de próstata", "Pielonefritis aguda", "Infección de tracto urinario", "Urolitiasis", "Cáncer testicular", "Disfunción eréctil"] },
@@ -387,15 +379,11 @@
                 { subject: "ESCOLAR", topics: ["Control de niño sano", "Etapas del crecimiento", "Talla baja", "Alergia alimentaria", "Cuerpo extraño", "Dermatitis del pañal", "Estreñimiento funcional", "Hiperplasia adrenal congénita", "Hipotiroidismo congénito", "Maltrato infantil", "Mucopolisacaridosis", "Reflujo gastroesofágico del lactante"] },
                 { subject: "NUTRICIÓN PEDIÁTRICA", topics: ["Alimentación complementaria", "Deficiencia de vitamina A", "Desnutrición pediátrica", "Hipovitaminosis", "Intolerancia a la lactosa", "Lactancia materna", "Obesidad en escolares", "Pelagra en niños", "Raquitismo carencial", "Síndrome metabólico en niños"] },
                 { subject: "INFECTOLOGÍA PEDIÁTRICA", topics: ["Adenitis mesentérica", "Onfalitis", "Exantemáticas Diferencial", "Eritema infeccioso", "Escarlatina", "Exantema súbito", "Enfermedad de Kawasaki", "Síndrome mano pie boca", "Rubéola", "Sarampión", "Varicela", "Parotiditis", "Bronquiolitis", "Epiglotitis", "Laringotraqueitis CRUP", "Mononucleosis infecciosa", "Tos ferina", "IVU en menores"] },
-                { subject: "VACUNAS", topics: ["Vacunas generalidades", "Tipos de vacunas", "Vacunación universal", "Aplicación de vacunas", "Vacuna para personal de salud", "Vacunas en el embarazo", "Esquema de vacunación", "Bcg", "Hepatitis A", "Hepatitis B", "Hexavalente", "Influenza", "Neumocócica", "Rotavirus", "Sabin", "Salmonella", "Dpt", "Srp", "Tétanos", "Varicela", "Vph"] },
-                { subject: "REPASOS", topics: ["Repaso Cardiología", "Repaso Endocrinología", "Repaso Ginecología y Obstetricia", "Repaso Pediatría", "Repaso Cirugía General", "Repaso Traumatología y Ortopedia"] },
-                { subject: "SIMULACIÓN FINAL", topics: ["Realizar simulación de examen completo", "Revisión de áreas débiles"] }
+                { subject: "VACUNAS", topics: ["Vacunas generalidades", "Tipos de vacunas", "Vacunación universal", "Aplicación de vacunas", "Vacuna para personal de salud", "Vacunas en el embarazo", "Esquema de vacunación", "Bcg", "Hepatitis A", "Hepatitis B", "Hexavalente", "Influenza", "Neumocócica", "Rotavirus", "Sabin", "Salmonella", "Dpt", "Srp", "Tétanos", "Varicela", "Vph"] }
             ];
             
-            // --- FUNCIÓN PARA GENERAR EL NUEVO STUDYPLAN UNIFICADO Y RECALENDARIZADO ---
             function generateUnifiedStudyPlan() {
                 const geneticaTopics = ["Síndrome de Down", "Síndrome de Klinefelter", "Síndrome de Turner", "Síndrome de Marfan", "Enfermedad de Wilson", "Síndrome de Dravet", "Síndrome de Lynch", "Síndrome de Peutz Jegher", "Von Hippel Lindau"];
-                
                 const allLegacyTopics = [{ specialty: "GENÉTICA", topics: geneticaTopics }];
                 legacyProgressData.forEach(item => {
                     let specialtyObj = allLegacyTopics.find(s => s.specialty === item.specialty);
@@ -407,7 +395,6 @@
                         specialtyObj.topics.push(item.topic);
                     }
                 });
-
                 const allFutureTopics = futureTopicsData.map(s => ({ specialty: s.subject, topics: s.topics }));
                 
                 function distributeTopics(topicsToDistribute, startDateStr, endDateStr) {
@@ -455,12 +442,12 @@
                 const phase1 = distributeTopics(allLegacyTopics, `${currentYear}-04-13`, `${currentYear}-06-14`);
                 const phase2Topics = allFutureTopics.filter(s => ['ENDOCRINOLOGÍA', 'UROLOGÍA'].includes(s.specialty));
                 const phase2 = distributeTopics(phase2Topics, `${currentYear}-06-15`, `${currentYear}-06-25`);
+                // CAMBIO 1: Redistribución de temas con fecha final extendida.
                 const phase3Topics = allFutureTopics.filter(s => !['ENDOCRINOLOGÍA', 'UROLOGÍA'].includes(s.specialty));
                 const phase3 = distributeTopics(phase3Topics, `${currentYear}-06-26`, `${currentYear}-09-20`);
 
                 const fullPlan = [...phase1, ...phase2, ...phase3];
                 
-                // Limpieza final: combinar bloques de la misma materia en el mismo día
                 fullPlan.forEach(day => {
                     const specialtyBlocks = new Map();
                     day.blocks.forEach(block => {
@@ -492,7 +479,6 @@
             let countdownInterval = null;
             const ALL_TASK_IDS = ['task-1-1', 'task-1-2', 'task-1-3', 'task-2-1', 'task-2-2', 'task-3-1', 'task-4-1', 'task-5-1', 'task-5-2', 'task-6-1'];
             
-            // --- SECCIÓN 2: REFERENCIAS A ELEMENTOS DEL DOM ---
             let progressView, calendarView, boardView;
             let tabBtnProgress, tabBtnCalendar, tabBtnBoard;
             let accordionsContainer, globalScoreBar, globalAdvanceBar;
@@ -502,60 +488,23 @@
             let editCountdownBtn, countdownEditor, countdownDatePicker, saveCountdownBtn, quoteContainer;
             
             function assignDOMelements() {
-                progressView = document.getElementById('global-progress-view');
-                calendarView = document.getElementById('calendar-view');
-                boardView = document.getElementById('board-view');
-                
-                tabBtnProgress = document.getElementById('tab-btn-progress');
-                tabBtnCalendar = document.getElementById('tab-btn-calendar');
-                tabBtnBoard = document.getElementById('tab-btn-board');
-                
-                accordionsContainer = document.getElementById('specialty-accordions');
-                globalScoreBar = document.getElementById('global-score-bar');
-                globalAdvanceBar = document.getElementById('global-advance-bar');
-                
-                calendarContainer = document.getElementById('calendar-container');
-                todoContainer = document.getElementById('col-todo-container');
-                inprogressContainer = document.getElementById('col-inprogress-container');
-                doneContainer = document.getElementById('col-done-container');
-                
-                dayModal = document.getElementById('details-modal');
-                dayModalOverlay = document.getElementById('modal-overlay');
-                dayModalTitle = document.getElementById('modal-title');
-                dayModalTopicsContainer = document.getElementById('modal-topics');
-                dayModalNotes = document.getElementById('modal-notes');
-                saveNoteButton = document.getElementById('modal-save-btn');
-                
-                topicModal = document.getElementById('topic-plan-modal');
-                topicModalOverlay = document.getElementById('topic-plan-overlay');
-                topicModalTitle = document.getElementById('topic-plan-title');
-                topicStepCards = topicModal.querySelectorAll('.step-card');
-                topicTaskCheckboxes = topicModal.querySelectorAll('.task-checkbox');
-                aciertosInput = document.getElementById('score-aciertos');
-                reactivosInput = document.getElementById('score-reactivos');
-                percentageOutput = document.getElementById('score-percentage');
-                finishTopicButton = document.getElementById('topic-finish-btn');
-                
-                editCountdownBtn = document.getElementById('edit-countdown-btn');
-                countdownEditor = document.getElementById('countdown-editor');
-                countdownDatePicker = document.getElementById('countdown-date-picker');
-                saveCountdownBtn = document.getElementById('save-countdown-btn');
-                quoteContainer = document.getElementById('motivational-quote-container');
+                progressView = document.getElementById('global-progress-view'); calendarView = document.getElementById('calendar-view'); boardView = document.getElementById('board-view');
+                tabBtnProgress = document.getElementById('tab-btn-progress'); tabBtnCalendar = document.getElementById('tab-btn-calendar'); tabBtnBoard = document.getElementById('tab-btn-board');
+                accordionsContainer = document.getElementById('specialty-accordions'); globalScoreBar = document.getElementById('global-score-bar'); globalAdvanceBar = document.getElementById('global-advance-bar');
+                calendarContainer = document.getElementById('calendar-container'); todoContainer = document.getElementById('col-todo-container'); inprogressContainer = document.getElementById('col-inprogress-container'); doneContainer = document.getElementById('col-done-container');
+                dayModal = document.getElementById('details-modal'); dayModalOverlay = document.getElementById('modal-overlay'); dayModalTitle = document.getElementById('modal-title'); dayModalTopicsContainer = document.getElementById('modal-topics'); dayModalNotes = document.getElementById('modal-notes'); saveNoteButton = document.getElementById('modal-save-btn');
+                topicModal = document.getElementById('topic-plan-modal'); topicModalOverlay = document.getElementById('topic-plan-overlay'); topicModalTitle = document.getElementById('topic-plan-title'); topicStepCards = topicModal.querySelectorAll('.step-card'); topicTaskCheckboxes = topicModal.querySelectorAll('.task-checkbox'); aciertosInput = document.getElementById('score-aciertos'); reactivosInput = document.getElementById('score-reactivos'); percentageOutput = document.getElementById('score-percentage'); finishTopicButton = document.getElementById('topic-finish-btn');
+                editCountdownBtn = document.getElementById('edit-countdown-btn'); countdownEditor = document.getElementById('countdown-editor'); countdownDatePicker = document.getElementById('countdown-date-picker'); saveCountdownBtn = document.getElementById('save-countdown-btn'); quoteContainer = document.getElementById('motivational-quote-container');
             }
 
-            // --- SECCIÓN 3: LÓGICA DE LA APLICACIÓN (Cálculos, Renderizado, Interacciones) ---
-            
             function switchView(viewName) {
                 [progressView, calendarView, boardView].forEach(v => v.classList.add('hidden'));
                 [tabBtnProgress, tabBtnCalendar, tabBtnBoard].forEach(b => b.classList.remove('active'));
-
                 let viewToShow, btnToActivate;
                 if(viewName === 'progress') { viewToShow = progressView; btnToActivate = tabBtnProgress; populateGlobalProgress(); }
                 else if(viewName === 'calendar') { viewToShow = calendarView; btnToActivate = tabBtnCalendar; populateCalendar(); }
                 else if(viewName === 'board') { viewToShow = boardView; btnToActivate = tabBtnBoard; populateKanbanBoard(); }
-                
-                viewToShow.classList.remove('hidden');
-                btnToActivate.classList.add('active');
+                viewToShow.classList.remove('hidden'); btnToActivate.classList.add('active');
             }
             
             function generateTopicId(topicName) { return `topic_${topicName.toLowerCase().replace(/[^a-z0-9]/g, '')}`; }
@@ -573,85 +522,86 @@
             function calculateSubjectScore(subjectName) { const topicIds = subjectToTopicsMap.get(subjectName); if (!topicIds || topicIds.length === 0) return null; let totalScoreSum = 0; let scoredTopicsCount = 0; topicIds.forEach(topicId => { const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`)) || 0; if (reactivos > 0) { const { scorePercentage } = getTopicProgress(topicId); totalScoreSum += scorePercentage; scoredTopicsCount++; } }); return scoredTopicsCount > 0 ? (totalScoreSum / scoredTopicsCount).toFixed(1) : null; }
             function updateGlobalProgressBars() { if (!studyPlan) return; buildSubjectMap(); let totalTopics = 0; subjectToTopicsMap.forEach(topics => totalTopics += topics.length); let completedTopics = 0; subjectToTopicsMap.forEach(topicIds => { topicIds.forEach(topicId => { if (isTopicComplete(topicId)) { completedTopics++; } }); }); const advancePercentage = totalTopics > 0 ? (completedTopics / totalTopics) * 100 : 0; globalAdvanceBar.style.width = `${advancePercentage}%`; globalAdvanceBar.textContent = `${advancePercentage.toFixed(1)}%`; let totalSubjectScoreSum = 0; let subjectsWithScoresCount = 0; subjectToTopicsMap.forEach((_, subject) => { const subjectScoreStr = calculateSubjectScore(subject); if (subjectScoreStr !== null) { totalSubjectScoreSum += parseFloat(subjectScoreStr); subjectsWithScoresCount++; } }); const scorePercentage = subjectsWithScoresCount > 0 ? totalSubjectScoreSum / subjectsWithScoresCount : 0; globalScoreBar.style.width = `${scorePercentage}%`; globalScoreBar.textContent = `${scorePercentage.toFixed(1)}%`; }
             
-            // --- Lógica de renderizado para cada vista ---
-            
-            function populateCalendar() { if (!studyPlan) return; buildSubjectMap(); const daysMap = new Map(studyPlan.map(day => [day.date, day])); const startDate = new Date(studyPlan[0].date + "T00:00:00"); const finalDate = new Date(studyPlan[studyPlan.length-1].date + "T00:00:00"); let dayBeforeTargetStr = ''; if (countdownTargetDateStr) { const targetDateObj = new Date(countdownTargetDateStr + 'T00:00:00'); targetDateObj.setDate(targetDateObj.getDate() - 1); dayBeforeTargetStr = targetDateObj.toISOString().split('T')[0]; } let weeks = []; let dateCursor = new Date(startDate); dateCursor.setDate(dateCursor.getDate() - dateCursor.getDay()); while (dateCursor <= finalDate) { let week = []; for(let i=0; i < 7; i++) { week.push(new Date(dateCursor)); dateCursor.setDate(dateCursor.getDate() + 1); } weeks.push(week); } const monthLayout = new Map(); weeks.forEach((week, weekIndex) => { const firstDayOfWeek = week[0]; const monthName = firstDayOfWeek.toLocaleString('es-ES', { month: 'long' }); if (!monthLayout.has(monthName)) { monthLayout.set(monthName, { startRow: weekIndex + 2, rowSpan: 1 }); } else { monthLayout.get(monthName).rowSpan++; } }); calendarContainer.innerHTML = ''; calendarContainer.innerHTML += '<div class="header-cell meta-header">M</div><div class="header-cell meta-header">S</div>'; ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].forEach(day => calendarContainer.innerHTML += `<div class="header-cell day-header">${day}</div>`); monthLayout.forEach((layout, name) => { calendarContainer.innerHTML += `<div class="month-cell" style="grid-row: ${layout.startRow} / span ${layout.rowSpan}">${name}</div>`; }); weeks.forEach((week, weekIndex) => { const getWeekNumber = (d) => { d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7)); var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1)); var weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7); return weekNo; }; calendarContainer.innerHTML += `<div class="week-cell-container" style="grid-row: ${weekIndex + 2}"><span class="week-number">${getWeekNumber(week[0])}</span></div>`; week.forEach(date => { const cell = document.createElement('div'); cell.className = 'day-cell'; const dateString = date.toISOString().split('T')[0]; const dayData = daysMap.get(dateString); if (!dayData) { cell.classList.add('empty'); } else { cell.dataset.date = dateString; cell.innerHTML = `<div class="calendar-day-number">${date.getDate()}</div>`; let contentHTML = '<ul>'; dayData.blocks.forEach(block => { if (block.subject) { const score = calculateSubjectScore(block.subject); const scoreText = score !== null ? `<span class="subject-score">(${score}%)</span>` : ''; contentHTML += `<li><span class="subject-title">${block.subject}${scoreText}</span></li>`; } if (block.topics) { contentHTML += block.topics.map(topic => createTopicListItem(topic)).join(''); } }); contentHTML += '</ul>'; cell.innerHTML += `<div class="day-content">${contentHTML}</div>`; } if (dateString === countdownTargetDateStr) cell.classList.add('target-date'); if (dateString === dayBeforeTargetStr) cell.classList.add('day-before-target'); calendarContainer.appendChild(cell); }); }); updateGlobalProgressBars(); }
+            function populateCalendar() { 
+                if (!studyPlan) return; 
+                buildSubjectMap(); 
+                const daysMap = new Map(studyPlan.map(day => [day.date, day])); 
+                const startDate = new Date(studyPlan[0].date + "T00:00:00");
+                // CAMBIO 3: Extender el renderizado del calendario hasta el 30 de septiembre.
+                const calendarEndDate = new Date(`${currentYear}-09-30T00:00:00`);
+                
+                // CAMBIO 4: Identificar la fecha final real del plan y el día anterior.
+                const lastDayOfPlanStr = countdownTargetDateStr;
+                let dayBeforeTargetStr = '';
+                if (lastDayOfPlanStr) {
+                    const targetDateObj = new Date(lastDayOfPlanStr + 'T00:00:00');
+                    targetDateObj.setDate(targetDateObj.getDate() - 1);
+                    dayBeforeTargetStr = targetDateObj.toISOString().split('T')[0];
+                }
+
+                let weeks = []; 
+                let dateCursor = new Date(startDate); 
+                dateCursor.setDate(dateCursor.getDate() - dateCursor.getDay()); 
+                // CAMBIO 3: El bucle ahora continúa hasta el final del mes de septiembre.
+                while (dateCursor <= calendarEndDate) { 
+                    let week = []; 
+                    for(let i=0; i < 7; i++) { 
+                        week.push(new Date(dateCursor)); 
+                        dateCursor.setDate(dateCursor.getDate() + 1); 
+                    } 
+                    weeks.push(week); 
+                } 
+                const monthLayout = new Map(); 
+                weeks.forEach((week, weekIndex) => { const firstDayOfWeek = week[0]; const monthName = firstDayOfWeek.toLocaleString('es-ES', { month: 'long' }); if (!monthLayout.has(monthName)) { monthLayout.set(monthName, { startRow: weekIndex + 2, rowSpan: 1 }); } else { monthLayout.get(monthName).rowSpan++; } }); 
+                calendarContainer.innerHTML = ''; 
+                calendarContainer.innerHTML += '<div class="header-cell meta-header">M</div><div class="header-cell meta-header">S</div>'; 
+                ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].forEach(day => calendarContainer.innerHTML += `<div class="header-cell day-header">${day}</div>`); 
+                monthLayout.forEach((layout, name) => { calendarContainer.innerHTML += `<div class="month-cell" style="grid-row: ${layout.startRow} / span ${layout.rowSpan}">${name}</div>`; }); 
+                weeks.forEach((week, weekIndex) => { 
+                    const getWeekNumber = (d) => { d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7)); var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1)); var weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7); return weekNo; }; 
+                    calendarContainer.innerHTML += `<div class="week-cell-container" style="grid-row: ${weekIndex + 2}"><span class="week-number">${getWeekNumber(week[0])}</span></div>`; 
+                    week.forEach(date => { 
+                        const cell = document.createElement('div'); 
+                        cell.className = 'day-cell'; 
+                        const dateString = date.toISOString().split('T')[0]; 
+                        const dayData = daysMap.get(dateString); 
+                        if (!dayData) { 
+                            cell.classList.add('empty'); 
+                        } else { 
+                            cell.dataset.date = dateString; 
+                            cell.innerHTML = `<div class="calendar-day-number">${date.getDate()}</div>`; 
+                            let contentHTML = '<ul>'; 
+                            dayData.blocks.forEach(block => { 
+                                if (block.subject) {
+                                    // CAMBIO 5: Lógica para determinar si la especialidad del día está completa.
+                                    let allTopicsInBlockComplete = false;
+                                    if (block.topics && block.topics.length > 0) {
+                                        allTopicsInBlockComplete = block.topics.every(topic => isTopicComplete(generateTopicId(topic)));
+                                    }
+                                    const completedClass = allTopicsInBlockComplete ? 'subject-completed' : '';
+                                    const score = calculateSubjectScore(block.subject); 
+                                    const scoreText = score !== null ? `<span class="subject-score">(${score}%)</span>` : ''; 
+                                    contentHTML += `<li><span class="subject-title ${completedClass}">${block.subject}${scoreText}</span></li>`; 
+                                } 
+                                if (block.topics) { 
+                                    contentHTML += block.topics.map(topic => createTopicListItem(topic)).join(''); 
+                                } 
+                            }); 
+                            contentHTML += '</ul>'; 
+                            cell.innerHTML += `<div class="day-content">${contentHTML}</div>`; 
+                        } 
+                        // CAMBIO 4: Aplicar clases para el resaltado de fechas.
+                        if (dateString === lastDayOfPlanStr) cell.classList.add('target-date');
+                        if (dateString === dayBeforeTargetStr) cell.classList.add('day-before-target');
+                        calendarContainer.appendChild(cell); 
+                    }); 
+                }); 
+                updateGlobalProgressBars(); 
+            }
             function createSpecialtyHeaderHTML(specialtyName, colorVar) { const specialtyId = generateTopicId(specialtyName); return `<div class="specialty-header" data-specialty-header="${specialtyName}" style="border-left-color: var(${colorVar})"><div class="specialty-header-main"><h3 style="color: var(${colorVar})">${specialtyName}</h3></div><div class="specialty-progress-wrapper"><small>Avance</small><div class="specialty-progress-container"><div class="specialty-progress-bar" id="sp-progress-${specialtyId}"></div></div><span class="specialty-percentage-text" id="sp-progress-text-${specialtyId}">0%</span></div><div class="specialty-progress-wrapper"><small>Nota</small><div class="specialty-progress-container"><div class="specialty-score-bar" id="sp-score-${specialtyId}"></div></div><span class="specialty-percentage-text" id="sp-score-text-${specialtyId}">0%</span></div></div>`; }
             function populateKanbanBoard() { todoContainer.innerHTML = ''; inprogressContainer.innerHTML = ''; doneContainer.innerHTML = ''; const specialtyColors = ['--step-1-color', '--step-2-color', '--step-3-color', '--step-4-color', '--step-5-color', '--step-6-color', '#FF69B4', '#8A2BE2']; let colorIndex = 0; const allSpecialties = {}; buildSubjectMap(); subjectToTopicsMap.forEach((topicIds, specialtyName) => { const topicNames = topicIds.map(id => { for (const day of studyPlan) { for (const block of day.blocks) { if (block.topics) { const foundTopic = block.topics.find(t => generateTopicId(t) === id); if (foundTopic) return foundTopic; } } } return null; }).filter(Boolean); if (topicNames.length > 0) { allSpecialties[specialtyName] = { topics: topicNames, color: specialtyColors[colorIndex % specialtyColors.length] }; colorIndex++; } }); for (const specialtyName in allSpecialties) { const specialtyData = allSpecialties[specialtyName]; const headerHTML = createSpecialtyHeaderHTML(specialtyName, specialtyData.color); const specialtyFragments = { todo: document.createDocumentFragment(), inprogress: document.createDocumentFragment(), done: document.createDocumentFragment() }; specialtyData.topics.forEach(topicName => { const topicId = generateTopicId(topicName); const state = getTopicKanbanState(topicId); const cardHTML = createKanbanCardHTML(topicName, topicId, specialtyName); const cardElement = document.createElement('div'); cardElement.innerHTML = cardHTML; specialtyFragments[state].appendChild(cardElement.firstChild); }); if (specialtyFragments.todo.hasChildNodes()) { todoContainer.innerHTML += headerHTML; todoContainer.appendChild(specialtyFragments.todo); } if (specialtyFragments.inprogress.hasChildNodes()) { inprogressContainer.innerHTML += headerHTML; inprogressContainer.appendChild(specialtyFragments.inprogress); } if (specialtyFragments.done.hasChildNodes()) { doneContainer.innerHTML += headerHTML; doneContainer.appendChild(specialtyFragments.done); } } updateAllSpecialtyProgressOnBoard(); }
             function createKanbanCardHTML(topicName, topicId, specialtyName) { const { completionPercentage, scorePercentage } = getTopicProgress(topicId); const scoreColor = getScoreColor(scorePercentage); const state = getTopicKanbanState(topicId); let statusColorVar = '--color-todo'; if (state === 'inprogress') statusColorVar = '--color-inprogress'; if (state === 'done') statusColorVar = '--color-done'; return `<article class="kanban-card" data-topic-id="${topicId}" data-topic-name="${topicName}" data-specialty="${specialtyName}" style="border-left: 4px solid var(${statusColorVar});"><div class="card-summary"><div class="card-topic-name">${topicName}</div><div class="card-progress-display"><div class="card-progress-bar-container"><div class="card-progress-bar" style="width: ${completionPercentage}%; background-color: var(${statusColorVar});"></div></div><span class="card-progress-text">${completionPercentage.toFixed(0)}%</span><span class="card-score-text" style="color: ${scoreColor}">${scorePercentage.toFixed(0)}%</span></div></div></article>`; }
-            
-            function populateGlobalProgress() {
-                updateGlobalProgressBars();
-                accordionsContainer.innerHTML = '';
-                buildSubjectMap();
-
-                subjectToTopicsMap.forEach((topicIds, specialtyName) => {
-                    let specialtyScores = [];
-                    let completedTopicsInSpecialty = 0;
-                    let panelContent = '';
-                    
-                    topicIds.forEach(topicId => {
-                        const topicData = getTopicProgress(topicId);
-                        const topicName = studyPlan.flatMap(d => d.blocks.flatMap(b => b.topics || [])).find(t => generateTopicId(t) === topicId);
-                        const reactivos = getData(`topicData.${topicId}.scoreReactivos`);
-                        
-                        let scoreText = 'No iniciado';
-                        let scoreClass = 'not-started';
-
-                        if (reactivos > 0) {
-                            scoreText = `Calificación: ${topicData.scorePercentage.toFixed(1)}%`;
-                            scoreClass = topicData.scorePercentage >= 80 ? 'score-green' : topicData.scorePercentage >= 60 ? 'score-yellow' : 'score-red';
-                            specialtyScores.push(topicData.scorePercentage);
-                        } else if (topicData.completionPercentage === 100) {
-                            scoreText = `Completado (Sin calificar)`;
-                            scoreClass = 'score-yellow';
-                        } else if (topicData.completionPercentage > 0) {
-                            scoreText = `Avance: ${topicData.completionPercentage.toFixed(0)}%`;
-                            scoreClass = 'score-yellow';
-                        }
-                        
-                        if (topicData.completionPercentage === 100) {
-                            completedTopicsInSpecialty++;
-                        }
-
-                        panelContent += `<div class="topic-progress-item"><span class="topic-name">${topicName}</span><span class="topic-score ${scoreClass}">${scoreText}</span></div>`;
-                    });
-
-                    let specialtyScoreAvg = 0;
-                    if (specialtyScores.length > 0) {
-                        specialtyScoreAvg = specialtyScores.reduce((a, b) => a + b, 0) / specialtyScores.length;
-                    }
-                    const specialtyScoreClass = specialtyScoreAvg >= 80 ? 'score-green' : specialtyScoreAvg >= 60 ? 'score-yellow' : 'score-red';
-
-                    const specialtyCompletionAvg = topicIds.length > 0 ? (completedTopicsInSpecialty / topicIds.length) * 100 : 0;
-                    const completionIconClass = specialtyCompletionAvg >= 80 ? 'score-green' : specialtyCompletionAvg >= 60 ? 'score-yellow' : 'score-red';
-
-                    const accordionHTML = `
-                        <div class="specialty-accordion">
-                            <button class="accordion-header">
-                                <span class="specialty-name">${specialtyName}</span>
-                                <div class="specialty-progress-indicators">
-                                    <div class="indicator score-indicator"><i class="fas fa-star"></i><span class="score-value ${specialtyScoreClass}">${specialtyScoreAvg.toFixed(1)}%</span></div>
-                                    <div class="indicator completion-indicator"><i class="fas fa-check-double ${completionIconClass}"></i><span class="completion-value">${specialtyCompletionAvg.toFixed(0)}%</span></div>
-                                </div>
-                                <i class="fas fa-chevron-down"></i>
-                            </button>
-                            <div class="accordion-panel">${panelContent}</div>
-                        </div>`;
-                    accordionsContainer.innerHTML += accordionHTML;
-                });
-
-                document.querySelectorAll('.accordion-header').forEach(button => {
-                    button.addEventListener('click', () => {
-                        button.classList.toggle('active');
-                        const panel = button.nextElementSibling;
-                        panel.style.maxHeight = panel.style.maxHeight ? null : panel.scrollHeight + "px";
-                        panel.style.padding = panel.style.maxHeight ? "10px 20px" : "0px 20px";
-                    });
-                });
-            }
-
-            // --- Lógica de los modales (sin cambios) ---
+            function populateGlobalProgress() { updateGlobalProgressBars(); accordionsContainer.innerHTML = ''; buildSubjectMap(); subjectToTopicsMap.forEach((topicIds, specialtyName) => { let specialtyScores = []; let completedTopicsInSpecialty = 0; let panelContent = ''; topicIds.forEach(topicId => { const topicData = getTopicProgress(topicId); const topicName = studyPlan.flatMap(d => d.blocks.flatMap(b => b.topics || [])).find(t => generateTopicId(t) === topicId); const reactivos = getData(`topicData.${topicId}.scoreReactivos`); let scoreText = 'No iniciado'; let scoreClass = 'not-started'; if (reactivos > 0) { scoreText = `Calificación: ${topicData.scorePercentage.toFixed(1)}%`; scoreClass = topicData.scorePercentage >= 80 ? 'score-green' : topicData.scorePercentage >= 60 ? 'score-yellow' : 'score-red'; specialtyScores.push(topicData.scorePercentage); } else if (topicData.completionPercentage === 100) { scoreText = `Completado (Sin calificar)`; scoreClass = 'score-yellow'; } else if (topicData.completionPercentage > 0) { scoreText = `Avance: ${topicData.completionPercentage.toFixed(0)}%`; scoreClass = 'score-yellow'; } if (topicData.completionPercentage === 100) { completedTopicsInSpecialty++; } panelContent += `<div class="topic-progress-item"><span class="topic-name">${topicName || 'Tema desconocido'}</span><span class="topic-score ${scoreClass}">${scoreText}</span></div>`; }); let specialtyScoreAvg = 0; if (specialtyScores.length > 0) { specialtyScoreAvg = specialtyScores.reduce((a, b) => a + b, 0) / specialtyScores.length; } const specialtyScoreClass = specialtyScoreAvg >= 80 ? 'score-green' : specialtyScoreAvg >= 60 ? 'score-yellow' : 'score-red'; const specialtyCompletionAvg = topicIds.length > 0 ? (completedTopicsInSpecialty / topicIds.length) * 100 : 0; const completionIconClass = specialtyCompletionAvg >= 80 ? 'score-green' : specialtyCompletionAvg >= 60 ? 'score-yellow' : 'score-red'; const accordionHTML = ` <div class="specialty-accordion"> <button class="accordion-header"> <span class="specialty-name">${specialtyName}</span> <div class="specialty-progress-indicators"> <div class="indicator score-indicator"><i class="fas fa-star"></i><span class="score-value ${specialtyScoreClass}">${specialtyScoreAvg.toFixed(1)}%</span></div> <div class="indicator completion-indicator"><i class="fas fa-check-double ${completionIconClass}"></i><span class="completion-value">${specialtyCompletionAvg.toFixed(0)}%</span></div> </div> <i class="fas fa-chevron-down"></i> </button> <div class="accordion-panel">${panelContent}</div> </div>`; accordionsContainer.innerHTML += accordionHTML; }); document.querySelectorAll('.accordion-header').forEach(button => { button.addEventListener('click', () => { button.classList.toggle('active'); const panel = button.nextElementSibling; panel.style.maxHeight = panel.style.maxHeight ? null : panel.scrollHeight + "px"; panel.style.padding = panel.style.maxHeight ? "10px 20px" : "0px 20px"; }); }); }
             function showDayModal(dateString) { const dayData = studyPlan.find(d => d.date === dateString); const date = new Date(dateString + "T00:00:00"); dayModalTitle.textContent = date.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }); let topicsHTML = '<ul>'; if (dayData && dayData.blocks) { dayData.blocks.forEach(block => { if (block.subject) { const score = calculateSubjectScore(block.subject); const scoreText = score !== null ? `<span class="subject-score">(${score}%)</span>` : ''; topicsHTML += `<li><span class="subject-title">${block.subject}${scoreText}</span></li>`; } if(block.topics) { topicsHTML += block.topics.map(topic => createTopicListItem(topic)).join(''); } }); } topicsHTML += '</ul>'; dayModalTopicsContainer.innerHTML = topicsHTML; dayModalNotes.value = getData(`dayNotes.${dateString}`, ''); dayModal.dataset.currentDate = dateString; dayModalOverlay.classList.add('visible'); dayModal.classList.add('visible'); }
             function closeDayModal() { dayModalOverlay.classList.remove('visible'); dayModal.classList.remove('visible'); }
             async function saveDayNote() { const dateString = dayModal.dataset.currentDate; if (dateString) { await saveData(`dayNotes.${dateString}`, dayModalNotes.value); } closeDayModal(); }
@@ -666,11 +616,8 @@
             function updateUIForTopic(topicId) { const isBoardVisible = !boardView.classList.contains('hidden'); const isProgressVisible = !progressView.classList.contains('hidden'); if(isProgressVisible) { populateGlobalProgress(); } else if (isBoardVisible) { populateKanbanBoard(); } else { populateCalendar(); } updateGlobalProgressBars(); }
             function updateAllSpecialtyProgressOnBoard() { const headers = document.querySelectorAll('.specialty-header'); headers.forEach(header => { const specialtyName = header.dataset.specialtyHeader; const specialtyId = generateTopicId(specialtyName); const topicIds = subjectToTopicsMap.get(specialtyName) || []; const progressTextEl = document.getElementById(`sp-progress-text-${specialtyId}`); const scoreTextEl = document.getElementById(`sp-score-text-${specialtyId}`); const progressBar = document.getElementById(`sp-progress-${specialtyId}`); const scoreBar = document.getElementById(`sp-score-${specialtyId}`); if (!progressTextEl || !scoreTextEl || !progressBar || !scoreBar) return; let totalCompletion = 0, totalScore = 0, scoredTopics = 0; topicIds.forEach(topicId => { const { completionPercentage, scorePercentage } = getTopicProgress(topicId); totalCompletion += completionPercentage; const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`)) || 0; if (reactivos > 0 || isTopicComplete(topicId)) { totalScore += scorePercentage; scoredTopics++; } }); const avgCompletion = topicIds.length > 0 ? totalCompletion / topicIds.length : 0; const avgScore = scoredTopics > 0 ? totalScore / scoredTopics : 0; progressBar.style.width = `${avgCompletion}%`; progressTextEl.textContent = `${avgCompletion.toFixed(0)}%`; scoreBar.style.width = `${avgScore}%`; scoreTextEl.textContent = `${avgScore.toFixed(0)}%`; scoreBar.classList.remove('low', 'medium', 'high'); if (scoredTopics > 0 || avgCompletion === 100) { const colorClass = getScoreColor(avgScore); if(colorClass.includes('error')) scoreBar.classList.add('low'); if(colorClass.includes('warning')) scoreBar.classList.add('medium'); if(colorClass.includes('green')) scoreBar.classList.add('high'); } }); }
             function getSubjectForTopic(topicName) { const topicId = generateTopicId(topicName); for (const [subject, topicIds] of subjectToTopicsMap.entries()) { if (topicIds.includes(topicId)) { return subject; } } return null; }
-            
-            // --- Lógica Drag & Drop (sin cambios) ---
             let draggedItem = null; let lastDragOverCell = null; let lastDragOverTopic = null; function clearDragStyles() { if (lastDragOverCell) lastDragOverCell.classList.remove('drag-over'); if (lastDragOverTopic) lastDragOverTopic.classList.remove('drag-over-top', 'drag-over-bottom'); lastDragOverCell = null; lastDragOverTopic = null; }
             
-            // --- SECCIÓN 4: FUNCIÓN PRINCIPAL Y EVENT LISTENERS ---
             async function main() {
                 assignDOMelements();
                 displayDailyQuote();
@@ -680,39 +627,26 @@
                 loadUserProgress(doc.data());
                 
                 const userPlan = getData('studyPlan');
-                // Comprobamos si el plan guardado es el nuevo plan unificado
-                if (userPlan && userPlan.length > 0 && userPlan[0].date === `${currentYear}-04-13`) { 
+                // Comprobamos si el plan guardado es el nuevo plan unificado (v2)
+                if (userPlan && userPlan.length > 0 && userPlan[userPlan.length - 1].date === `${currentYear}-09-20`) { 
                     studyPlan = userPlan; 
                 } else { 
-                    // Si no, forzamos la actualización al nuevo plan y hacemos un "seeding" de progreso
                     studyPlan = defaultStudyPlan; 
                     await saveData('studyPlan', defaultStudyPlan); 
-                    
-                    // Seeding de datos de progreso desde "2listado"
                     const initialProgress = {};
                     const geneticaTopics = ["Síndrome de Down", "Síndrome de Klinefelter", "Síndrome de Turner", "Síndrome de Marfan", "Enfermedad de Wilson", "Síndrome de Dravet", "Síndrome de Lynch", "Síndrome de Peutz Jegher", "Von Hippel Lindau"];
-                    geneticaTopics.forEach(topic => {
-                        const topicId = generateTopicId(topic);
-                        initialProgress[topicId] = { scoreAciertos: '0', scoreReactivos: '0' };
-                        ALL_TASK_IDS.forEach(taskId => { initialProgress[topicId][taskId] = true; });
-                    });
-                    legacyProgressData.forEach(item => {
-                        const topicId = generateTopicId(item.topic);
-                        initialProgress[topicId] = { scoreAciertos: String(item.aciertos), scoreReactivos: String(item.reactivos) };
-                        ALL_TASK_IDS.forEach(taskId => { initialProgress[topicId][taskId] = true; });
-                    });
+                    geneticaTopics.forEach(topic => { const topicId = generateTopicId(topic); initialProgress[topicId] = { scoreAciertos: '0', scoreReactivos: '0' }; ALL_TASK_IDS.forEach(taskId => { initialProgress[topicId][taskId] = true; }); });
+                    legacyProgressData.forEach(item => { const topicId = generateTopicId(item.topic); initialProgress[topicId] = { scoreAciertos: String(item.aciertos), scoreReactivos: String(item.reactivos) }; ALL_TASK_IDS.forEach(taskId => { initialProgress[topicId][taskId] = true; }); });
                     await saveData('topicData', initialProgress);
-                    loadUserProgress((await docRef.get()).data()); // Recargar progreso local con datos semeados
+                    loadUserProgress((await docRef.get()).data());
                 }
                 
                 countdownTargetDateStr = getData('countdownTarget') || studyPlan[studyPlan.length - 1].date;
                 countdownDatePicker.value = countdownTargetDateStr;
                 startCountdown();
                 
-                // Cargar vista inicial
                 switchView('progress'); 
                 
-                // Event Listeners
                 tabBtnProgress.addEventListener('click', () => switchView('progress'));
                 tabBtnCalendar.addEventListener('click', () => switchView('calendar'));
                 tabBtnBoard.addEventListener('click', () => switchView('board'));
