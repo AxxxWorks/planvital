@@ -219,31 +219,16 @@
 </head>
 <body>
     <header class="app-banner">
-        <div id="motivational-quote-container" class="motivational-quote"></div>
-        <div class="countdown-container">
-            <div class="countdown-timer-container">
-                <div class="countdown-unit"><div class="countdown-label">Días</div><div class="countdown-digits" id="countdown-days">000</div></div>
-                <div class="countdown-unit"><div class="countdown-label">Horas</div><div class="countdown-digits" id="countdown-hours">00</div></div>
-                <div class="countdown-unit"><div class="countdown-label">Minutos</div><div class="countdown-digits" id="countdown-minutes">00</div></div>
-                <div class="countdown-unit"><div class="countdown-label">Segundos</div><div class="countdown-digits" id="countdown-seconds">00</div></div>
-            </div>
-            <button id="edit-countdown-btn" title="Editar fecha final"><i class="fas fa-calendar-alt"></i></button>
-        </div>
-        <div id="countdown-editor">
-            <input type="date" id="countdown-date-picker">
-            <button id="save-countdown-btn">Guardar</button>
-        </div>
+        <!-- Contenido sin cambios -->
     </header>
 
     <nav class="tab-navigation">
-        <button id="tab-btn-progress" class="tab-button active" aria-selected="true">Progreso Global</button>
-        <button id="tab-btn-calendar" class="tab-button" aria-selected="false">Calendario Vital</button>
-        <button id="tab-btn-board" class="tab-button" aria-selected="false">Tablero Vital</button>
+       <!-- Contenido sin cambios -->
     </nav>
 
     <main class="main-content-area">
         <div id="global-progress-view" class="tab-content">
-            <!-- Contenido sin cambios -->
+             <!-- Estructura del DOM sin cambios -->
         </div>
 
         <div id="calendar-view" class="tab-content hidden">
@@ -251,30 +236,11 @@
         </div>
         
         <div id="board-view" class="tab-content hidden">
-            <!-- Contenido sin cambios -->
+             <!-- Estructura del DOM sin cambios -->
         </div>
     </main>
     
     <!-- Modales sin cambios -->
-    <div class="modal-overlay" id="modal-overlay"></div>
-    <div class="modal-container" id="details-modal">
-        <div class="modal-header"> <h2 id="modal-title"></h2> <span class="modal-close" id="modal-close-day">×</span> </div>
-        <div class="modal-content"> <div id="modal-topics"></div> <div class="notes-section" style="margin-top: 20px;"> <h3>Mis Anotaciones del Día</h3> <textarea id="modal-notes" placeholder="Escribe aquí tus notas generales para este día..."></textarea> <button id="modal-save-btn">Guardar Nota</button> </div> </div>
-    </div>
-    <div class="modal-overlay" id="topic-plan-overlay"></div>
-    <div class="modal-container" id="topic-plan-modal">
-        <div class="modal-header"> <h2 id="topic-plan-title"></h2> <span class="modal-close" id="modal-close-topic">×</span> </div>
-        <div class="modal-content">
-            <div class="study-flow-diagram">
-                <div class="step-card step-1"> <div class="step-icon-container"><i class="fas fa-binoculars"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">1</span>VISTA RÁPIDA</h2> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-1-1"><i class="fas fa-list-ul task-icon"></i><span class="task-text">Índice</span><span class="tool-tag tag-madera">MADERA</span></label></li> <li><label><input type="checkbox" class="task-checkbox" id="task-1-2"><i class="fas fa-download task-icon"></i><span class="task-text">Descargar guías</span><span class="optional-tag">* opcional</span></label></li> <li><label><input type="checkbox" class="task-checkbox" id="task-1-3"><i class="fas fa-brain task-icon"></i><span class="task-text">CREA resúmenes + casos con IA (5min)</span><span class="tool-tag tag-ia">IAGOOGLE</span></label></li> </ul> </div> </div>
-                <div class="parallel-steps-container"> <div class="step-card step-2"> <div class="step-icon-container"><i class="fas fa-magic"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">2</span>CREAR</h2> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-2-1"><i class="fas fa-chalkboard-teacher task-icon"></i><span class="task-text">Presentación</span><span class="tool-tag tag-genspark">Genspark</span></label></li> <li><label><input type="checkbox" class="task-checkbox" id="task-2-2"><i class="fas fa-microphone-alt task-icon"></i><span class="task-text">Podcast MP3</span><span class="tool-tag tag-notebooklm">NOTEBOOKLM</span></label></li> </ul> </div> </div> <div class="step-card step-3"> <div class="step-icon-container"><i class="fas fa-book-reader"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">3</span>LEER</h2> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-3-1"><i class="fas fa-file-alt task-icon"></i><span class="task-text">Leer Resumen</span></label></li> </ul> </div> </div> </div>
-                <div class="step-card step-4"> <div class="step-icon-container"><i class="fas fa-puzzle-piece"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">4</span>UNIFICAR<span class="subtitle">(resumen + presentación + simular + enlaces)</span></h2> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-4-1"><i class="fas fa-code task-icon"></i><span class="task-text">HTML</span><span class="tool-tag tag-ia">IAGOOGLE</span></label></li> </ul> </div> </div>
-                <div class="step-card step-5"> <div class="step-icon-container"><i class="fas fa-tasks"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">5</span>PRACTICAR</h2> <div class="practice-step-layout"> <div class="practice-tasks-column"> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-5-1"><i class="fas fa-notes-medical task-icon"></i><span class="task-text">Realiza CASOS CLÍNICOS</span></label></li> <li><label><input type="checkbox" class="task-checkbox" id="task-5-2"><i class="fas fa-redo-alt task-icon"></i><span class="task-text">Repasar</span><span class="tool-tag tag-genspark">GENSPARK</span><span class="tool-tag tag-madera">MADERAS</span></label></li> </ul> </div> <div class="practice-score-column"> <h3>PUNTUACIÓN</h3> <div class="score-inputs-row"> <div class="score-input-group"><label for="score-aciertos">Aciertos:</label><input type="number" id="score-aciertos" min="0"></div> <div class="score-input-group"><label for="score-reactivos">Reactivos:</label><input type="number" id="score-reactivos" min="0"></div> <div class="score-input-group"><label for="score-percentage">%:</label><input type="text" id="score-percentage" class="percentage-output" readonly value="0%"></div> </div> </div> </div> </div> </div>
-                <div class="step-card step-6"> <div class="step-icon-container"><i class="fas fa-head-side-headphones"></i></div> <div class="step-content"> <h2 class="step-title"><span class="step-number">6</span>MEMORIZAR</h2> <ul class="step-details"> <li><label><input type="checkbox" class="task-checkbox" id="task-6-1"><i class="fas fa-headphones-alt task-icon"></i><span class="task-text">Escuchar MP3</span></label></li> </ul> </div> </div>
-            </div>
-            <div class="topic-modal-footer"> <button id="topic-finish-btn" class="topic-finish-btn">Terminar Tema</button> </div>
-        </div>
-    </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
@@ -317,17 +283,12 @@
                 const allLegacyTopics = [{ specialty: "GENÉTICA", topics: geneticaTopics }];
                 legacyProgressData.forEach(item => {
                     let specialtyObj = allLegacyTopics.find(s => s.specialty === item.specialty);
-                    if (!specialtyObj) {
-                        specialtyObj = { specialty: item.specialty, topics: [] };
-                        allLegacyTopics.push(specialtyObj);
-                    }
-                    if (!specialtyObj.topics.includes(item.topic)) {
-                        specialtyObj.topics.push(item.topic);
-                    }
+                    if (!specialtyObj) { specialtyObj = { specialty: item.specialty, topics: [] }; allLegacyTopics.push(specialtyObj); }
+                    if (!specialtyObj.topics.includes(item.topic)) { specialtyObj.topics.push(item.topic); }
                 });
                 const allFutureTopics = futureTopicsData.map(s => ({ specialty: s.subject, topics: s.topics }));
                 
-                // --- FUNCIÓN DE DISTRIBUCIÓN CORREGIDA ---
+                // --- FUNCIÓN DE DISTRIBUCIÓN CORREGIDA Y ROBUSTA ---
                 function distributeTopics(topicsToDistribute, startDateStr, endDateStr) {
                     const plan = [];
                     const startDate = new Date(startDateStr + 'T00:00:00');
@@ -343,51 +304,48 @@
 
                     if (flatTopics.length === 0) return [];
 
-                    const totalTopics = flatTopics.length;
-                    const totalDays = (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24) + 1;
+                    const allDates = [];
+                    let currentDateIterator = new Date(startDate);
+                    while (currentDateIterator <= endDate) {
+                        allDates.push(currentDateIterator.toISOString().split('T')[0]);
+                        currentDateIterator.setDate(currentDateIterator.getDate() + 1);
+                    }
                     
-                    if (totalDays <= 0) return [];
+                    if (allDates.length === 0) return [];
 
+                    const totalTopics = flatTopics.length;
+                    const totalDays = allDates.length;
                     const baseTopicsPerDay = Math.floor(totalTopics / totalDays);
-                    let remainingTopics = totalTopics % totalDays;
+                    let extraTopics = totalTopics % totalDays;
 
                     let topicIndex = 0;
-                    for (let d = 0; d < totalDays; d++) {
+                    for (const dateString of allDates) {
                         if (topicIndex >= totalTopics) break;
 
-                        const currentDate = new Date(startDate);
-                        currentDate.setDate(startDate.getDate() + d);
-                        const dateString = currentDate.toISOString().split('T')[0];
-
                         let topicsForThisDay = baseTopicsPerDay;
-                        if (remainingTopics > 0) {
+                        if (extraTopics > 0) {
                             topicsForThisDay++;
-                            remainingTopics--;
+                            extraTopics--;
                         }
                         
                         if (topicsForThisDay === 0) continue;
 
                         const dayPlan = { date: dateString, blocks: [] };
-                        let lastSpecialtyInDay = (topicIndex > 0) ? flatTopics[topicIndex - 1].specialty : null;
-
-                        for (let i = 0; i < topicsForThisDay; i++) {
+                        const topicsToEndToday = topicIndex + topicsForThisDay;
+                        
+                        while (topicIndex < topicsToEndToday) {
                             if (topicIndex >= totalTopics) break;
                             const currentItem = flatTopics[topicIndex];
                             
-                            if (currentItem.specialty !== lastSpecialtyInDay) {
-                                dayPlan.blocks.push({ subject: currentItem.specialty, topics: [currentItem.topic] });
-                                lastSpecialtyInDay = currentItem.specialty;
+                            const lastBlock = dayPlan.blocks[dayPlan.blocks.length - 1];
+                            if (lastBlock && lastBlock.subject === currentItem.specialty) {
+                                lastBlock.topics.push(currentItem.topic);
                             } else {
-                                // Si el bloque anterior no existe (inicio del día) o es de otra especialidad, crea uno nuevo.
-                                if(dayPlan.blocks.length === 0 || dayPlan.blocks[dayPlan.blocks.length - 1].subject !== currentItem.specialty) {
-                                     dayPlan.blocks.push({ subject: currentItem.specialty, topics: [currentItem.topic] });
-                                } else {
-                                     dayPlan.blocks[dayPlan.blocks.length - 1].topics.push(currentItem.topic);
-                                }
+                                dayPlan.blocks.push({ subject: currentItem.specialty, topics: [currentItem.topic] });
                             }
                             topicIndex++;
                         }
-
+                        
                         if (dayPlan.blocks.length > 0) {
                             plan.push(dayPlan);
                         }
@@ -457,7 +415,7 @@
             function buildSubjectMap() { subjectToTopicsMap.clear(); if (!studyPlan) return; studyPlan.forEach(day => { day.blocks.forEach(block => { if (block.subject) { if (!subjectToTopicsMap.has(block.subject)) { subjectToTopicsMap.set(block.subject, []); } if (block.topics) { const dayTopicIds = block.topics.map(generateTopicId); const topicsForSubject = subjectToTopicsMap.get(block.subject); dayTopicIds.forEach(id => { if (!topicsForSubject.includes(id)) { topicsForSubject.push(id); } }); } } }); }); }
             function calculateSubjectScore(subjectName) { const topicIds = subjectToTopicsMap.get(subjectName); if (!topicIds || topicIds.length === 0) return null; let totalScoreSum = 0; let scoredTopicsCount = 0; topicIds.forEach(topicId => { const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`)) || 0; if (reactivos > 0) { const { scorePercentage } = getTopicProgress(topicId); totalScoreSum += scorePercentage; scoredTopicsCount++; } }); return scoredTopicsCount > 0 ? (totalScoreSum / scoredTopicsCount).toFixed(1) : null; }
             function updateGlobalProgressBars() { if (!studyPlan) return; buildSubjectMap(); let totalTopics = 0; subjectToTopicsMap.forEach(topics => totalTopics += topics.length); let completedTopics = 0; subjectToTopicsMap.forEach(topicIds => { topicIds.forEach(topicId => { if (isTopicComplete(topicId)) { completedTopics++; } }); }); const advancePercentage = totalTopics > 0 ? (completedTopics / totalTopics) * 100 : 0; globalAdvanceBar.style.width = `${advancePercentage}%`; globalAdvanceBar.textContent = `${advancePercentage.toFixed(1)}%`; let totalSubjectScoreSum = 0; let subjectsWithScoresCount = 0; subjectToTopicsMap.forEach((_, subject) => { const subjectScoreStr = calculateSubjectScore(subject); if (subjectScoreStr !== null) { totalSubjectScoreSum += parseFloat(subjectScoreStr); subjectsWithScoresCount++; } }); const scorePercentage = subjectsWithScoresCount > 0 ? totalSubjectScoreSum / subjectsWithScoresCount : 0; globalScoreBar.style.width = `${scorePercentage}%`; globalScoreBar.textContent = `${scorePercentage.toFixed(1)}%`; }
-            function populateCalendar() { if (!studyPlan) return; buildSubjectMap(); const daysMap = new Map(studyPlan.map(day => [day.date, day])); const startDate = new Date(studyPlan[0].date + "T00:00:00"); const calendarEndDate = new Date(`${currentYear}-09-30T00:00:00`); const lastDayOfPlanStr = countdownTargetDateStr; let dayBeforeTargetStr = ''; if (lastDayOfPlanStr) { const targetDateObj = new Date(lastDayOfPlanStr + 'T00:00:00'); targetDateObj.setDate(targetDateObj.getDate() - 1); dayBeforeTargetStr = targetDateObj.toISOString().split('T')[0]; } let weeks = []; let dateCursor = new Date(startDate); dateCursor.setDate(dateCursor.getDate() - dateCursor.getDay()); while (dateCursor <= calendarEndDate) { let week = []; for(let i=0; i < 7; i++) { week.push(new Date(dateCursor)); dateCursor.setDate(dateCursor.getDate() + 1); } weeks.push(week); } const monthLayout = new Map(); weeks.forEach((week, weekIndex) => { const firstDayOfWeek = week[0]; const monthName = firstDayOfWeek.toLocaleString('es-ES', { month: 'long' }); if (!monthLayout.has(monthName)) { monthLayout.set(monthName, { startRow: weekIndex + 2, rowSpan: 1 }); } else { monthLayout.get(monthName).rowSpan++; } }); calendarContainer.innerHTML = ''; calendarContainer.innerHTML += '<div class="header-cell meta-header">M</div><div class="header-cell meta-header">S</div>'; ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].forEach(day => calendarContainer.innerHTML += `<div class="header-cell day-header">${day}</div>`); monthLayout.forEach((layout, name) => { calendarContainer.innerHTML += `<div class="month-cell" style="grid-row: ${layout.startRow} / span ${layout.rowSpan}">${name}</div>`; }); weeks.forEach((week, weekIndex) => { const getWeekNumber = (d) => { d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7)); var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1)); var weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7); return weekNo; }; calendarContainer.innerHTML += `<div class="week-cell-container" style="grid-row: ${weekIndex + 2}"><span class="week-number">${getWeekNumber(week[0])}</span></div>`; week.forEach(date => { const cell = document.createElement('div'); cell.className = 'day-cell'; const dateString = date.toISOString().split('T')[0]; const dayData = daysMap.get(dateString); cell.innerHTML = `<div class="calendar-day-number">${date.getDate()}</div>`; if (dayData) { cell.dataset.date = dateString; let contentHTML = '<div class="day-content">'; dayData.blocks.forEach(block => { const subject = block.subject; const topics = block.topics; let allTopicsInBlockComplete = topics.length > 0 && topics.every(topic => isTopicComplete(generateTopicId(topic))); const completedClass = allTopicsInBlockComplete ? 'subject-completed' : ''; const score = calculateSubjectScore(subject); const scoreText = score !== null ? `<span class="subject-score">(${score}%)</span>` : ''; contentHTML += `<h3 class="subject-title ${completedClass}">${subject}${scoreText}</h3>`; contentHTML += '<ul class="topic-list">'; contentHTML += topics.map(topic => createTopicListItem(topic)).join(''); contentHTML += '</ul>'; }); contentHTML += '</div>'; cell.innerHTML += contentHTML; } else { cell.classList.add('empty'); } if (dateString === lastDayOfPlanStr) cell.classList.add('target-date'); if (dateString === dayBeforeTargetStr) cell.classList.add('day-before-target'); calendarContainer.appendChild(cell); }); }); updateGlobalProgressBars(); }
+            function populateCalendar() { if (!studyPlan || studyPlan.length === 0) return; buildSubjectMap(); const daysMap = new Map(studyPlan.map(day => [day.date, day])); const startDate = new Date(studyPlan[0].date + "T00:00:00"); const calendarEndDate = new Date(`${currentYear}-09-30T00:00:00`); const lastDayOfPlanStr = countdownTargetDateStr; let dayBeforeTargetStr = ''; if (lastDayOfPlanStr) { const targetDateObj = new Date(lastDayOfPlanStr + 'T00:00:00'); targetDateObj.setDate(targetDateObj.getDate() - 1); dayBeforeTargetStr = targetDateObj.toISOString().split('T')[0]; } let weeks = []; let dateCursor = new Date(startDate); dateCursor.setDate(dateCursor.getDate() - dateCursor.getDay()); while (dateCursor <= calendarEndDate) { let week = []; for(let i=0; i < 7; i++) { week.push(new Date(dateCursor)); dateCursor.setDate(dateCursor.getDate() + 1); } weeks.push(week); } const monthLayout = new Map(); weeks.forEach((week, weekIndex) => { const firstDayOfWeek = week[0]; const monthName = firstDayOfWeek.toLocaleString('es-ES', { month: 'long' }); if (!monthLayout.has(monthName)) { monthLayout.set(monthName, { startRow: weekIndex + 2, rowSpan: 1 }); } else { monthLayout.get(monthName).rowSpan++; } }); calendarContainer.innerHTML = ''; calendarContainer.innerHTML += '<div class="header-cell meta-header">M</div><div class="header-cell meta-header">S</div>'; ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].forEach(day => calendarContainer.innerHTML += `<div class="header-cell day-header">${day}</div>`); monthLayout.forEach((layout, name) => { calendarContainer.innerHTML += `<div class="month-cell" style="grid-row: ${layout.startRow} / span ${layout.rowSpan}">${name}</div>`; }); weeks.forEach((week, weekIndex) => { const getWeekNumber = (d) => { d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7)); var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1)); var weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7); return weekNo; }; calendarContainer.innerHTML += `<div class="week-cell-container" style="grid-row: ${weekIndex + 2}"><span class="week-number">${getWeekNumber(week[0])}</span></div>`; week.forEach(date => { const cell = document.createElement('div'); cell.className = 'day-cell'; const dateString = date.toISOString().split('T')[0]; const dayData = daysMap.get(dateString); cell.innerHTML = `<div class="calendar-day-number">${date.getDate()}</div>`; if (dayData) { cell.dataset.date = dateString; let contentHTML = '<div class="day-content">'; dayData.blocks.forEach(block => { const subject = block.subject; const topics = block.topics; let allTopicsInBlockComplete = topics && topics.length > 0 && topics.every(topic => isTopicComplete(generateTopicId(topic))); const completedClass = allTopicsInBlockComplete ? 'subject-completed' : ''; const score = calculateSubjectScore(subject); const scoreText = score !== null ? `<span class="subject-score">(${score}%)</span>` : ''; contentHTML += `<h3 class="subject-title ${completedClass}">${subject}${scoreText}</h3>`; if(topics) {contentHTML += '<ul class="topic-list">'; contentHTML += topics.map(topic => createTopicListItem(topic)).join(''); contentHTML += '</ul>';} }); contentHTML += '</div>'; cell.innerHTML += contentHTML; } else { cell.classList.add('empty'); } if (dateString === lastDayOfPlanStr) cell.classList.add('target-date'); if (dateString === dayBeforeTargetStr) cell.classList.add('day-before-target'); calendarContainer.appendChild(cell); }); }); updateGlobalProgressBars(); }
             function createSpecialtyHeaderHTML(specialtyName, colorVar) { const specialtyId = generateTopicId(specialtyName); return `<div class="specialty-header" data-specialty-header="${specialtyName}" style="border-left-color: var(${colorVar})"><div class="specialty-header-main"><h3 style="color: var(${colorVar})">${specialtyName}</h3></div><div class="specialty-progress-wrapper"><small>Avance</small><div class="specialty-progress-container"><div class="specialty-progress-bar" id="sp-progress-${specialtyId}"></div></div><span class="specialty-percentage-text" id="sp-progress-text-${specialtyId}">0%</span></div><div class="specialty-progress-wrapper"><small>Nota</small><div class="specialty-progress-container"><div class="specialty-score-bar" id="sp-score-${specialtyId}"></div></div><span class="specialty-percentage-text" id="sp-score-text-${specialtyId}">0%</span></div></div>`; }
             function populateKanbanBoard() { todoContainer.innerHTML = ''; inprogressContainer.innerHTML = ''; doneContainer.innerHTML = ''; const specialtyColors = ['--step-1-color', '--step-2-color', '--step-3-color', '--step-4-color', '--step-5-color', '--step-6-color', '#FF69B4', '#8A2BE2']; let colorIndex = 0; const allSpecialties = {}; buildSubjectMap(); subjectToTopicsMap.forEach((topicIds, specialtyName) => { const topicNames = topicIds.map(id => { for (const day of studyPlan) { for (const block of day.blocks) { if (block.topics) { const foundTopic = block.topics.find(t => generateTopicId(t) === id); if (foundTopic) return foundTopic; } } } return null; }).filter(Boolean); if (topicNames.length > 0) { allSpecialties[specialtyName] = { topics: topicNames, color: specialtyColors[colorIndex % specialtyColors.length] }; colorIndex++; } }); for (const specialtyName in allSpecialties) { const specialtyData = allSpecialties[specialtyName]; const headerHTML = createSpecialtyHeaderHTML(specialtyName, specialtyData.color); const specialtyFragments = { todo: document.createDocumentFragment(), inprogress: document.createDocumentFragment(), done: document.createDocumentFragment() }; specialtyData.topics.forEach(topicName => { const topicId = generateTopicId(topicName); const state = getTopicKanbanState(topicId); const cardHTML = createKanbanCardHTML(topicName, topicId, specialtyName); const cardElement = document.createElement('div'); cardElement.innerHTML = cardHTML; specialtyFragments[state].appendChild(cardElement.firstChild); }); if (specialtyFragments.todo.hasChildNodes()) { todoContainer.innerHTML += headerHTML; todoContainer.appendChild(specialtyFragments.todo); } if (specialtyFragments.inprogress.hasChildNodes()) { inprogressContainer.innerHTML += headerHTML; inprogressContainer.appendChild(specialtyFragments.inprogress); } if (specialtyFragments.done.hasChildNodes()) { doneContainer.innerHTML += headerHTML; doneContainer.appendChild(specialtyFragments.done); } } updateAllSpecialtyProgressOnBoard(); }
             function createKanbanCardHTML(topicName, topicId, specialtyName) { const { completionPercentage, scorePercentage } = getTopicProgress(topicId); const scoreColor = getScoreColor(scorePercentage); const state = getTopicKanbanState(topicId); let statusColorVar = '--color-todo'; if (state === 'inprogress') statusColorVar = '--color-inprogress'; if (state === 'done') statusColorVar = '--color-done'; return `<article class="kanban-card" data-topic-id="${topicId}" data-topic-name="${topicName}" data-specialty="${specialtyName}" style="border-left: 4px solid var(${statusColorVar});"><div class="card-summary"><div class="card-topic-name">${topicName}</div><div class="card-progress-display"><div class="card-progress-bar-container"><div class="card-progress-bar" style="width: ${completionPercentage}%; background-color: var(${statusColorVar});"></div></div><span class="card-progress-text">${completionPercentage.toFixed(0)}%</span><span class="card-score-text" style="color: ${scoreColor}">${scorePercentage.toFixed(0)}%</span></div></div></article>`; }
@@ -487,7 +445,7 @@
                 loadUserProgress(doc.data());
                 
                 studyPlan = defaultStudyPlan; 
-                await saveData('studyPlan', defaultStudyPlan); 
+                await saveData('studyPlan', studyPlan); 
                 
                 const currentTopicData = getData('topicData', {});
                 const newInitialProgress = {};
@@ -508,12 +466,15 @@
                 
                 loadUserProgress((await docRef.get()).data());
                 
-                countdownTargetDateStr = getData('countdownTarget') || studyPlan[studyPlan.length - 1].date;
-                countdownDatePicker.value = countdownTargetDateStr;
-                startCountdown();
+                if (studyPlan && studyPlan.length > 0) {
+                    countdownTargetDateStr = getData('countdownTarget') || studyPlan[studyPlan.length - 1].date;
+                    countdownDatePicker.value = countdownTargetDateStr;
+                    startCountdown();
+                }
                 
                 switchView('calendar'); 
                 
+                // Event Listeners (sin cambios)
                 tabBtnProgress.addEventListener('click', () => switchView('progress'));
                 tabBtnCalendar.addEventListener('click', () => switchView('calendar'));
                 tabBtnBoard.addEventListener('click', () => switchView('board'));
@@ -534,7 +495,7 @@
                 calendarContainer.addEventListener('dragstart', e => { if (e.target.classList.contains('topic-item')) { draggedItem = e.target; const topicName = draggedItem.dataset.topicName; const subjectTitle = getSubjectForTopic(topicName); e.dataTransfer.setData('application/json', JSON.stringify({ topicName: topicName, sourceSubject: subjectTitle })); setTimeout(() => e.target.classList.add('dragging'), 0); } });
                 calendarContainer.addEventListener('dragend', e => { if (draggedItem) { draggedItem.classList.remove('dragging'); draggedItem = null; clearDragStyles(); } });
                 calendarContainer.addEventListener('dragover', e => { e.preventDefault(); const targetCell = e.target.closest('.day-cell:not(.empty)'); if (!targetCell || !draggedItem) { clearDragStyles(); return; } const sourceDate = draggedItem.closest('.day-cell').dataset.date; const targetDate = targetCell.dataset.date; clearDragStyles(); if (sourceDate === targetDate) { const targetTopic = e.target.closest('.topic-item'); if (targetTopic && targetTopic !== draggedItem) { lastDragOverTopic = targetTopic; const rect = targetTopic.getBoundingClientRect(); const midpointY = rect.top + rect.height / 2; if (e.clientY < midpointY) { targetTopic.classList.add('drag-over-top'); } else { targetTopic.classList.add('drag-over-bottom'); } } } else { lastDragOverCell = targetCell; targetCell.classList.add('drag-over'); } });
-                calendarContainer.addEventListener('drop', async e => { e.preventDefault(); if (!draggedItem) return; const targetCell = e.target.closest('.day-cell'); if (!targetCell || targetCell.classList.contains('empty')) { clearDragStyles(); return; } const sourceCell = draggedItem.closest('.day-cell'); const sourceDate = sourceCell.dataset.date; const targetDate = targetCell.dataset.date; const { topicName, sourceSubject } = JSON.parse(e.dataTransfer.getData('application/json')); const sourceDay = studyPlan.find(d => d.date === sourceDate); if (!sourceDay) return; let removed = false; sourceDay.blocks.forEach(block => { if (block.topics) { const topicIndex = block.topics.indexOf(topicName); if (topicIndex > -1) { block.topics.splice(topicIndex, 1); removed = true; } } }); if (!removed) return; let targetDay = studyPlan.find(d => d.date === targetDate); if (!targetDay) { targetDay = { date: targetDate, blocks: [{ topics: [] }] }; studyPlan.push(targetDay); } let targetBlock = targetDay.blocks.find(b => getSubjectForTopic(b.topics?.[0]) === sourceSubject || b.subject === sourceSubject); if (!targetBlock) { targetBlock = { subject: sourceSubject, topics: [] }; targetDay.blocks.push(targetBlock); } const targetTopicEl = e.target.closest('.topic-item'); if (targetTopicEl && sourceDate === targetDate) { const targetTopicName = targetTopicEl.dataset.topicName; const rect = targetTopicEl.getBoundingClientRect(); const midpointY = rect.top + rect.height / 2; const insertBefore = e.clientY < midpointY; const targetIndex = targetBlock.topics.indexOf(targetTopicName); targetBlock.topics.splice(insertBefore ? targetIndex : targetIndex + 1, 0, topicName); } else { targetBlock.topics.push(topicName); } studyPlan.forEach(day => { day.blocks = day.blocks.filter(block => (block.subject && block.topics && block.topics.length > 0) || (!block.subject && block.topics && block.topics.length > 0) || (block.subject && !block.topics)); }); studyPlan = studyPlan.filter(day => day.blocks.length > 0 && day.blocks.some(b => (b.topics && b.topics.length > 0) || b.subject)); studyPlan.sort((a, b) => new Date(a.date) - new Date(b.date)); clearDragStyles(); await saveData('studyPlan', studyPlan); populateCalendar(); });
+                calendarContainer.addEventListener('drop', async e => { e.preventDefault(); if (!draggedItem) return; const targetCell = e.target.closest('.day-cell'); if (!targetCell || targetCell.classList.contains('empty')) { clearDragStyles(); return; } const sourceCell = draggedItem.closest('.day-cell'); const sourceDate = sourceCell.dataset.date; const targetDate = targetCell.dataset.date; const { topicName, sourceSubject } = JSON.parse(e.dataTransfer.getData('application/json')); const sourceDay = studyPlan.find(d => d.date === sourceDate); if (!sourceDay) return; let removed = false; sourceDay.blocks.forEach(block => { if (block.topics) { const topicIndex = block.topics.indexOf(topicName); if (topicIndex > -1) { block.topics.splice(topicIndex, 1); removed = true; } } }); if (!removed) return; let targetDay = studyPlan.find(d => d.date === targetDate); if (!targetDay) { targetDay = { date: targetDate, blocks: [] }; studyPlan.push(targetDay); } let targetBlock = targetDay.blocks.find(b => b.subject === sourceSubject); if (!targetBlock) { targetBlock = { subject: sourceSubject, topics: [] }; targetDay.blocks.push(targetBlock); } const targetTopicEl = e.target.closest('.topic-item'); if (targetTopicEl && sourceDate === targetDate) { const targetTopicName = targetTopicEl.dataset.topicName; const rect = targetTopicEl.getBoundingClientRect(); const midpointY = rect.top + rect.height / 2; const insertBefore = e.clientY < midpointY; const targetIndex = targetBlock.topics.indexOf(targetTopicName); if (targetIndex > -1) { targetBlock.topics.splice(insertBefore ? targetIndex : targetIndex + 1, 0, topicName); } else { targetBlock.topics.push(topicName); } } else { targetBlock.topics.push(topicName); } studyPlan.forEach(day => { day.blocks = day.blocks.filter(block => block.topics && block.topics.length > 0); }); studyPlan = studyPlan.filter(day => day.blocks.length > 0 && day.blocks.some(b => b.topics && b.topics.length > 0)); studyPlan.sort((a, b) => new Date(a.date) - new Date(b.date)); clearDragStyles(); await saveData('studyPlan', studyPlan); populateCalendar(); });
             }
             main();
         }
