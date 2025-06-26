@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Frecuencia Vital - Estudio Unificado</title>
+    <title>Frecuencia Vital - Estudio Unificado v3</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
@@ -14,9 +14,10 @@
             --main-border: #2c2c2c;
             --text-color: #e0e0e0;
             --text-secondary: #a0a0a0;
+            --text-muted: #777;
             --accent-color: #00FF7F;
-            /* Se cambia el color de la materia a blanco (text-color) como se solicitó */
-            --subject-highlight-color: var(--text-color); 
+            /* CAMBIO REALIZADO: Título de especialidad en blanco puro */
+            --subject-highlight-color: #FFFFFF; 
             --meta-bg: #181c25;
             --meta-header-bg: #101217;
             --meta-border: #2c3240;
@@ -34,50 +35,68 @@
             --step-1-color: #03dac6; --step-2-color: #ffb74d; --step-3-color: #4fc3f7;
             --step-4-color: #ce93d8; --step-5-color: #ef9a9a; --step-6-color: #a5d6a7;
             --color-todo: var(--text-secondary);
-            --color-inprogress: var(--step-3-color);
+            --color-inprogress: var(--color-inprogress);
             --color-done: var(--vfd-green);
         }
 
-        /* --- ESTRUCTURA PRINCIPAL DE LA PÁGINA --- */
+        /* --- ESTRUCTURA PRINCIPAL Y PESTAÑAS --- */
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        html { scrollbar-color: var(--accent-color) var(--main-border); scrollbar-width: thin; }
-        ::-webkit-scrollbar { width: 10px; }
-        ::-webkit-scrollbar-track { background: var(--main-border); }
-        ::-webkit-scrollbar-thumb { background-color: var(--accent-color); border-radius: 5px; border: 2px solid var(--main-border); }
-
         body { font-family: 'Source Sans Pro', sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
+        .tab-navigation { display: flex; border-bottom: 2px solid var(--main-border); margin: 0 25px; flex-shrink: 0; }
+        .tab-button { font-family: 'Orbitron', sans-serif; font-size: 1.1em; font-weight: 500; padding: 12px 25px; cursor: pointer; background-color: transparent; border: none; color: var(--text-secondary); border-bottom: 3px solid transparent; transition: color 0.3s ease, border-bottom-color 0.3s ease; margin-bottom: -2px; }
+        .tab-button:hover { color: var(--text-color); }
+        .tab-button.active { color: var(--accent-color); border-bottom-color: var(--accent-color); }
 
         /* --- BANNER FIJO --- */
-        .app-banner { padding: 20px 25px; background-color: var(--bg-color); border-bottom: 1px solid var(--main-border); flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 20px; }
-        .banner-bottom-row { display: flex; width: 100%; align-items: center; gap: 20px; }
-        .global-progress-container { flex-grow: 1; display: flex; flex-direction: column; gap: 10px; }
-
-        /* --- ÁREA DE CONTENIDO DESPLAZABLE --- */
-        .main-content-area { flex-grow: 1; overflow-y: auto; }
-        .view-wrapper { padding: 20px; }
-        .view-wrapper.hidden { display: none; }
-        
-        /* --- ELEMENTOS DEL BANNER --- */
-        .view-switcher { background-color: var(--accent-color); color: var(--bg-color); border: none; padding: 10px 20px; border-radius: 6px; font-family: 'Orbitron', sans-serif; font-weight: 700; cursor: pointer; transition: all 0.2s ease; flex-shrink: 0; }
-        .view-switcher:hover { background-color: #39ff94; transform: translateY(-2px); }
-        .motivational-quote { font-family: 'Orbitron', sans-serif; color: var(--vfd-green); font-size: 1.5em; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 4px rgba(80, 224, 80, 0.6), 0 0 8px rgba(80, 224, 80, 0.4); min-height: 1.2em; }
+        .app-banner { padding: 20px 25px 15px 25px; background-color: var(--bg-color); border-bottom: 1px solid var(--main-border); flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        .motivational-quote { font-family: 'Orbitron', sans-serif; color: var(--vfd-green); font-size: 1.4em; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 4px rgba(80, 224, 80, 0.6), 0 0 8px rgba(80, 224, 80, 0.4); min-height: 1.2em; }
         .countdown-container { position: relative; display: inline-block; }
         .countdown-timer-container { display: flex; justify-content: center; align-items: center; gap: 25px; }
         .countdown-unit { text-align: center; }
-        .countdown-label { font-family: 'Orbitron', sans-serif; font-size: 0.8em; color: var(--vfd-green); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; opacity: 0.8; }
-        .countdown-digits { font-family: 'Orbitron', sans-serif; font-size: 4em; color: var(--vfd-green); line-height: 1; text-shadow: 0 0 5px rgba(80, 224, 80, 0.7), 0 0 10px rgba(80, 224, 80, 0.5), 0 0 15px rgba(80, 224, 80, 0.3); }
+        .countdown-label { font-family: 'Orbitron', sans-serif; font-size: 0.7em; color: var(--vfd-green); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; opacity: 0.8; }
+        .countdown-digits { font-family: 'Orbitron', sans-serif; font-size: 3.5em; color: var(--vfd-green); line-height: 1; text-shadow: 0 0 5px rgba(80, 224, 80, 0.7), 0 0 10px rgba(80, 224, 80, 0.5), 0 0 15px rgba(80, 224, 80, 0.3); }
         #edit-countdown-btn { position: absolute; top: -5px; right: -30px; background: none; border: none; color: var(--meta-text); font-size: 1.2em; cursor: pointer; transition: color 0.2s; }
         #edit-countdown-btn:hover { color: var(--accent-color); }
         #countdown-editor { display: none; margin-top: 10px; align-items: center; justify-content: center; gap: 10px; }
         #countdown-date-picker { background-color: var(--cell-bg); border: 1px solid var(--main-border); color: var(--text-color); padding: 5px; border-radius: 4px; font-family: 'Source Sans Pro', sans-serif; }
         #countdown-date-picker::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
         #save-countdown-btn { background-color: var(--accent-color); color: var(--bg-color); border: none; padding: 6px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; }
-        .progress-bar-wrapper { display: flex; flex-direction: column; gap: 4px; }
-        .progress-bar-wrapper label { font-size: 0.85em; color: var(--meta-text); font-weight: 600; text-align: left; }
+
+        /* --- ÁREA DE CONTENIDO DESPLAZABLE --- */
+        .main-content-area { flex-grow: 1; overflow-y: auto; overflow-x: hidden; }
+        .tab-content { padding: 20px; animation: fadeIn 0.5s; }
+        .tab-content.hidden { display: none; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* --- VISTA PROGRESO GLOBAL (ACORDEONES) --- */
+        #global-progress-view h1 { text-align: center; color: var(--vfd-green); font-family: 'Orbitron'; letter-spacing: 1px; margin-bottom: 20px; text-shadow: 0 0 4px rgba(80,224,80,0.6); }
+        .global-progress-wrapper { margin-bottom: 12px; max-width: 900px; margin-left: auto; margin-right: auto;}
+        .global-progress-wrapper label { display: block; font-size: 0.9em; color: var(--text-secondary); margin-bottom: 5px; padding-left: 2px; }
         .progress-bar-background { width: 100%; background-color: var(--main-border); border-radius: 8px; height: 22px; overflow: hidden; }
         .progress-bar-fill { height: 100%; width: 0%; border-radius: 8px; transition: width 0.5s ease-in-out; text-align: center; line-height: 22px; color: var(--bg-color); font-weight: bold; font-size: 0.8em; }
         #global-score-bar { background-color: var(--progress-score-bg); }
         #global-advance-bar { background-color: var(--progress-advance-bg); }
+        #specialty-accordions { display: flex; flex-direction: column; gap: 10px; margin-top: 25px; max-width: 900px; margin-left: auto; margin-right: auto; }
+        .specialty-accordion .accordion-header { background-color: var(--cell-bg); color: var(--text-color); cursor: pointer; padding: 12px 20px; width: 100%; border: none; text-align: left; outline: none; font-size: 1.2em; font-weight: 600; display: flex; align-items: center; justify-content: space-between; border-radius: 8px; border-left: 4px solid var(--main-border); transition: background-color 0.3s ease, border-left-color 0.3s ease; }
+        .specialty-accordion .accordion-header:hover, .specialty-accordion .accordion-header.active { background-color: var(--meta-bg); border-left-color: var(--accent-color); }
+        .accordion-header .specialty-name { flex-grow: 1; }
+        .specialty-progress-indicators { display: flex; gap: 20px; align-items: center; font-size: 0.8em; margin-left: 15px; }
+        .indicator { display: flex; align-items: center; gap: 6px; }
+        .indicator .fas { font-size: 1.1em; }
+        .score-red { color: var(--error-color); }
+        .score-yellow { color: var(--warning-color); }
+        .score-green { color: var(--vfd-green); }
+        .indicator.score-indicator .fas { color: var(--warning-color); } 
+        .indicator .score-value { font-weight: bold; }
+        .indicator .completion-value { color: var(--text-secondary); }
+        .accordion-header .fa-chevron-down { transition: transform 0.3s ease; }
+        .specialty-accordion .accordion-header.active .fa-chevron-down { transform: rotate(180deg); }
+        .accordion-panel { padding: 0px 20px; background-color: transparent; max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out, padding 0.4s ease-out; }
+        .topic-progress-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 5px; border-bottom: 1px solid #2c2c2c; font-size: 0.95em; }
+        .topic-progress-item:last-child { border-bottom: none; }
+        .topic-name { color: var(--text-secondary); }
+        .topic-score { font-weight: 600; font-family: 'Orbitron', monospace; font-size: 0.9em; }
+        .topic-score.not-started { color: var(--text-muted); }
 
         /* --- ESTILOS DEL CALENDARIO --- */
         .calendar-container { display: grid; grid-template-columns: 40px 40px repeat(7, 1fr); gap: 2px; background-color: var(--main-border); }
@@ -95,11 +114,21 @@
         .day-cell.day-before-target { border-color: var(--warning-color); }
         .day-cell.day-before-target .calendar-day-number { color: var(--warning-color); }
         .calendar-day-number { font-size: 0.9em; font-weight: 600; color: #777; position: absolute; top: 8px; right: 12px; z-index: 1; transition: color 0.2s; }
-        .day-content ul { list-style-type: none; padding-left: 0; margin: 25px 0 0 0; }
-        .day-content li { margin-bottom: 4px; padding-left: 14px; position: relative; font-size: 0.85em; }
-        .subject-title { color: var(--subject-highlight-color); font-weight: 700; display: block; margin-bottom: 6px; text-transform: uppercase; font-size: 1em; text-shadow: 0 0 5px rgba(255, 152, 0, 0.4); padding-left: 0; }
-        .subject-title::before { content: none !important; }
+        .day-content { margin-top: 25px; }
+
+        h3.subject-title { 
+            font-size: 1em; text-transform: uppercase; font-weight: 700;
+            color: var(--subject-highlight-color); 
+            background-color: var(--cell-bg);
+            padding: 4px 0 6px 0; margin: 0 0 6px 0;
+            position: sticky; top: 0;
+            z-index: 2;
+        }
+        h3.subject-title.subject-completed { color: var(--text-muted); }
         .subject-score { color: var(--meta-text); font-size: 0.8em; font-weight: 400; margin-left: 8px; }
+        ul.topic-list { list-style-type: none; padding-left: 0; margin: 0; }
+        ul.topic-list li { margin-bottom: 4px; padding-left: 14px; position: relative; font-size: 0.85em; }
+        
         .topic-item { display: flex; align-items: center; justify-content: space-between; padding: 4px 6px; margin-left: -6px; border-radius: 4px; transition: all 0.2s; border-top: 2px solid transparent; border-bottom: 2px solid transparent; }
         .topic-item[draggable="true"] { cursor: grab; }
         .topic-item.dragging { opacity: 0.5; }
@@ -142,7 +171,7 @@
         .card-progress-bar { height: 100%; width: 0%; border-radius: 3px; transition: width 0.3s ease; }
         .card-progress-text, .card-score-text { font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); }
         
-        /* --- ESTILOS DE MODALES --- */
+        /* --- ESTILOS DE MODALES (Unificados) --- */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px); z-index: 998; display: none; opacity: 0; transition: opacity 0.3s ease; }
         .modal-overlay.visible { display: block; opacity: 1; }
         .modal-container { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: var(--cell-bg); border: 1px solid var(--main-border); border-radius: 12px; box-shadow: 0 5px 25px rgba(0,0,0,0.5); z-index: 1000; width: 90%; max-height: 90vh; display: none; flex-direction: column; transition: transform 0.3s ease, opacity 0.3s ease; }
@@ -206,8 +235,13 @@
         .topic-finish-btn { background-color: var(--vfd-green); color: var(--bg-color); border: none; border-radius: 6px; padding: 12px 25px; font-family: 'Orbitron', sans-serif; font-size: 1em; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: background-color 0.2s ease, transform 0.2s ease; }
         .topic-finish-btn:hover { background-color: #76ff76; transform: translateY(-2px); }
         
-        @media (max-width: 768px) { .motivational-quote { font-size: 1.2em; } .countdown-digits { font-size: 3em; } .countdown-timer-container { gap: 15px; } .parallel-steps-container, .practice-step-layout, .kanban-board { flex-direction: column; display: block; } .kanban-column { margin-bottom: 20px; } .day-cell { min-height: 120px; } }
-        @media (max-width: 600px) { .banner-bottom-row { flex-direction: column; } .motivational-quote { font-size: 1em; letter-spacing: 1px; } .countdown-digits { font-size: 2.2em; } .countdown-label { font-size: 0.6em; } .countdown-timer-container { gap: 10px; } body { padding: 0; } .view-wrapper { padding: 10px; } .calendar-container { grid-template-columns: 30px 30px repeat(7, 1fr); } .modal-content { padding: 15px; } .step-card { flex-direction: column; } .step-icon-container { text-align: left; margin-bottom: 5px;} #edit-countdown-btn { right: -5px; top: -15px; } }
+        /* --- MEDIA QUERIES --- */
+        @media (max-width: 992px) {
+            .calendar-container { grid-template-columns: repeat(7, 1fr); }
+            .month-cell, .week-cell-container { display: none; }
+        }
+        @media (max-width: 768px) { .motivational-quote { font-size: 1.2em; } .countdown-digits { font-size: 3em; } .countdown-timer-container { gap: 15px; } .parallel-steps-container, .practice-step-layout, .kanban-board { flex-direction: column; display: block; } .kanban-column { margin-bottom: 20px; } .day-cell { min-height: 120px; } .specialty-progress-indicators { display: none; } }
+        @media (max-width: 600px) { .tab-navigation { margin: 0 10px; } .tab-button { padding: 10px 15px; font-size: 1em; } .motivational-quote { font-size: 1em; letter-spacing: 1px; } .countdown-digits { font-size: 2.2em; } .countdown-label { font-size: 0.6em; } .countdown-timer-container { gap: 10px; } body { padding: 0; } .tab-content { padding: 10px; } .calendar-container { grid-template-columns: 30px 30px repeat(7, 1fr); } .modal-content { padding: 15px; } .step-card { flex-direction: column; } .step-icon-container { text-align: left; margin-bottom: 5px;} #edit-countdown-btn { right: -5px; top: -15px; } }
     </style>
 </head>
 <body>
@@ -215,10 +249,10 @@
         <div id="motivational-quote-container" class="motivational-quote"></div>
         <div class="countdown-container">
             <div class="countdown-timer-container">
-                <div class="countdown-unit"><div class="countdown-label">Days</div><div class="countdown-digits" id="countdown-days">000</div></div>
-                <div class="countdown-unit"><div class="countdown-label">Hours</div><div class="countdown-digits" id="countdown-hours">00</div></div>
-                <div class="countdown-unit"><div class="countdown-label">Minutes</div><div class="countdown-digits" id="countdown-minutes">00</div></div>
-                <div class="countdown-unit"><div class="countdown-label">Seconds</div><div class="countdown-digits" id="countdown-seconds">00</div></div>
+                <div class="countdown-unit"><div class="countdown-label">Días</div><div class="countdown-digits" id="countdown-days">000</div></div>
+                <div class="countdown-unit"><div class="countdown-label">Horas</div><div class="countdown-digits" id="countdown-hours">00</div></div>
+                <div class="countdown-unit"><div class="countdown-label">Minutos</div><div class="countdown-digits" id="countdown-minutes">00</div></div>
+                <div class="countdown-unit"><div class="countdown-label">Segundos</div><div class="countdown-digits" id="countdown-seconds">00</div></div>
             </div>
             <button id="edit-countdown-btn" title="Editar fecha final"><i class="fas fa-calendar-alt"></i></button>
         </div>
@@ -226,28 +260,35 @@
             <input type="date" id="countdown-date-picker">
             <button id="save-countdown-btn">Guardar</button>
         </div>
-        <div class="banner-bottom-row">
-            <div class="global-progress-container">
-                <div class="progress-bar-wrapper">
-                    <label id="global-score-label">Puntuación Global (Promedio de Calificaciones)</label>
-                    <div class="progress-bar-background"><div class="progress-bar-fill" id="global-score-bar" role="progressbar">0%</div></div>
-                </div>
-                <div class="progress-bar-wrapper">
-                    <label id="global-advance-label">Avance Global (Temas Completados)</label>
-                    <div class="progress-bar-background"><div class="progress-bar-fill" id="global-advance-bar" role="progressbar">0%</div></div>
-                </div>
-            </div>
-            <button id="view-switcher" class="view-switcher" data-current-view="calendar">
-                <i class="fas fa-columns"></i> Tablero Vital
-            </button>
-        </div>
     </header>
 
+    <nav class="tab-navigation">
+        <button id="tab-btn-progress" class="tab-button active" aria-selected="true">Progreso Global</button>
+        <button id="tab-btn-calendar" class="tab-button" aria-selected="false">Calendario Vital</button>
+        <button id="tab-btn-board" class="tab-button" aria-selected="false">Tablero Vital</button>
+    </nav>
+
     <main class="main-content-area">
-        <div id="calendar-view" class="view-wrapper">
+        <div id="global-progress-view" class="tab-content">
+            <h1>PROGRESO VITAL</h1>
+            <div class="global-progress-wrapper">
+                <label id="global-score-label">Puntuación Global (Promedio de Calificaciones)</label>
+                <div class="progress-bar-background"><div class="progress-bar-fill" id="global-score-bar" role="progressbar">0%</div></div>
+            </div>
+            <div class="global-progress-wrapper">
+                <label id="global-advance-label">Avance Global (Temas Completados)</label>
+                <div class="progress-bar-background"><div class="progress-bar-fill" id="global-advance-bar" role="progressbar">0%</div></div>
+            </div>
+            <div id="specialty-accordions">
+                <!-- Los acordeones de especialidades se generarán aquí con JS -->
+            </div>
+        </div>
+
+        <div id="calendar-view" class="tab-content hidden">
             <div class="calendar-container" id="calendar-container"></div>
         </div>
-        <div id="board-view" class="view-wrapper hidden">
+        
+        <div id="board-view" class="tab-content hidden">
             <main class="kanban-board">
                 <section class="kanban-column" id="col-todo">
                     <div class="kanban-column-header"><h2><i class="far fa-circle" style="margin-right: 8px;"></i>Sin Empezar</h2></div>
@@ -265,6 +306,7 @@
         </div>
     </main>
     
+    <!-- MODALES (sin cambios en su estructura) -->
     <div class="modal-overlay" id="modal-overlay"></div>
     <div class="modal-container" id="details-modal">
         <div class="modal-header"> <h2 id="modal-title"></h2> <span class="modal-close" id="modal-close-day">×</span> </div>
@@ -289,8 +331,8 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
+        // Frecuencia Vital - Lógica de Aplicación Unificada v3
         const firebaseConfig = {
-            // Se mantiene tu configuración de Firebase
             apiKey: "AIzaSyD4SjKhedm4ZWHed70_sjQgxPokjHvwvUc",
             authDomain: "frecuencia-vital.firebaseapp.com",
             projectId: "frecuencia-vital",
@@ -309,260 +351,273 @@
                 currentUser = user;
                 initializeAppLogic();
             } else {
-                // Idealmente, aquí deberías tener una página de login.
-                // Si no existe 'index.html', el usuario podría quedar en un bucle.
-                // Por ahora, lo dejamos como estaba.
-                console.log("Usuario no autenticado, redirigiendo...");
-                // window.location.href = 'index.html'; 
+                window.location.href = 'index.html';
             }
         });
 
         async function initializeAppLogic() {
-            // --- INICIO: BASE DE DATOS UNIFICADA DE TEMAS ---
-            // Esta sección integra los temas de ambos archivos en una única fuente de verdad.
-            const MASTER_TOPIC_DATABASE = {
-                "GENÉTICA": ["Síndrome de Down", "Síndrome de Klinefelter", "Síndrome de Turner", "Síndrome de Marfan", "Enfermedad de Wilson", "Síndrome de Dravet", "Síndrome de Lynch", "Síndrome de Peutz Jegher", "Von Hippel Lindau"],
-                "GERIATRÍA": ["Valoración geriátrica", "Alzheimer", "Delirium", "Demencia vascular", "Deterioro cognitivo", "Insomnio en el adulto mayor", "Síndrome de caídas", "Síndrome de fragilidad", "Maltrato en el adulto mayor", "Colapso del cuidador", "Depresión mayor"],
-                "PSIQUIATRÍA": ["Abuso de sustancias", "Abstinencia alcohólica", "Trastorno por alcohol", "Esquizofrenia", "Estrés post traumático", "Trastornos del sueño", "Intento de suicidio", "Tdah", "Trastorno bipolar", "Trastornos de ansiedad", "Trastornos c. alimentaria", "Consumo de mariguana", "Violencia contra la mujer", "Autismo", "Síndrome de Munchausen", "Depresion"],
-                "DERMATOLOGÍA": ["Dermatitis atópica", "Dermatofitosis", "SSJ y NET", "Escabiosis - Sarna", "Impétigo", "Melanoma", "Psoriasis", "Carcinoma basocelular", "Acné vulgar", "Erisipela", "Urticaria", "Dermatitis por contacto", "Pediculosis capitis", "Síndrome de Ritter", "Carcinoma espinocelular"],
-                "NEFROLOGÍA": ["Lesión renal aguda", "Enfermedad renal crónica", "Nefropatía diabética", "Síndrome nefrítico y nefrootico", "Trastorno ácido-base", "Nefritis lúpica"],
-                "REUMATOLOGÍA": ["Artritis reactiva", "Artritis reumatoide", "Espondilitis anquilosante", "Gota", "Lupus eritematoso sistémico", "Arteritis de la temporal", "Granulomatosis de Wegener", "Artritis Septica"],
-                "NEUMOLOGÍA": ["Asma en pediátricos", "Exacerbación de asma", "Cáncer de pulmón", "Epoc", "Derrame pleural", "Tabaquismo"],
-                "NEUROLOGÍA": ["Cefalea Secundarias", "Cefaleas Tensional y Migraña", "Crisis convulsivas", "Estatus epiléptico", "Crisis febriles", "Enfermedad de Parkinson", "EVC isquémico", "Hemorragia subaracnoidea", "Guillain Barré", "Esclerosis múltiple", "EVC hemorrágico", "Miastenia gravis", "Muerte encefálica"],
-                "HEMATOLOGÍA": ["Anemia generalidades", "Anemia ferropénica Adultos", "Leucemias", "Linfomas", "Trombocitopenia inmune"],
-                "INFECTOLOGÍA": ["Brucelosis", "Cisticercosis", "Clostridium y teniasis", "Diarrea aguda en adultos", "Diarrea en niños", "Chinkungunya", "Dengue", "Zika", "Paludismo", "Salmonella Fiebre tifoidea", "Sepsis y choque séptico", "Tuberculosis pulmonar", "ETS Generalidades", "VIH Adultos", "VIH Madre e hijo", "RV yOportunistas", "Sarcoma de Kaposi", "Giardiasis", "Tuberculosis extrapulmonar", "Lepra", "Medios de cultivo", "Actinomicosis", "Amebiasis intestinal", "Anquilostomiasis", "Ascariasis", "Aspergilosis", "Coccidioidomicosis", "Difteria", "Enfermedad de Chagas", "Enfermedad de Lyme", "Estrongiloidiasis", "Fascitis necrosante", "Fiebre de origen desconocido", "Filariasis linfática", "Filariasis ocular Loasis", "Infecciones odontogénicas", "Leishmaniasis", "Leptospirosis", "Mucormicosis", "Oncocercosis", "Oxiuriasis o enterobiasis", "Poliomielitis", "Rabia", "Tricuriasis", "Triquinosis", "Neumonía adquirida en la comunidad", "Neumonía bacteriana adquirida en la comunidad Niños", "Influenza", "Meningitis", "Encefalitis viral", "Absceso cerebral"],
-                "ENDOCRINOLOGÍA": ["INTRO DM", "Prediabetes", "Diabetes mellitus", "Diabetes en el adulto mayor", "Diabetes en pediatría", "Cetoacidosis diabética y EHH", "Hipoglucemia", "Dislipidemias", "Hipertiroidismo", "Hipotiroidismo", "Cáncer de tiroides (Enfoque en Papilar)", "Nódulo tiroideo", "Obesidad en adultos", "Síndrome metabólico", "Enfermedad de Cushing / Síndrome de Cushing", "Enfermedad de Addison"],
-                "UROLOGÍA": ["Escroto agudo y Torsión testicular", "Hiperplasia prostática benigna", "Cáncer de próstata", "Pielonefritis aguda", "Infección de tracto urinario", "Urolitiasis", "Cáncer testicular", "Disfunción eréctil"],
-                "ORL": ["Faringoamigdalitis", "Epistaxis", "Rinosinusitis aguda", "Otitis externa aguda", "VPPB", "Mastoiditis aguda", "Parálisis de Bell"],
-                "OFTALMOLOGÍA": ["Catarata", "Conjuntivitis", "Glaucoma de ángulo aberto", "Glaucoma de ángulo cerrado", "Ojo rojo", "Retinopatía diabética", "Trauma ocular", "Desprendimiento de retina"],
-                "TYO": ["Osteoartritis", "Osteomielitis", "Fracturas expuestas", "Esguince cervical", "Lumbalgia", "Síndrome de hombro doloroso", "Luxación glenohumeral", "Fractura de clavícula", "Fractura de radio distal", "Fractura de cadera", "Lesiones de rodilla", "Esguince de tobillo", "Fractura de tobillo", "Osteosarcoma", "Sarcoma de Ewing", "Hernia de disco", "Túnel del carpo", "Epifisiolistesis femoral", "Legg-Calvé-Perthes", "Embolia grasa", "Tumores óseos malignos", "Costilla cervical", "Fractura de húmero proximal", "Luxación de codo", "Codo de niñera", "Fracturas de codo", "Fracturas de antebrazo", "Lesiones fisiarias", "Luxación coxofemoral", "Fractura de diáfisis de tibia", "Rotura de talón de Aquiles", "Pie equino varo", "Pie plano"],
-                "CARDIOLOGÍA": ["Pericarditis", "Endocarditis infecciosa", "Estenosis aórtica", "Insuficiencia aórtica", "Estenosis mitral", "Insuficiencia mitral", "Fiebre reumática", "Hipertensión arterial sistémica", "Crisis hipertensivas", "Insuficiencia cardíaca aguda", "Insuficiencia cardíaca crónica", "Infarto agudo de miocardio", "Disección aórtica", "Cor pulmonar crónico", "Edema pulmonar", "Hipotensión ortostática", "Aneurisma aórtico abdominal", "Enfermedad coronaria", "Otras valvulopatías", "Hipertensión pulmonar", "Rehabilitación cardíaca"],
-                "ANGIOLOGÍA": ["Enfermedad arterial periférica", "Insuficiencia venosa", "Pie diabético", "Tromboembolia pulmonar", "Trombosis venosa profunda", "Úlceras por presión", "Paget-Schroetter", "Tromboembolia venosa en obstetricia"],
-                "ACLS": ["Soporte vital básico", "RCP", "Taquicardia ACLS", "Taquicardia supraventricular", "Bloqueos AV", "Bradicardia", "Fibrilación auricular", "Fibrilación ventricular"],
-                "ATLS": ["Síndrome de WPW", "PLS (Posición Lateral de Seguridad)", "Ahogamiento", "Politrauma", "Tipos de shock", "Choque hipovolémico", "Quemaduras", "Gran quemado", "TCE adultos", "TCE pediátrico", "Trauma torácico", "Hemotórax", "Neumotórax a tensión", "Taponamiento cardiaco", "Trauma abdominal", "Shock neurogénico", "Neumotórax aberto", "Neumotórax simple", "Trauma espinal", "Catéter venoso central", "Hipotermia", "Fracturas de cráneo", "Lesión traqueobronquial", "Ruptura diafragmática", "Trauma esplénico", "Trauma obstétrico", "Trauma pélvico"],
-                "TOXICOLOGÍA": ["Manejo de intoxicaciones", "Toxíndromes", "Intoxicación por benzodiacepinas", "Intoxicación por organofosforados", "Intoxicación por paracetamol", "Intoxicación por salicilatos", "Lactrodectus", "Loxosceles", "Mordedura de serpiente", "Picadura de alacrán", "Golpe de calor", "Intoxicación por etanol", "Intoxicación por monóxido de carbono", "Intoxicación por opiáceos", "Anafilaxia", "Ingesta de cáusticos", "Intoxicación alimentaria", "Intoxicación por alcoholes", "Intoxicación por anfetaminas", "Intoxicación por DMT", "Intoxicación por fentanilo", "Intoxicación por hidrocarburos", "Intoxicación por metales pesados", "Intoxicación por plomo", "Picadura de himenópteros"],
-                "GASTROENTEROLOGÍA": ["Absceso hepático amebiano", "Cirrosis hepática", "Insuficiencia hepática", "Ascitis", "Encefalopatía hepática", "Hepatitis A", "Hepatitis B", "Hepatitis C", "Pancreatitis aguda", "Reflujo ERGE", "Enfermedad ácido péptica", "Síndrome de intestino irritable", "Sangrado TDA", "Sangrado TDB", "Várices esofágicas", "EHGNA", "Enfermedad de Crohn", "Colitis ulcerativa", "Cáncer gástrico", "Carcinoma hepatocelular", "Absceso hepático piógeno", "Hepatitis autoinmune", "Pancreatitis crónica", "Acalasia", "Esófago de Barret", "Dispepsia funcional", "Mallory Weiss", "Zollinger-Ellison", "Enfermedad celíaca", "Cáncer de esófago", "Cáncer de páncreas"],
-                "CIRUGÍA ABDOMINAL Y COLOPROCTOLOGÍA": ["Apendicitis aguda", "Apendicitis en el embarazo", "Colecistitis aguda", "Coledocolitiasis", "Colelitiasis", "Colangitis aguda", "Hernias", "Hernia inguinal", "Oclusión intestinal", "Enfermedad hemorroidal", "Fístula anal", "Fisura anal", "Absceso anal", "Enfermedad diverticular", "Cáncer colorrectal", "Isquemia intestinal", "Vólvulo de sigmoides", "Heridas quirúrgicas", "Complicaciones post Qx", "Colangiocarcinoma", "Fístulas biliointestinales", "Hernia femoral", "Hernia hiatal", "Hernia umbilical", "Hernia ventral", "Vólvulo de ciego", "Quiste pilonidal", "Poliposis adenomatosa familiar (PAF)"],
-                "CIRUGÍA PEDIÁTRICA": ["Atresia duodenal", "Atresia esofágica", "Criptorquidia", "Estenosis pilórica", "Hernia diafragmática congénita", "Invaginación intestinal", "Nefroblastoma", "Neuroblastoma", "Divertículo de Meckel", "Hirschsprung", "Atresia biliar", "Atresia de coanas", "Atresia yeyunoileal", "Espina bífida", "Malformaciones rectales", "Malrotación intestinal", "Patología umbilical"],
-                "GINECOLOGÍA": ["Fitz-Hugh-Curtis", "Dismenorrea aguda", "Amenorreas primarias", "Amenorreas secundarias", "Sangrado uterino anormal", "Adenomiosis", "Anticonceptivos generalidades", "Anticonceptivos GPC", "Anticonceptivos hormonales combinados", "Anticoncepción de emergencia", "DIU de cobre", "DIU de levonorgestrel", "Implante subdérmico", "Progestágenos solos", "Lactancia como anticonceptivo", "Infertilidad", "Condón", "Vasectomía", "Cistocele e incontinencia", "Endometriosis", "Enfermedad pélvica inflamatoria", "Hidrosalpinx", "Hiperplasia endometrial", "Mastitis", "Mastopatía fibroquística", "Fibroadenoma", "Papiloma intraductal", "Patología mamaria benigna", "Quiste mamario", "Osteoporosis post menopausia", "Insuficiencia ovárica primaria", "Menopausia y climaterio", "Miomatosis uterina", "Oclusión tubaria bilateral OTB", "Ovario poliquístico", "Quiste de ovario benigno", "Torsión ovárica", "Vaginitis bacteriana", "Vaginitis infecciosa", "Trichomoniasis", "Bartolinitis", "Candidiasis vulvovaginal", "Chlamydia"],
-                "ONCOGINE": ["Tamizaje cáncer de mama", "Cáncer de mama", "Cáncer cérvicouterino", "Cáncer de endometrio", "Cáncer de ovario", "Cáncer de vagina", "Tumores anexiales"],
-                "OBSTETRICIA": ["Control prenatal", "Aloinmunización materna", "Estática fetal", "Tipos de pelvis", "Atención del parto", "Manejo activo del parto", "Cesárea", "Parto pretérmino", "Puerperio fisiológico", "Líquido amniótico", "Ruptura prematura de membranas", "Corioamnionitis", "Distocias", "Embarazo múltiple", "Endometritis puerperal", "Hiperémesis gravídica", "Insuficiencia cervical", "Muerte fetal", "Enfermedades hipertensivas del embarazo", "Preeclampsia sin datos de severidad", "Síndrome de HELLP", "Diabetes gestacional", "IVU en el embarazo", "Restricción del crecimiento intrauterino", "Sepsis puerperal", "Síndrome de Sheehan", "Depresión posparto"],
-                "HEMORRAGIAS OBSTÉTRICAS": ["Generalidades de hemorragias", "Hemorragia postparto", "Desgarro perineal", "Amenaza de aborto", "Aborto espontáneo", "Acretismo placentario", "Atonía uterina", "Choque hemorrágico en obstetricia", "Desprendimiento prematuro de placenta normoinserta", "Embarazo ectópico", "Placenta previa", "Ruptura uterina", "Vasa previa"],
-                "NEONATOLOGÍA": ["Enfermedad trofoblástica gestacional", "APGAR", "Apnea del prematuro", "Asfixia neonatal", "Displasia broncopulmonar", "Silverman Anderson", "Síndrome de aspiración de meconio", "Maduración pulmonar", "Síndrome de dificultad respiratoria", "Encefalopatía hipóxica", "Enfermedad hemorrágica del recién nacido", "Enterocolitis necrotizante", "Hipoacusia neonatal", "Hipoglucemia neonatal", "Ictericia neonatal", "Muerte súbita del lactante", "Prematuro sano", "Reanimación neonatal", "Recién nacido de término", "Sepsis neonatal", "Tamiz neonatal", "Taquipnea transitoria del recién nacido", "Lesiones de plexo braquial obstétrico", "Lesiones extracraneales", "Displasia del desarrollo de la cadera DDC", "Hirschsprung"],
-                "CONGENITAS": ["Cardiopatías congénitas", "Tetralogía de Fallot", "Coartación aórtica", "Persistencia del conducto arterioso", "Fenilcetonuria", "Fibrosis quística", "Galactosemia clásica", "Storch", "Storch Citomegalovirus", "Storch herpes simple", "Storch rubéola congénita", "Storch sífilis congénita", "Storch toxoplasmosis", "Storch varicela congénita"],
-                "ESCOLAR": ["Control de niño sano", "Etapas del crecimiento", "Talla baja", "Alergia alimentaria", "Cuerpo extraño", "Dermatitis del pañal", "Estreñimiento funcional", "Hiperplasia adrenal congénita", "Hipotiroidismo congénito", "Maltrato infantil"],
-                "NUTRICIÓN PEDIÁTRICA": ["Mucopolisacaridosis", "Reflujo gastroesofágico del lactante", "Alimentación complementaria", "Deficiencia de vitamina A", "Desnutrición pediátrica", "Hipovitaminosis", "Intolerancia a la lactosa", "Lactancia materna", "Obesidad en escolares", "Pelagra en niños", "Raquitismo carencial", "Síndrome metabólico en niños"],
-                "INFECTOLOGÍA PEDIÁTRICA": ["Adenitis mesentérica", "Onfalitis", "Exantemáticas Diferencial", "Eritema infeccioso", "Escarlatina", "Exantema súbito", "Enfermedad de Kawasaki", "Síndrome mano pie boca", "Rubéola", "Sarampión", "Varicela", "Parotiditis", "Bronquiolitis", "Epiglotitis", "Laringotraqueitis CRUP", "Mononucleosis infecciosa", "Tos ferina", "IVU en menores"],
-                "VACUNAS": ["Vacunas generalidades", "Tipos de vacunas", "Vacunación universal", "Aplicación de vacunas", "Vacuna para personal de salud", "Vacunas en el embarazo", "Esquema de vacunación", "Bcg", "Hepatitis A", "Hepatitis B", "Hexavalente", "Influenza", "Neumocócica", "Rotavirus", "Sabin", "Salmonella", "Dpt", "Srp", "Tétanos", "Varicela", "Vph"],
-                "REPASO GENERAL 1": ["Repaso Cardiología", "Repaso Endocrinología"],
-                "REPASO GENERAL 2": ["Repaso Ginecología y Obstetricia", "Repaso Pediatría"],
-                "REPASO GENERAL 3": ["Repaso Cirugía General", "Repaso Traumatología y Ortopedia"],
-                "SIMULACIÓN FINAL": ["Realizar simulación de examen completo", "Revisión de áreas débiles"]
-            };
-            const INITIAL_PROGRESS_DATA = [
-                // Esta data simula el progreso inicial extraído de "2listado.html"
-                { specialty: "Geriatría", topic: "Valoración geriátrica", aciertos: 18, reactivos: 21 }, { specialty: "Geriatría", topic: "Alzheimer", aciertos: 12, reactivos: 15 }, { specialty: "Geriatría", topic: "Delirium", aciertos: 7, reactivos: 15 }, { specialty: "Geriatría", topic: "Demencia vascular", aciertos: 8, reactivos: 9 }, { specialty: "Geriatría", topic: "Deterioro cognitivo", aciertos: 15, reactivos: 21 }, { specialty: "Geriatría", topic: "Insomnio en el adulto mayor", aciertos: 9, reactivos: 9 }, { specialty: "Geriatría", topic: "Síndrome de caídas", aciertos: 7, reactivos: 9 }, { specialty: "Geriatría", topic: "Síndrome de fragilidad", aciertos: 15, reactivos: 21 }, { specialty: "Geriatría", topic: "Maltrato en el adulto mayor", aciertos: 8, reactivos: 9 }, { specialty: "Geriatría", topic: "Colapso del cuidador", aciertos: 15, reactivos: 21 }, { specialty: "Geriatría", topic: "Depresión mayor", aciertos: 9, reactivos: 9 },
-                { specialty: "Psiquiatría", topic: "Abuso de sustancias", aciertos: 11, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Abstinencia alcohólica", aciertos: 12, reactivos: 12 }, { specialty: "Psiquiatría", topic: "Trastorno por alcohol", aciertos: 9, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Esquizofrenia", aciertos: 10, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Estrés post traumático", aciertos: 3, reactivos: 9 }, { specialty: "Psiquiatría", topic: "Trastornos del sueño", aciertos: 10, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Intento de suicidio", aciertos: 8, reactivos: 9 }, { specialty: "Psiquiatría", topic: "Tdah", aciertos: 8, reactivos: 12 }, { specialty: "Psiquiatría", topic: "Trastorno bipolar", aciertos: 13, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Trastornos de ansiedad", aciertos: 10, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Trastornos c. alimentaria", aciertos: 13, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Consumo de mariguana", aciertos: 14, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Violencia contra la mujer", aciertos: 12, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Autismo", aciertos: 8, reactivos: 9 }, { specialty: "Psiquiatría", topic: "Síndrome de Munchausen", aciertos: 8, reactivos: 9 }, { specialty: "Psiquiatría", topic: "Depresion", aciertos: 13, reactivos: 15 },
-                { specialty: "Dermatología", topic: "Dermatitis atópica", aciertos: 18, reactivos: 18 }, { specialty: "Dermatología", topic: "Dermatofitosis", aciertos: 16, reactivos: 18 }, { specialty: "Dermatología", topic: "SSJ y NET", aciertos: 12, reactivos: 12 }, { specialty: "Dermatología", topic: "Escabiosis - Sarna", aciertos: 12, reactivos: 12 }, { specialty: "Dermatología", topic: "Impétigo", aciertos: 7, reactivos: 12 }, { specialty: "Dermatología", topic: "Melanoma", aciertos: 8, reactivos: 12 }, { specialty: "Dermatología", topic: "Psoriasis", aciertos: 8, reactivos: 12 }, { specialty: "Dermatología", topic: "Carcinoma basocelular", aciertos: 10, reactivos: 12 }, { specialty: "Dermatología", topic: "Acné vulgar", aciertos: 9, reactivos: 9 }, { specialty: "Dermatología", topic: "Erisipela", aciertos: 7, reactivos: 9 }, { specialty: "Dermatología", topic: "Urticaria", aciertos: 7, reactivos: 9 }, { specialty: "Dermatología", topic: "Dermatitis por contacto", aciertos: 6, reactivos: 9 }, { specialty: "Dermatología", topic: "Pediculosis capitis", aciertos: 11, reactivos: 12 }, { specialty: "Dermatología", topic: "Síndrome de Ritter", aciertos: 10, reactivos: 12 }, { specialty: "Dermatología", topic: "Carcinoma espinocelular", aciertos: 9, reactivos: 12 },
-                { specialty: "Nefrología", topic: "Lesión renal aguda", aciertos: 7, reactivos: 12 }, { specialty: "Nefrología", topic: "Enfermedad renal crónica", aciertos: 10, reactivos: 12 }, { specialty: "Nefrología", topic: "Nefropatía diabética", aciertos: 7, reactivos: 12 }, { specialty: "Nefrología", topic: "Síndrome nefrítico y nefrootico", aciertos: 17, reactivos: 24 }, { specialty: "Nefrología", topic: "Trastorno ácido-base", aciertos: 11, reactivos: 12 }, { specialty: "Nefrología", topic: "Nefritis lúpica", aciertos: 9, reactivos: 12 },
-                { specialty: "Reumatología", topic: "Artritis reactiva", aciertos: 8, reactivos: 12 }, { specialty: "Reumatología", topic: "Artritis reumatoide", aciertos: 10, reactivos: 15 }, { specialty: "Reumatología", topic: "Espondilitis anquilosante", aciertos: 11, reactivos: 12 }, { specialty: "Reumatología", topic: "Gota", aciertos: 6, reactivos: 12 }, { specialty: "Reumatología", topic: "Lupus eritematoso sistémico", aciertos: 12, reactivos: 15 }, { specialty: "Reumatología", topic: "Arteritis de la temporal", aciertos: 9, reactivos: 9 }, { specialty: "Reumatología", topic: "Granulomatosis de Wegener", aciertos: 6, reactivos: 9 }, { specialty: "Reumatología", topic: "Artritis Septica", aciertos: 9, reactivos: 12 },
-                { specialty: "Neumología", topic: "Asma en pediátricos", aciertos: 11, reactivos: 21 }, { specialty: "Neumología", topic: "Exacerbación de asma", aciertos: 8, reactivos: 9 }, { specialty: "Neumología", topic: "Cáncer de pulmón", aciertos: 4, reactivos: 12 }, { "specialty": "Neumología", "topic": "Epoc", "aciertos": 3, "reactivos": 12 }, { "specialty": "Neumología", "topic": "Derrame pleural", "aciertos": 10, "reactivos": 12 }, { "specialty": "Neumología", "topic": "Tabaquismo", "aciertos": 5, "reactivos": 9 },
-                { specialty: "Neurología", topic: "Cefalea Secundarias", aciertos: 12, reactivos: 12 }, { specialty: "Neurología", topic: "Cefaleas Tensional y Migraña", aciertos: 9, reactivos: 12 }, { specialty: "Neurología", topic: "Crisis convulsivas", aciertos: 4, reactivos: 12 }, { specialty: "Neurología", topic: "Estatus epiléptico", aciertos: 9, reactivos: 12 }, { specialty: "Neurología", topic: "Crisis febriles", aciertos: 5, reactivos: 12 }, { specialty: "Neurología", topic: "Enfermedad de Parkinson", aciertos: 6, reactivos: 9 }, { specialty: "Neurología", topic: "EVC isquémico", aciertos: 10, reactivos: 12 }, { specialty: "Neurología", topic: "Hemorragia subaracnoidea", aciertos: 9, reactivos: 9 }, { specialty: "Neurología", topic: "Guillain Barré", aciertos: 8, reactivos: 9 }, { specialty: "Neurología", topic: "Esclerosis múltiple", aciertos: 5, reactivos: 12 }, { specialty: "Neurología", topic: "EVC hemorrágico", aciertos: 6, reactivos: 12 }, { specialty: "Neurología", topic: "Miastenia gravis", aciertos: 5, reactivos: 9 }, { specialty: "Neurología", topic: "Muerte encefálica", aciertos: 6, reactivos: 9 },
-                { specialty: "Hematología", topic: "Anemia generalidades", aciertos: 8, reactivos: 18 }, { specialty: "Hematología", topic: "Anemia ferropénica Adultos", aciertos: 8, reactivos: 12 }, { specialty: "Hematología", topic: "Leucemias", aciertos: 8, reactivos: 12 }, { specialty: "Hematología", topic: "Linfomas", aciertos: 10, reactivos: 15 }, { specialty: "Hematología", topic: "Trombocitopenia inmune", aciertos: 5, reactivos: 9 },
-                { specialty: "Infectología", topic: "Brucelosis", aciertos: 3, reactivos: 3 }, { specialty: "Infectología", topic: "Cisticercosis", aciertos: 7, reactivos: 9 }, { specialty: "Infectología", topic: "Clostridium y teniasis", aciertos: 8, reactivos: 9 }, { specialty: "Infectología", topic: "Diarrea aguda en adultos", aciertos: 9, reactivos: 12 }, { specialty: "Infectología", topic: "Diarrea en niños", aciertos: 10, reactivos: 12 }, { specialty: "Infectología", topic: "Chinkungunya", aciertos: 7, reactivos: 9 }, { specialty: "Infectología", topic: "Dengue", aciertos: 6, reactivos: 9 }, { specialty: "Infectología", topic: "Zika", aciertos: 8, reactivos: 9 }, { specialty: "Infectología", topic: "Paludismo", aciertos: 7, reactivos: 9 }, { specialty: "Infectología", topic: "Salmonella Fiebre tifoidea", aciertos: 7, reactivos: 9 }, { specialty: "Infectología", topic: "Sepsis y choque séptico", aciertos: 7, reactivos: 9 }, { specialty: "Infectología", topic: "Tuberculosis pulmonar", aciertos: 14, reactivos: 21 }, { specialty: "Infectología", topic: "ETS Generalidades", aciertos: 14, reactivos: 18 }, { specialty: "Infectología", topic: "VIH Adultos", aciertos: 16, reactivos: 21 }, { specialty: "Infectología", topic: "VIH Madre e hijo", aciertos: 17, reactivos: 21 }, { specialty: "Infectología", topic: "RV yOportunistas", aciertos: 14, reactivos: 21 }, { specialty: "Infectología", topic: "Sarcoma de Kaposi", aciertos: 6, reactivos: 9 }, { specialty: "Infectología", topic: "Giardiasis", aciertos: 8, reactivos: 9 }, { specialty: "Infectología", topic: "Tuberculosis extrapulmonar", aciertos: 10, reactivos: 12 }, { specialty: "Infectología", topic: "Lepra", aciertos: 5, reactivos: 9 }, { specialty: "Infectología", topic: "Medios de cultivo", aciertos: 5, reactivos: 9 }, { specialty: "Infectología", topic: "Actinomicosis", aciertos: 6, reactivos: 9 }, { specialty: "Infectología", topic: "Amebiasis intestinal", aciertos: 7, reactivos: 9 }, { specialty: "Infectología", topic: "Anquilostomiasis", aciertos: 9, reactivos: 9 }, { specialty: "Infectología", topic: "Ascariasis", aciertos: 9, reactivos: 9 }, { specialty: "Infectología", topic: "Aspergilosis", aciertos: 7, reactivos: 9 }, { "specialty": "Infectología", "topic": "Coccidioidomicosis", "aciertos": 8, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Difteria", "aciertos": 9, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Enfermedad de Chagas", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Enfermedad de Lyme", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Estrongiloidiasis", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Fascitis necrosante", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Fiebre de origen desconocido", "aciertos": 5, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Filariasis linfática", "aciertos": 4, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Filariasis ocular Loasis", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Infecciones odontogénicas", "aciertos": 6, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Leishmaniasis", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Leptospirosis", "aciertos": 8, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Mucormicosis", "aciertos": 9, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Oncocercosis", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Oxiuriasis o enterobiasis", "aciertos": 5, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Poliomielitis", "aciertos": 8, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Rabia", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Tricuriasis", "aciertos": 9, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Triquinosis", "aciertos": 8, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Neumonía adquirida en la comunidad", "aciertos": 3, "reactivos": 12 }, { "specialty": "Infectología", "topic": "Neumonía bacteriana adquirida en la comunidad Niños", "aciertos": 7, "reactivos": 12 }, { "specialty": "Infectología", "topic": "Influenza", "aciertos": 6, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Meningitis", "aciertos": 10, "reactivos": 12 }, { "specialty": "Infectología", "topic": "Encefalitis viral", "aciertos": 8, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Absceso cerebral", "aciertos": 8, "reactivos": 9 },
-                { specialty: "Endocrinología", topic: "INTRO DM", aciertos: 10, reactivos: 12 }, { specialty: "Endocrinología", topic: "Prediabetes", aciertos: 15, reactivos: 15 }, { specialty: "Endocrinología", topic: "Diabetes mellitus", aciertos: 12, reactivos: 15 }, { specialty: "Endocrinología", topic: "Diabetes en el adulto mayor", aciertos: 6, reactivos: 9 }, { specialty: "Endocrinología", topic: "Diabetes en pediatría", aciertos: 5, reactivos: 9 }, { specialty: "Endocrinología", topic: "Cetoacidosis diabética y EHH", aciertos: 13, reactivos: 18 }, { specialty: "Endocrinología", topic: "Hipoglucemia", aciertos: 6, reactivos: 9 }
-            ];
-            // --- FIN: BASE DE DATOS UNIFICADA ---
-
+            console.log("Iniciando Frecuencia Vital v3...");
             const currentYear = new Date().getFullYear();
+
+            // --- SECCIÓN 1: FUENTE DE DATOS UNIFICADA ---
+            const legacyProgressData = [ { specialty: "Geriatría", topic: "Valoración geriátrica", aciertos: 18, reactivos: 21 }, { specialty: "Geriatría", topic: "Alzheimer", aciertos: 12, reactivos: 15 }, { specialty: "Geriatría", topic: "Delirium", aciertos: 7, reactivos: 15 }, { specialty: "Geriatría", topic: "Demencia vascular", aciertos: 8, reactivos: 9 }, { specialty: "Geriatría", topic: "Deterioro cognitivo", aciertos: 15, reactivos: 21 }, { specialty: "Geriatría", topic: "Insomnio en el adulto mayor", aciertos: 9, reactivos: 9 }, { specialty: "Geriatría", topic: "Síndrome de caídas", aciertos: 7, reactivos: 9 }, { specialty: "Geriatría", topic: "Síndrome de fragilidad", aciertos: 15, reactivos: 21 }, { specialty: "Geriatría", topic: "Maltrato en el adulto mayor", aciertos: 8, reactivos: 9 }, { specialty: "Geriatría", topic: "Colapso del cuidador", aciertos: 15, reactivos: 21 }, { specialty: "Geriatría", topic: "Depresión mayor", aciertos: 9, reactivos: 9 }, { specialty: "Psiquiatría", topic: "Abuso de sustancias", aciertos: 11, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Abstinencia alcohólica", aciertos: 12, reactivos: 12 }, { specialty: "Psiquiatría", topic: "Trastorno por alcohol", aciertos: 9, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Esquizofrenia", aciertos: 10, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Estrés post traumático", aciertos: 3, reactivos: 9 }, { specialty: "Psiquiatría", topic: "Trastornos del sueño", aciertos: 10, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Intento de suicidio", aciertos: 8, reactivos: 9 }, { specialty: "Psiquiatría", topic: "Tdha", aciertos: 8, reactivos: 12 }, { specialty: "Psiquiatría", topic: "Trastorno bipolar", aciertos: 13, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Trastornos de ansiedad", aciertos: 10, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Trastornos c. alimentaria", aciertos: 13, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Consumo de mariguana", aciertos: 14, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Violencia contra la mujer", aciertos: 12, reactivos: 15 }, { specialty: "Psiquiatría", topic: "Autismo", aciertos: 8, reactivos: 9 }, { specialty: "Psiquiatría", topic: "Síndrome de Munchausen", aciertos: 8, reactivos: 9 }, { specialty: "Psiquiatría", topic: "Depresion", aciertos: 13, reactivos: 15 }, { specialty: "Dermatología", topic: "Dermatitis atópica", aciertos: 18, reactivos: 18 }, { specialty: "Dermatología", topic: "Dermatofitosis", aciertos: 16, reactivos: 18 }, { specialty: "Dermatología", topic: "SSJ y NET", aciertos: 12, reactivos: 12 }, { specialty: "Dermatología", topic: "Escabiosis - Sarna", aciertos: 12, reactivos: 12 }, { specialty: "Dermatología", topic: "Impétigo", aciertos: 7, reactivos: 12 }, { specialty: "Dermatología", topic: "Melanoma", aciertos: 8, reactivos: 12 }, { specialty: "Dermatología", topic: "Psoriasis", aciertos: 8, reactivos: 12 }, { specialty: "Dermatología", topic: "Carcinoma basocelular", aciertos: 10, reactivos: 12 }, { specialty: "Dermatología", topic: "Acné vulgar", aciertos: 9, reactivos: 9 }, { specialty: "Dermatología", topic: "Erisipela", aciertos: 7, reactivos: 9 }, { specialty: "Dermatología", topic: "Urticaria", aciertos: 7, reactivos: 9 }, { specialty: "Dermatología", topic: "Dermatitis por contacto", aciertos: 6, reactivos: 9 }, { specialty: "Dermatología", topic: "Pediculosis capitis", aciertos: 11, reactivos: 12 }, { specialty: "Dermatología", topic: "Síndrome de Ritter", aciertos: 10, reactivos: 12 }, { specialty: "Dermatología", topic: "Carcinoma espinocelular", aciertos: 9, reactivos: 12 }, { specialty: "Nefrología", topic: "Lesión renal aguda", aciertos: 7, reactivos: 12 }, { specialty: "Nefrología", topic: "Enfermedad renal crónica 1", aciertos: 10, reactivos: 12 }, { specialty: "Nefrología", topic: "Nefropatía diabética", aciertos: 7, reactivos: 12 }, { specialty: "Nefrología", topic: "Síndrome nefrítico y nefrootico", aciertos: 17, reactivos: 24 }, { specialty: "Nefrología", topic: "Trastorno ácido-base", aciertos: 11, reactivos: 12 }, { specialty: "Nefrología", topic: "Nefritis lúpica", aciertos: 9, reactivos: 12 }, { specialty: "Reumatología", topic: "Artritis reactiva", aciertos: 8, reactivos: 12 }, { specialty: "Reumatología", topic: "Artritis reumatoide", aciertos: 10, reactivos: 15 }, { specialty: "Reumatología", topic: "Espondilitis anquilosante", aciertos: 11, reactivos: 12 }, { specialty: "Reumatología", topic: "Gota", aciertos: 6, reactivos: 12 }, { specialty: "Reumatología", topic: "Lupus eritematoso sistémico", aciertos: 12, reactivos: 15 }, { specialty: "Reumatología", topic: "Arteritis de la temporal", aciertos: 9, reactivos: 9 }, { specialty: "Reumatología", topic: "Granulomatosis de Wegener", aciertos: 6, reactivos: 9 }, { specialty: "Reumatología", topic: "Artritis Septica", aciertos: 9, reactivos: 12 }, { specialty: "Neumología", topic: "Asma en pediátricos", aciertos: 11, reactivos: 21 }, { specialty: "Neumología", topic: "Exacerbación de asma", aciertos: 8, reactivos: 9 }, { specialty: "Neumología", topic: "Cáncer de pulmón", aciertos: 4, reactivos: 12 }, { specialty: "Neumología", "topic": "Epoc1", "aciertos": 3, "reactivos": 12 }, { "specialty": "Neumología", "topic": "Derrame pleural", "aciertos": 10, "reactivos": 12 }, { "specialty": "Neumología", "topic": "Tabaquismo", "aciertos": 5, "reactivos": 9 }, { specialty: "Neurología", topic: "Cefalea Secundarias", aciertos: 12, reactivos: 12 }, { specialty: "Neurología", topic: "Cefaleas Tensional y Migraña", aciertos: 9, reactivos: 12 }, { specialty: "Neurología", topic: "Crisis convulsivas", aciertos: 4, reactivos: 12 }, { specialty: "Neurología", topic: "Estatus epiléptico", aciertos: 9, reactivos: 12 }, { specialty: "Neurología", topic: "Crisis febriles", aciertos: 5, reactivos: 12 }, { specialty: "Neurología", topic: "Enfermedad de Parkinson", aciertos: 6, reactivos: 9 }, { specialty: "Neurología", topic: "EVC isquémico", aciertos: 10, reactivos: 12 }, { specialty: "Neurología", topic: "Hemorragia subaracnoidea 1", aciertos: 9, reactivos: 9 }, { specialty: "Neurología", topic: "Guillain Barré", aciertos: 8, reactivos: 9 }, { specialty: "Neurología", topic: "Esclerosis múltiple", aciertos: 5, reactivos: 12 }, { specialty: "Neurología", topic: "EVC hemorrágico", aciertos: 6, reactivos: 12 }, { specialty: "Neurología", topic: "Miastenia gravis", aciertos: 5, reactivos: 9 }, { specialty: "Neurología", topic: "Muerte encefálica", aciertos: 6, reactivos: 9 }, { specialty: "Hematología", topic: "Anemia generalidades 1", aciertos: 8, reactivos: 18 }, { specialty: "Hematología", topic: "Anemia ferropénica Adultos", aciertos: 8, reactivos: 12 }, { specialty: "Hematología", topic: "Leucemias", aciertos: 8, reactivos: 12 }, { specialty: "Hematología", topic: "Linfomas", aciertos: 10, reactivos: 15 }, { specialty: "Hematología", topic: "Trombocitopenia inmune", aciertos: 5, reactivos: 9 }, { specialty: "Infectología", topic: "Brucelosis", aciertos: 3, reactivos: 3 }, { specialty: "Infectología", topic: "Cisticercosis", aciertos: 7, reactivos: 9 }, { specialty: "Infectología", topic: "Clostridium y teniasis", aciertos: 8, reactivos: 9 }, { specialty: "Infectología", topic: "Diarrea aguda en adultos 1", aciertos: 9, reactivos: 12 }, { specialty: "Infectología", topic: "Diarrea en niños", aciertos: 10, reactivos: 12 }, { specialty: "Infectología", topic: "Chinkungunya", aciertos: 7, reactivos: 9 }, { specialty: "Infectología", topic: "Dengue 1", aciertos: 6, reactivos: 9 }, { specialty: "Infectología", topic: "Zika", aciertos: 8, reactivos: 9 }, { specialty: "Infectología", topic: "Paludismo", aciertos: 7, reactivos: 9 }, { specialty: "Infectología", topic: "Salmonella Fiebre tifoidea", aciertos: 7, reactivos: 9 }, { specialty: "Infectología", topic: "Sepsis y choque séptico", aciertos: 7, reactivos: 9 }, { specialty: "Infectología", topic: "Tuberculosis pulmonar", aciertos: 14, reactivos: 21 }, { specialty: "Infectología", topic: "ETS Generalidades", aciertos: 14, reactivos: 18 }, { specialty: "Infectología", topic: "VIH Adultos", aciertos: 16, reactivos: 21 }, { specialty: "Infectología", topic: "VIH Madre e hijo", aciertos: 17, reactivos: 21 }, { specialty: "Infectología", topic: "RV yOportunistas", aciertos: 14, reactivos: 21 }, { specialty: "Infectología", topic: "Sarcoma de Kaposi", aciertos: 6, reactivos: 9 }, { specialty: "Infectología", topic: "Giardiasis", aciertos: 8, reactivos: 9 }, { specialty: "Infectología", topic: "Tuberculosis extrapulmonar", aciertos: 10, reactivos: 12 }, { specialty: "Infectología", topic: "Lepra", aciertos: 5, reactivos: 9 }, { specialty: "Infectología", topic: "Medios de cultivo", aciertos: 5, reactivos: 9 }, { specialty: "Infectología", topic: "Actinomicosis", aciertos: 6, reactivos: 9 }, { specialty: "Infectología", topic: "Amebiasis intestinal", aciertos: 7, reactivos: 9 }, { specialty: "Infectología", topic: "Anquilostomiasis", aciertos: 9, reactivos: 9 }, { specialty: "Infectología", topic: "Ascariasis", aciertos: 9, reactivos: 9 }, { specialty: "Infectología", topic: "Aspergilosis", aciertos: 7, reactivos: 9 }, { "specialty": "Infectología", "topic": "Coccidioidomicosis", "aciertos": 8, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Difteria", "aciertos": 9, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Enfermedad de Chagas 1", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Enfermedad de Lyme", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Estrongiloidiasis", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Fascitis necrosante", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Fiebre de origen desconocido", "aciertos": 5, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Filariasis linfática", "aciertos": 4, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Filariasis ocular Loasis", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Infecciones odontogénicas", "aciertos": 6, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Leishmaniasis", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Leptospirosis", "aciertos": 8, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Mucormicosis", "aciertos": 9, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Oncocercosis", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Oxiuriasis o enterobiasis", "aciertos": 5, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Poliomielitis", "aciertos": 8, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Rabia", "aciertos": 7, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Tricuriasis", "aciertos": 9, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Triquinosis", "aciertos": 8, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Neumonía adquirida en la comunidad", "aciertos": 3, "reactivos": 12 }, { "specialty": "Infectología", "topic": "Neumonía bacteriana adquirida en la comunidad Niños", "aciertos": 7, "reactivos": 12 }, { "specialty": "Infectología", "topic": "Influenza", "aciertos": 6, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Meningitis", "aciertos": 10, "reactivos": 12 }, { "specialty": "Infectología", "topic": "Encefalitis viral", "aciertos": 8, "reactivos": 9 }, { "specialty": "Infectología", "topic": "Absceso cerebral", "aciertos": 8, "reactivos": 9 }, { specialty: "Endocrinología", topic: "INTRO DM", aciertos: 10, reactivos: 12 }, { specialty: "Endocrinología", topic: "Prediabetes", aciertos: 15, reactivos: 15 }, { specialty: "Endocrinología", topic: "Diabetes mellitus", aciertos: 12, reactivos: 15 }, { specialty: "Endocrinología", topic: "Diabetes en el adulto mayor", aciertos: 6, reactivos: 9 }, { specialty: "Endocrinología", topic: "Diabetes en pediatría", aciertos: 5, reactivos: 9 }, { specialty: "Endocrinología", topic: "Cetoacidosis diabética y EHH", aciertos: 13, reactivos: 18 }, { specialty: "Endocrinología", topic: "Hipoglucemia", aciertos: 6, reactivos: 9 } ];
+            
+            // CAMBIO REALIZADO: Datos de temas futuros actualizados con la nueva lista y estructura
+            const futureTopicsData = [
+                { subject: "ENDOCRINOLOGÍA", topics: ["Dislipidemias", "Hipertiroidismo", "Hipotiroidismo", "Cáncer de tiroides (Enfoque en Papilar)", "Nódulo tiroideo", "Obesidad en adultos", "Síndrome metabólico", "Enfermedad de Cushing / Síndrome de Cushing", "Enfermedad de Addison"] },
+                { subject: "UROLOGÍA", topics: ["Escroto agudo y Torsión testicular", "Hiperplasia prostática benigna", "Cáncer de próstata", "Pielonefritis aguda", "Infección de tracto urinario", "Urolitiasis", "Cáncer testicular", "Disfunción eréctil"] },
+                { subject: "ORL", topics: ["Vppb", "Parálisis de Bell", "Neuralgia de trigémino", "Neuritis vestibular", "Epistaxis", "Fracturas nasales", "Rinosinusitis", "Mastoiditis aguda", "Otitis", "Faringoamigdalitis", "Angina de Ludwig"] },
+                { subject: "OFTALMOLOGÍA", topics: ["Catarata", "Conjuntivitis (aleergica, Bacteriana, neonatal,viral)", "Glaucoma de ángulo abierto", "Glaucoma de ángulo cerrado", "Ojo rojo", "Retinopatía diabética", "Retinopatía hipertensiva", "Trauma ocular", "Degeneración macular", "Desprendimiento de retina", "Blefaritis", "Chalazión", "Orzuelo", "Glaucoma congénito"] },
+                { subject: "TYO", topics: ["Osteoartritis", "Osteomielitis", "Fracturas expuestas", "Esguince cervical", "Lumbalgia", "Síndrome de hombro doloroso", "Luxación glenohumeral", "Fractura de clavícula", "Fractura de radio distal", "Fractura de cadera", "Lesiones de rodilla", "Esguince de tobillo", "Fractura de tobillo", "Osteosarcoma", "Sarcoma de Ewing", "Hernia de disco", "Túnel del carpo", "Epifisiolistesis femoral", "Legg calvé perthes", "Embolia grasa", "Tumores óseos malignos", "Costilla cervical", "Fractura de humero proximal", "Luxación de codo", "Codo de niñera", "Fracturas de codo", "Fracturas de antebrazo", "Lesiones fisiarias", "Luxación coxofemoral", "Fractura de diáfisis de tibia", "Rotura de talón de aquiles", "Pie equino varo", "Pie plano"] },
+                { subject: "CARDIOLOGÍA", topics: ["Pericarditis", "Endocarditis infecciosa", "Estenosis aórtica", "Insuficiencia aórtica", "Estenosis mitral", "Insuficiencia mitral", "Fiebre reumática", "Hipertensión arterial sistémica", "Crisis hipertensivas", "Insuficiencia cardíaca aguda", "Insuficiencia cardíaca crónica", "Infarto agudo de miocardio", "Disección aórtica", "Cor pulmonar crónico", "Edema pulmonar", "Hipotensión ortostática", "Aneurisma aórtico abdominal", "Enfermedad coronaria", "Otras valvulopatías", "Hipertensión pulmonar", "Rehabilitación cardíaca"] },
+                { subject: "ANGIOLOGÍA", topics: ["Enfermedad arterial periférica", "Insuficiencia venosa", "Pie diabético", "Tromboembolia pulmonar", "Trombosis venosa profunda", "Úlceras por presión", "Paget schroetter", "Tromboembolia venosa en obstetricia"] },
+                { subject: "ACLS", topics: ["Soporte vital básico", "Rcp", "Taquicardia acls", "Taquicardia supraventricular", "Bloqueos av", "Bradicardia", "Fibrilación auricular", "Fibrilación ventricular", "Síndrome de wpw", "Pls", "Ahogamiento"] },
+                { subject: "ATLS", topics: ["Poli trauma", "Tipos de shock", "Choque hipovolémico", "Quemaduras", "Gran quemado", "Tce adultos", "Tce pediátrico", "Trauma torácico", "Hemotórax", "Neumotórax a tensión", "Taponamiento cardiaco", "Trauma abdominal", "Shock neurogénico", "Neumotórax abierto", "Neumotórax simple", "Trauma espinal", "Catéter venoso central", "Hipotermia", "Fracturas de cráneo", "Lesión traqueobronquial", "Ruptura diafragmática", "Trauma esplénico", "Trauma obstétrico", "Trauma pélvico"] },
+                { subject: "TOXICOLOGÍA", topics: ["Manejo de intoxicaciones", "Toxíndromes", "Intoxicación por benzodiacepinas", "Intoxicación por organofosforados", "Intoxicación por paracetamol", "Intoxicación por salicilatos", "Lactrodectus", "Loxosceles", "Mordedura de serpiente", "Picadura de alacrán", "Golpe de calor", "Intoxicación por etanol", "Intoxicación por monoxido de carbono", "Intoxicación por opiáceos", "Anafilaxia", "Ingesta de cáusticos", "Intoxicación alimentaria", "Intoxicación por alcoholes", "Intoxicación por anfetaminas", "Intoxicación por DMT", "Intoxicación por fentanilo", "Intoxicación por hidrocarburos", "Intoxicación por metales pesados", "Intoxicación por plomo", "Picadura de himenópteros"] },
+                { subject: "GASTROENTEROLOGÍA", topics: ["Absceso hepático amebiano", "Cirrosis hepática", "Insuficiencia hepática", "Ascitis", "Encefalopatía hepática", "Hepatitis A", "Hepatitis B", "Hepatitis C", "Pancreatitis aguda", "Reflujo ERGE", "Enfermedad ácido péptica", "Síndrome de intestino irritable", "Sangrado TDA", "Sangrado TDB", "Varices esofágicas", "Ehgna", "Enfermedad de Crohn", "Colitis ulcerativa", "Cáncer gástrico", "Carcinoma hepatocelular", "Absceso hepático piógeno", "Hepatitis autoinmune", "Pancreatitis crónica", "Acalasia", "Esófago de Barret", "Dispepsia funcional", "Mallory Weiss", "Zollinger Ellison", "Enfermedad celíaca", "Cáncer de esófago", "Cáncer de páncreas"] },
+                { subject: "CIRUGÍA ABDOMINAL Y COLOPROCTOLOGÍA", topics: ["Apendicitis aguda", "Apendicitis en el embarazo", "Colecistitis aguda", "Coledocolitiasis", "Colelitiasis", "Colangitis aguda", "Hernias", "Hernia inguinal", "Oclusión intestinal", "Enfermedad hemorroidal", "Fístula anal", "Fisura anal", "Absceso anal", "Enfermedad diverticular", "Cáncer colo-rectal", "Isquemia intestinal", "Vólvulo de sigmoides", "Heridas quirúrgicas", "Complicaciones post Qx", "Colangiocarcinoma", "Fístulas biliointestinales", "Hernia femoral", "Hernia hiatal", "Hernia umbilical", "Hernia ventral", "Vólvulo de ciego", "Quiste pilonidal", "Poliposis adematosa familiar (PAF)"] },
+                { subject: "CIRUGÍA PEDIÁTRICA", topics: ["Atresia duodenal", "Atresia esofágica", "Criptorquidia", "Estenosis pilórica", "Hernia diafragmática congénita", "Invaginación intestinal", "Nefroblastoma", "Neuroblastoma", "Divertículo de Meckel", "Hirschsprung", "Atresia biliar", "Atresia de coanas", "Atresia yeyunoileal", "Espina bífida", "Malformaciones rectales", "Malrotación intestinal", "Patología umbilical", "Retinoblastoma", "Tumor abdominal"] },
+                { subject: "GINECOLOGÍA", topics: ["Fitz-Hugh-Curtis", "Dismenorrea aguda", "Amenorreas primarias", "Amenorreas secundarias", "Sangrado uterino anormal", "Adenomiosis", "Anticonceptivos generalidades", "Anticonceptivos GPC", "Anticonceptivos hormonales combinados", "Anticoncepción de emergencia", "DIU de cobre", "DIU de levonorgestrel", "Implante subdérmico", "Progestágenos solos", "Lactancia como anticonceptivo", "Infertilidad", "Condón", "Vasectomía", "Cistocele e incontinencia", "Endometriosis", "Enfermedad pélvica inflamatoria", "Hidrosalpinx", "Hiperplasia endometrial", "Mastitis", "Mastopatía fibroquística", "Fibroadenoma", "Papiloma intraductal", "Patología mamaria benigna", "Quiste mamario", "Osteoporosis post menopausia", "Insuficiencia ovárica primaria", "Menopausia y climaterio", "Miomatosis uterina", "Oclusión tubaria bilateral OTB", "Ovario poliquístico", "Quiste de ovario benigno", "Torsión ovárica", "Vaginitis bacteriana", "Vaginitis infecciosa", "Trichomoniasis", "Bartolinitis", "Candidiasis vulvovaginal", "Chlamydia"] },
+                { subject: "ONCOGINE", topics: ["Tamizaje cáncer de mama", "Cáncer de mama", "Cáncer cérvicouterino", "Cáncer de endometrio", "Cáncer de ovario", "Cáncer de vagina", "Tumores anexiales"] },
+                { subject: "OBSTETRICIA", topics: ["Control prenatal", "Aloinmunización materna", "Estática fetal", "Tipos de pelvis", "Atención del parto", "Manejo activo del parto", "Cesárea", "Parto pretérmino", "Puerperio fisiológico", "Líquido amniótico", "Ruptura prematura de membranas", "Corioamnionitis", "Distocias", "Embarazo múltiple", "Endometritis puerperal", "Hiperémesis gravídica", "Insuficiencia cervical", "Muerte fetal", "Enfermedades hipertensivas del embarazo", "Preeclampsia sin datos de severidad", "Síndrome de HELLP", "Diabetes gestacional", "IVU en el embarazo", "Restricción del crecimiento intrauterino", "Sepsis puerperal", "Síndrome de Sheehan", "Depresión posparto"] },
+                { subject: "HEMORRAGIAS OBSTÉTRICAS", topics: ["Generalidades de hemorragias", "Hemorragia postparto", "Desgarro perineal", "Amenaza de aborto", "Aborto espontáneo", "Acretismo placentario", "Atonía uterina", "Choque hemorrágico en obstetricia", "Desprendimiento prematuro de placenta normoinserta", "Embarazo ectópico", "Placenta previa", "Ruptura uterina", "Vasa previa", "Enfermedad trofoblástica gestacional"] },
+                { subject: "NEONATOLOGÍA", topics: ["APGAR", "Apnea del prematuro", "Asfixia neonatal", "Displasia broncopulmonar", "Silverman Anderson", "Síndrome de aspiración de meconio", "Maduración pulmonar", "Síndrome de dificultad respiratoria", "Encefalopatía hipóxica", "Enfermedad hemorrágica del recién nacido", "Enterocolitis necrotizante", "Hipoacusia neonatal", "Hipoglucemia neonatal", "Hirschsprung", "Ictericia neonatal", "Muerte súbita del lactante", "Prematuro sano", "Reanimación neonatal", "Recién nacido de término", "Sepsis neonatal", "Tamiz neonatal", "Taquipnea transitoria del recién nacido", "Lesiones de plexo braquial obstétrico", "Lesiones extracraneales", "Displasia del desarrollo de la cadera DDC"] },
+                { subject: "CONGENITAS", topics: ["Cardiopatías congénitas", "Tetralogía de Fallot", "Coartación aórtica", "Persistencia del conducto arterioso", "Fenilcetonuria", "Fibrosis quística", "Galactosemia clásica", "Storch", "Storch Citomegalovirus", "Storch herpes simple", "Storch rubéola congénita", "Storch sífilis congénita", "Storch toxoplasmosis", "Storch varicela congénita"] },
+                { subject: "ESCOLAR", topics: ["Control de niño sano", "Etapas del crecimiento", "Talla baja", "Alergia alimentaria", "Cuerpo extraño", "Dermatitis del pañal", "Estreñimiento funcional", "Hiperplasia adrenal congénita", "Hipotiroidismo congénito", "Maltrato infantil", "Mucopolisacaridosis", "Reflujo gastroesofágico del lactante"] },
+                { subject: "NUTRICIÓN PEDIÁTRICA", topics: ["Alimentación complementaria", "Deficiencia de vitamina A", "Desnutrición pediátrica", "Hipovitaminosis", "Intolerancia a la lactosa", "Lactancia materna", "Obesidad en escolares", "Pelagra en niños", "Raquitismo carencial", "Síndrome metabólico en niños"] },
+                { subject: "INFECTOLOGÍA PEDIÁTRICA", topics: ["Adenitis mesentérica", "Onfalitis", "Exantemáticas Diferencial", "Eritema infeccioso", "Escarlatina", "Exantema súbito", "Enfermedad de Kawasaki", "Síndrome mano pie boca", "Rubéola", "Sarampión", "Varicela", "Parotiditis", "Bronquiolitis", "Epiglotitis", "Laringotraqueitis CRUP", "Mononucleosis infecciosa", "Tos ferina", "IVU en menores"] },
+                { subject: "VACUNAS", topics: ["Vacunas generalidades", "Tipos de vacunas", "Vacunación universal", "Aplicación de vacunas", "Vacuna para personal de salud", "Vacunas en el embarazo", "Esquema de vacunación", "Bcg", "Hepatitis A", "Hepatitis B", "Hexavalente", "Influenza", "Neumocócica", "Rotavirus", "Sabin", "Salmonella", "Dpt", "Srp", "Tétanos", "Varicela", "Vph"] }
+            ];
+
+            function generateUnifiedStudyPlan() {
+                const geneticaTopics = ["Síndrome de Down", "Síndrome de Klinefelter", "Síndrome de Turner", "Síndrome de Marfan", "Enfermedad de Wilson", "Síndrome de Dravet", "Síndrome de Lynch", "Síndrome de Peutz Jegher", "Von Hippel Lindau"];
+                const allLegacyTopics = [{ specialty: "GENÉTICA", topics: geneticaTopics }];
+                legacyProgressData.forEach(item => {
+                    let specialtyObj = allLegacyTopics.find(s => s.specialty === item.specialty);
+                    if (!specialtyObj) {
+                        specialtyObj = { specialty: item.specialty, topics: [] };
+                        allLegacyTopics.push(specialtyObj);
+                    }
+                    if (!specialtyObj.topics.includes(item.topic)) {
+                        specialtyObj.topics.push(item.topic);
+                    }
+                });
+                const allFutureTopics = futureTopicsData.map(s => ({ specialty: s.subject, topics: s.topics }));
+                
+                function distributeTopics(topicsToDistribute, startDateStr, endDateStr) {
+                    const plan = [];
+                    const startDate = new Date(startDateStr + 'T00:00:00');
+                    const endDate = new Date(endDateStr + 'T00:00:00');
+                    const totalDays = (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24) + 1;
+                    
+                    const flatTopics = [];
+                    topicsToDistribute.forEach(specialty => {
+                        specialty.topics.forEach(topic => {
+                            flatTopics.push({ specialty: specialty.specialty, topic: topic });
+                        });
+                    });
+
+                    if (flatTopics.length === 0) return [];
+                    const topicsPerDay = Math.ceil(flatTopics.length / totalDays);
+
+                    let topicIndex = 0;
+                    for (let d = 0; d < totalDays; d++) {
+                        const currentDate = new Date(startDate);
+                        currentDate.setDate(startDate.getDate() + d);
+                        const dateString = currentDate.toISOString().split('T')[0];
+                        const dayPlan = { date: dateString, blocks: [] };
+                        let lastSpecialty = null;
+                        
+                        for (let i = 0; i < topicsPerDay; i++) {
+                            if (topicIndex >= flatTopics.length) break;
+                            const currentItem = flatTopics[topicIndex];
+                            if (currentItem.specialty !== lastSpecialty) {
+                                dayPlan.blocks.push({ subject: currentItem.specialty, topics: [currentItem.topic] });
+                                lastSpecialty = currentItem.specialty;
+                            } else {
+                                dayPlan.blocks[dayPlan.blocks.length - 1].topics.push(currentItem.topic);
+                            }
+                            topicIndex++;
+                        }
+                        if (dayPlan.blocks.length > 0) {
+                           plan.push(dayPlan);
+                        }
+                    }
+                    return plan;
+                }
+
+                const phase1 = distributeTopics(allLegacyTopics, `${currentYear}-04-13`, `${currentYear}-06-14`);
+                const phase2Topics = allFutureTopics.filter(s => ['ENDOCRINOLOGÍA', 'UROLOGÍA'].includes(s.specialty));
+                const phase2 = distributeTopics(phase2Topics, `${currentYear}-06-15`, `${currentYear}-06-25`);
+                
+                const phase3Topics = allFutureTopics.filter(s => !['ENDOCRINOLOGÍA', 'UROLOGÍA'].includes(s.specialty));
+                const phase3 = distributeTopics(phase3Topics, `${currentYear}-06-26`, `${currentYear}-09-20`);
+
+                const fullPlan = [...phase1, ...phase2, ...phase3];
+                
+                fullPlan.forEach(day => {
+                    const specialtyBlocks = new Map();
+                    day.blocks.forEach(block => {
+                        if (block.subject) {
+                            if (!specialtyBlocks.has(block.subject)) {
+                                specialtyBlocks.set(block.subject, []);
+                            }
+                            specialtyBlocks.get(block.subject).push(...(block.topics || []));
+                        }
+                    });
+                    const newBlocks = [];
+                    specialtyBlocks.forEach((topics, subject) => {
+                        newBlocks.push({ subject: subject, topics: topics });
+                    });
+                    day.blocks = newBlocks;
+                });
+
+                return fullPlan;
+            }
+
+            const defaultStudyPlan = generateUnifiedStudyPlan();
+            
             const subjectToTopicsMap = new Map();
             const motivationalQuotes = [ "La disciplina es el puente entre metas y logros.", "El éxito es la suma de pequeños esfuerzos repetidos día tras día.", "No te detengas hasta que te sientas orgulloso.", "Cree en ti mismo y todo será posible.", "El único modo de hacer un gran trabajo es amar lo que haces." ];
             
-            // --- INICIO: GENERACIÓN DEL NUEVO PLAN DE ESTUDIO UNIFICADO ---
-            function generateUnifiedStudyPlan() {
-                const newPlan = [];
-                let currentDate = new Date(`${currentYear}-04-13T00:00:00`); // Domingo 13 de Abril
-                
-                const allTopics = [];
-                // Fases y especialidades según lo solicitado
-                const phases = [
-                    { 
-                        endDate: new Date(`${currentYear}-06-14T00:00:00`), 
-                        specialties: ["GENÉTICA", "GERIATRÍA", "PSIQUIATRÍA", "DERMATOLOGÍA", "NEFROLOGÍA", "REUMATOLOGÍA", "NEUMOLOGÍA", "NEUROLOGÍA", "HEMATOLOGÍA", "INFECTOLOGÍA"]
-                    },
-                    {
-                        endDate: new Date(`${currentYear}-06-25T00:00:00`),
-                        specialties: ["ENDOCRINOLOGÍA", "UROLOGÍA"]
-                    },
-                    {
-                        endDate: new Date(`${currentYear}-09-20T00:00:00`),
-                        specialties: ["ORL", "OFTALMOLOGÍA", "TYO", "CARDIOLOGÍA", "ANGIOLOGÍA", "ACLS", "ATLS", "TOXICOLOGÍA", "GASTROENTEROLOGÍA", "CIRUGÍA ABDOMINAL Y COLOPROCTOLOGÍA", "CIRUGÍA PEDIÁTRICA", "GINECOLOGÍA", "ONCOGINE", "OBSTETRICIA", "HEMORRAGIAS OBSTÉTRICAS", "NEONATOLOGÍA", "CONGENITAS", "ESCOLAR", "NUTRICIÓN PEDIÁTRICA", "INFECTOLOGÍA PEDIÁTRICA", "VACUNAS"]
-                    }
-                ];
-
-                for (const phase of phases) {
-                    for (const specialty of phase.specialties) {
-                        if (MASTER_TOPIC_DATABASE[specialty]) {
-                            MASTER_TOPIC_DATABASE[specialty].forEach(topic => {
-                                allTopics.push({ specialty, topic });
-                            });
-                        }
-                    }
-                }
-
-                let topicIndex = 0;
-                while (topicIndex < allTopics.length) {
-                    const dateStr = currentDate.toISOString().split('T')[0];
-                    const dayTopics = [];
-                    // Asignar entre 4 y 8 temas por día
-                    const topicsForThisDay = Math.floor(Math.random() * (8 - 4 + 1)) + 4;
-
-                    for (let i = 0; i < topicsForThisDay && topicIndex < allTopics.length; i++) {
-                        dayTopics.push(allTopics[topicIndex]);
-                        topicIndex++;
-                    }
-
-                    if (dayTopics.length > 0) {
-                        const dayBlocks = [];
-                        let lastSpecialty = "";
-                        let currentBlock = null;
-
-                        for (const item of dayTopics) {
-                            if (item.specialty !== lastSpecialty) {
-                                if (currentBlock) {
-                                    dayBlocks.push(currentBlock);
-                                }
-                                currentBlock = { subject: item.specialty, topics: [item.topic] };
-                                lastSpecialty = item.specialty;
-                            } else {
-                                currentBlock.topics.push(item.topic);
-                            }
-                        }
-                        if (currentBlock) {
-                            dayBlocks.push(currentBlock);
-                        }
-
-                        newPlan.push({ date: dateStr, blocks: dayBlocks });
-                    }
-                    
-                    currentDate.setDate(currentDate.getDate() + 1);
-                }
-
-                // Añadir los repasos finales
-                const finalPhaseDate = new Date(newPlan[newPlan.length - 1].date);
-                finalPhaseDate.setDate(finalPhaseDate.getDate() + 1);
-                
-                ["REPASO GENERAL 1", "REPASO GENERAL 2", "REPASO GENERAL 3", "SIMULACIÓN FINAL"].forEach(specialty => {
-                     newPlan.push({
-                        date: finalPhaseDate.toISOString().split('T')[0],
-                        blocks: [{ subject: specialty, topics: MASTER_TOPIC_DATABASE[specialty] }]
-                    });
-                    finalPhaseDate.setDate(finalPhaseDate.getDate() + 1);
-                });
-                
-                return newPlan;
-            }
-            const defaultStudyPlan = generateUnifiedStudyPlan();
-            // --- FIN: GENERACIÓN DEL PLAN DE ESTUDIO ---
-
-
             let studyPlan; 
             let userProgress = {};
             let countdownTargetDateStr;
             let countdownInterval = null;
             const ALL_TASK_IDS = ['task-1-1', 'task-1-2', 'task-1-3', 'task-2-1', 'task-2-2', 'task-3-1', 'task-4-1', 'task-5-1', 'task-5-2', 'task-6-1'];
             
-            // Declaración de variables para elementos del DOM
-            let calendarView, boardView, viewSwitcher, calendarContainer, todoContainer, inprogressContainer, doneContainer;
+            let progressView, calendarView, boardView;
+            let tabBtnProgress, tabBtnCalendar, tabBtnBoard;
+            let accordionsContainer, globalScoreBar, globalAdvanceBar;
+            let calendarContainer, todoContainer, inprogressContainer, doneContainer;
             let dayModal, dayModalOverlay, dayModalTitle, dayModalTopicsContainer, dayModalNotes, saveNoteButton;
             let topicModal, topicModalOverlay, topicModalTitle, topicStepCards, topicTaskCheckboxes, aciertosInput, reactivosInput, percentageOutput, finishTopicButton;
-            let globalScoreBar, globalAdvanceBar;
             let editCountdownBtn, countdownEditor, countdownDatePicker, saveCountdownBtn, quoteContainer;
             
             function assignDOMelements() {
-                calendarView = document.getElementById('calendar-view');
-                boardView = document.getElementById('board-view');
-                viewSwitcher = document.getElementById('view-switcher');
-                calendarContainer = document.getElementById('calendar-container');
-                todoContainer = document.getElementById('col-todo-container');
-                inprogressContainer = document.getElementById('col-inprogress-container');
-                doneContainer = document.getElementById('col-done-container');
-                dayModal = document.getElementById('details-modal');
-                dayModalOverlay = document.getElementById('modal-overlay');
-                dayModalTitle = document.getElementById('modal-title');
-                dayModalTopicsContainer = document.getElementById('modal-topics');
-                dayModalNotes = document.getElementById('modal-notes');
-                saveNoteButton = document.getElementById('modal-save-btn');
-                topicModal = document.getElementById('topic-plan-modal');
-                topicModalOverlay = document.getElementById('topic-plan-overlay');
-                topicModalTitle = document.getElementById('topic-plan-title');
-                topicStepCards = topicModal.querySelectorAll('.step-card');
-                topicTaskCheckboxes = topicModal.querySelectorAll('.task-checkbox');
-                aciertosInput = document.getElementById('score-aciertos');
-                reactivosInput = document.getElementById('score-reactivos');
-                percentageOutput = document.getElementById('score-percentage');
-                finishTopicButton = document.getElementById('topic-finish-btn');
-                globalScoreBar = document.getElementById('global-score-bar');
-                globalAdvanceBar = document.getElementById('global-advance-bar');
-                editCountdownBtn = document.getElementById('edit-countdown-btn');
-                countdownEditor = document.getElementById('countdown-editor');
-                countdownDatePicker = document.getElementById('countdown-date-picker');
-                saveCountdownBtn = document.getElementById('save-countdown-btn');
-                quoteContainer = document.getElementById('motivational-quote-container');
+                progressView = document.getElementById('global-progress-view'); calendarView = document.getElementById('calendar-view'); boardView = document.getElementById('board-view');
+                tabBtnProgress = document.getElementById('tab-btn-progress'); tabBtnCalendar = document.getElementById('tab-btn-calendar'); tabBtnBoard = document.getElementById('tab-btn-board');
+                accordionsContainer = document.getElementById('specialty-accordions'); globalScoreBar = document.getElementById('global-score-bar'); globalAdvanceBar = document.getElementById('global-advance-bar');
+                calendarContainer = document.getElementById('calendar-container'); todoContainer = document.getElementById('col-todo-container'); inprogressContainer = document.getElementById('col-inprogress-container'); doneContainer = document.getElementById('col-done-container');
+                dayModal = document.getElementById('details-modal'); dayModalOverlay = document.getElementById('modal-overlay'); dayModalTitle = document.getElementById('modal-title'); dayModalTopicsContainer = document.getElementById('modal-topics'); dayModalNotes = document.getElementById('modal-notes'); saveNoteButton = document.getElementById('modal-save-btn');
+                topicModal = document.getElementById('topic-plan-modal'); topicModalOverlay = document.getElementById('topic-plan-overlay'); topicModalTitle = document.getElementById('topic-plan-title'); topicStepCards = topicModal.querySelectorAll('.step-card'); topicTaskCheckboxes = topicModal.querySelectorAll('.task-checkbox'); aciertosInput = document.getElementById('score-aciertos'); reactivosInput = document.getElementById('score-reactivos'); percentageOutput = document.getElementById('score-percentage'); finishTopicButton = document.getElementById('topic-finish-btn');
+                editCountdownBtn = document.getElementById('edit-countdown-btn'); countdownEditor = document.getElementById('countdown-editor'); countdownDatePicker = document.getElementById('countdown-date-picker'); saveCountdownBtn = document.getElementById('save-countdown-btn'); quoteContainer = document.getElementById('motivational-quote-container');
             }
 
-            function switchView() { const isCalendarVisible = !calendarView.classList.contains('hidden'); if (isCalendarVisible) { calendarView.classList.add('hidden'); boardView.classList.remove('hidden'); viewSwitcher.innerHTML = `<i class="far fa-calendar-alt"></i> Calendario Vital`; viewSwitcher.dataset.currentView = 'board'; populateKanbanBoard(); } else { boardView.classList.add('hidden'); calendarView.classList.remove('hidden'); viewSwitcher.innerHTML = `<i class="fas fa-columns"></i> Tablero Vital`; viewSwitcher.dataset.currentView = 'calendar'; populateCalendar(); } }
+            function switchView(viewName) {
+                [progressView, calendarView, boardView].forEach(v => v.classList.add('hidden'));
+                [tabBtnProgress, tabBtnCalendar, tabBtnBoard].forEach(b => b.classList.remove('active'));
+                let viewToShow, btnToActivate;
+                if(viewName === 'progress') { viewToShow = progressView; btnToActivate = tabBtnProgress; populateGlobalProgress(); }
+                else if(viewName === 'calendar') { viewToShow = calendarView; btnToActivate = tabBtnCalendar; populateCalendar(); }
+                else if(viewName === 'board') { viewToShow = boardView; btnToActivate = tabBtnBoard; populateKanbanBoard(); }
+                viewToShow.classList.remove('hidden'); btnToActivate.classList.add('active');
+            }
+            
             function generateTopicId(topicName) { return `topic_${topicName.toLowerCase().replace(/[^a-z0-9]/g, '')}`; }
             function getScoreColor(percentage) { if (percentage >= 80) return 'var(--vfd-green)'; if (percentage >= 60) return 'var(--warning-color)'; return 'var(--error-color)'; }
             function loadUserProgress(data) { userProgress = data || {}; }
-            async function saveData(key, value) { if (!currentUser) return; const docRef = db.collection('userProgress').doc(currentUser.uid); const keys = key.split('.'); let currentLocal = userProgress; for (let i = 0; i < keys.length - 1; i++) { currentLocal = currentLocal[keys[i]] = currentLocal[keys[i]] || {}; } currentLocal[keys[keys.length - 1]] = value; const payload = {}; payload[key] = value; try { await docRef.set(payload, { merge: true }); } catch (error) { console.error("Error al guardar en Firestore:", error); } }
-            
-            // --- INICIO: Función para guardar múltiples datos (optimizada) ---
-            async function saveMultipleData(dataObject) {
-                if (!currentUser) return;
-                const docRef = db.collection('userProgress').doc(currentUser.uid);
-                const batch = db.batch();
-                
-                // Actualizar el estado local
-                for (const key in dataObject) {
-                    const keys = key.split('.');
-                    let currentLocal = userProgress;
-                    for (let i = 0; i < keys.length - 1; i++) {
-                        currentLocal = currentLocal[keys[i]] = currentLocal[keys[i]] || {};
-                    }
-                    currentLocal[keys[keys.length - 1]] = dataObject[key];
-                }
-
-                // Preparar la carga para Firestore usando dot notation
-                const payload = {};
-                for (const key in dataObject) {
-                    payload[key] = dataObject[key];
-                }
-                
-                try {
-                    await docRef.set(payload, { merge: true });
-                } catch (error) {
-                    console.error("Error al guardar múltiples datos en Firestore:", error);
-                }
-            }
-            // --- FIN: Función para guardar múltiples datos ---
-
+            async function saveData(key, value) { if (!currentUser) return; const docRef = db.collection('userProgress').doc(currentUser.uid); const keys = key.split('.'); let currentLocal = userProgress; for (let i = 0; i < keys.length - 1; i++) { currentLocal = currentLocal[keys[i]] = currentLocal[keys[i]] || {}; } currentLocal[keys[keys.length - 1]] = value; const payload = {}; let currentPayload = payload; for (let i = 0; i < keys.length - 1; i++) { currentPayload = currentPayload[keys[i]] = {}; } currentPayload[keys[keys.length - 1]] = value; try { await docRef.set(payload, { merge: true }); } catch (error) { if (key === 'studyPlan') { await docRef.set({ studyPlan: value }, { merge: true }); } else { console.error("Error al guardar en Firestore:", error); } } }
             function getData(key, defaultValue = null) { const keys = key.split('.'); let result = userProgress; for (const k of keys) { if (result && typeof result === 'object' && k in result) { result = result[k]; } else { return defaultValue; } } return result; }
             function isTopicComplete(topicId) { return ALL_TASK_IDS.every(taskId => getData(`topicData.${topicId}.${taskId}`) === true); }
             function getTopicKanbanState(topicId) { const progress = getTopicProgress(topicId); if (progress.completionPercentage === 100) return 'done'; if (progress.completionPercentage > 0) return 'inprogress'; return 'todo'; }
             function getTopicProgress(topicId) { const checkedCount = ALL_TASK_IDS.filter(taskId => getData(`topicData.${topicId}.${taskId}`) === true).length; const completionPercentage = (checkedCount / ALL_TASK_IDS.length) * 100; const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`, '0')) || 0; const aciertos = parseInt(getData(`topicData.${topicId}.scoreAciertos`, '0')) || 0; const scorePercentage = reactivos > 0 ? (aciertos / reactivos) * 100 : 0; return { completionPercentage, scorePercentage }; }
             function displayDailyQuote() { if (quoteContainer) { const randomIndex = Math.floor(Math.random() * motivationalQuotes.length); quoteContainer.textContent = motivationalQuotes[randomIndex]; } }
             function startCountdown() { if (countdownInterval) clearInterval(countdownInterval); if (!countdownTargetDateStr) return; const targetDate = new Date(`${countdownTargetDateStr}T08:00:00`).getTime(); const daysEl = document.getElementById('countdown-days'); const hoursEl = document.getElementById('countdown-hours'); const minutesEl = document.getElementById('countdown-minutes'); const secondsEl = document.getElementById('countdown-seconds'); const update = () => { const now = new Date().getTime(); const distance = targetDate - now; if (distance < 0) { daysEl.textContent = "000"; hoursEl.textContent = "00"; minutesEl.textContent = "00"; secondsEl.textContent = "00"; clearInterval(countdownInterval); return; } daysEl.textContent = String(Math.floor(distance / (1000 * 60 * 60 * 24))).padStart(3, '0'); hoursEl.textContent = String(Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0'); minutesEl.textContent = String(Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0'); secondsEl.textContent = String(Math.floor((distance % (1000 * 60)) / 1000)).padStart(2, '0'); }; update(); countdownInterval = setInterval(update, 1000); }
-            function createTopicListItem(topic) { const topicId = generateTopicId(topic); const isComplete = isTopicComplete(topicId); const liClass = `topic-item ${isComplete ? 'topic-completed' : ''}`; let scoreHTML = ''; const { scorePercentage } = getTopicProgress(topicId); const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`, '0')) || 0; if (reactivos > 0) { const color = getScoreColor(scorePercentage); scoreHTML = `<span class="topic-score" style="color: ${color};">(${scorePercentage.toFixed(2)}%)</span>`; } return `<li class="${liClass}" draggable="true" data-topic-id="${topicId}" data-topic-name="${topic}"><span>${topic}</span>${scoreHTML}</li>`; }
-            function buildSubjectMap() { subjectToTopicsMap.clear(); if (!studyPlan) return; let lastSubject = null; studyPlan.forEach(day => { day.blocks.forEach(block => { if (block.subject) { lastSubject = block.subject; } if (lastSubject) { if (!subjectToTopicsMap.has(lastSubject)) { subjectToTopicsMap.set(lastSubject, []); } if (block.topics) { const dayTopicIds = block.topics.map(topicName => generateTopicId(topicName)); const topicsForSubject = subjectToTopicsMap.get(lastSubject); dayTopicIds.forEach(id => { if (!topicsForSubject.includes(id)) { topicsForSubject.push(id); } }); } } }); }); }
-            function calculateSubjectScore(subjectName) { const topicIds = subjectToTopicsMap.get(subjectName); if (!topicIds || topicIds.length === 0) return null; let totalScoreSum = 0; let scoredTopicsCount = 0; topicIds.forEach(topicId => { const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`)) || 0; if (reactivos > 0) { const { scorePercentage } = getTopicProgress(topicId); totalScoreSum += scorePercentage; scoredTopicsCount++; } }); return scoredTopicsCount > 0 ? (totalScoreSum / scoredTopicsCount).toFixed(2) : null; }
+            function createTopicListItem(topic) { const topicId = generateTopicId(topic); const isComplete = isTopicComplete(topicId); const liClass = `topic-item ${isComplete ? 'topic-completed' : ''}`; let scoreHTML = ''; const { scorePercentage } = getTopicProgress(topicId); const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`, '0')) || 0; if (reactivos > 0) { const color = getScoreColor(scorePercentage); scoreHTML = `<span class="topic-score" style="color: ${color};">(${scorePercentage.toFixed(0)}%)</span>`; } return `<li class="${liClass}" draggable="true" data-topic-id="${topicId}" data-topic-name="${topic}"><span>${topic}</span>${scoreHTML}</li>`; }
+            function buildSubjectMap() { subjectToTopicsMap.clear(); if (!studyPlan) return; studyPlan.forEach(day => { day.blocks.forEach(block => { if (block.subject) { if (!subjectToTopicsMap.has(block.subject)) { subjectToTopicsMap.set(block.subject, []); } if (block.topics) { const dayTopicIds = block.topics.map(generateTopicId); const topicsForSubject = subjectToTopicsMap.get(block.subject); dayTopicIds.forEach(id => { if (!topicsForSubject.includes(id)) { topicsForSubject.push(id); } }); } } }); }); }
+            function calculateSubjectScore(subjectName) { const topicIds = subjectToTopicsMap.get(subjectName); if (!topicIds || topicIds.length === 0) return null; let totalScoreSum = 0; let scoredTopicsCount = 0; topicIds.forEach(topicId => { const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`)) || 0; if (reactivos > 0) { const { scorePercentage } = getTopicProgress(topicId); totalScoreSum += scorePercentage; scoredTopicsCount++; } }); return scoredTopicsCount > 0 ? (totalScoreSum / scoredTopicsCount).toFixed(1) : null; }
             function updateGlobalProgressBars() { if (!studyPlan) return; buildSubjectMap(); let totalTopics = 0; subjectToTopicsMap.forEach(topics => totalTopics += topics.length); let completedTopics = 0; subjectToTopicsMap.forEach(topicIds => { topicIds.forEach(topicId => { if (isTopicComplete(topicId)) { completedTopics++; } }); }); const advancePercentage = totalTopics > 0 ? (completedTopics / totalTopics) * 100 : 0; globalAdvanceBar.style.width = `${advancePercentage}%`; globalAdvanceBar.textContent = `${advancePercentage.toFixed(1)}%`; let totalSubjectScoreSum = 0; let subjectsWithScoresCount = 0; subjectToTopicsMap.forEach((_, subject) => { const subjectScoreStr = calculateSubjectScore(subject); if (subjectScoreStr !== null) { totalSubjectScoreSum += parseFloat(subjectScoreStr); subjectsWithScoresCount++; } }); const scorePercentage = subjectsWithScoresCount > 0 ? totalSubjectScoreSum / subjectsWithScoresCount : 0; globalScoreBar.style.width = `${scorePercentage}%`; globalScoreBar.textContent = `${scorePercentage.toFixed(1)}%`; }
             
-            function populateCalendar() { if (!studyPlan || studyPlan.length === 0) { console.error("Plan de estudio no disponible para poblar calendario."); return; } buildSubjectMap(); const daysMap = new Map(studyPlan.map(day => [day.date, day])); const startDate = new Date(studyPlan[0].date + "T00:00:00"); const finalDate = new Date(studyPlan[studyPlan.length - 1].date + "T00:00:00"); let dayBeforeTargetStr = ''; if (countdownTargetDateStr) { const targetDateObj = new Date(countdownTargetDateStr + 'T00:00:00'); targetDateObj.setDate(targetDateObj.getDate() - 1); dayBeforeTargetStr = targetDateObj.toISOString().split('T')[0]; } let weeks = []; let dateCursor = new Date(startDate); dateCursor.setDate(dateCursor.getDate() - (dateCursor.getDay() || 7)); while (dateCursor <= finalDate) { let week = []; for(let i=0; i < 7; i++) { week.push(new Date(dateCursor)); dateCursor.setDate(dateCursor.getDate() + 1); } weeks.push(week); } const monthLayout = new Map(); weeks.forEach((week, weekIndex) => { const firstDayOfWeek = week[0]; const monthName = firstDayOfWeek.toLocaleString('es-ES', { month: 'long' }); if (!monthLayout.has(monthName)) { monthLayout.set(monthName, { startRow: weekIndex + 2, rowSpan: 1 }); } else { monthLayout.get(monthName).rowSpan++; } }); calendarContainer.innerHTML = ''; calendarContainer.innerHTML += '<div class="header-cell meta-header">M</div><div class="header-cell meta-header">S</div>'; ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'].forEach(day => calendarContainer.innerHTML += `<div class="header-cell day-header">${day}</div>`); monthLayout.forEach((layout, name) => { calendarContainer.innerHTML += `<div class="month-cell" style="grid-row: ${layout.startRow} / span ${layout.rowSpan}">${name}</div>`; }); weeks.forEach((week, weekIndex) => { const jsWeekIndex = Math.floor((week[0] - startDate) / (1000 * 60 * 60 * 24 * 7)) + 1; calendarContainer.innerHTML += `<div class="week-cell-container" style="grid-row: ${weekIndex + 2}"><span class="week-number">${jsWeekIndex > 0 ? jsWeekIndex : ''}</span></div>`; week.forEach(date => { const cell = document.createElement('div'); cell.className = 'day-cell'; const dateString = date.toISOString().split('T')[0]; if (date < startDate || date > finalDate) { cell.classList.add('empty'); } else { cell.dataset.date = dateString; cell.innerHTML = `<div class="calendar-day-number">${date.getDate()}</div>`; const dayData = daysMap.get(dateString); if (dayData && dayData.blocks) { let contentHTML = '<ul>'; dayData.blocks.forEach(block => { if (block.subject) { const score = calculateSubjectScore(block.subject); const scoreText = score !== null ? `<span class="subject-score">(${score}%)</span>` : ''; contentHTML += `<li><span class="subject-title">${block.subject}${scoreText}</span></li>`; } if (block.topics) { contentHTML += block.topics.map(topic => createTopicListItem(topic)).join(''); } }); contentHTML += '</ul>'; cell.innerHTML += `<div class="day-content">${contentHTML}</div>`; } if (dateString === countdownTargetDateStr) cell.classList.add('target-date'); if (dateString === dayBeforeTargetStr) cell.classList.add('day-before-target'); } calendarContainer.appendChild(cell); }); }); updateGlobalProgressBars(); }
-            
+            function populateCalendar() { 
+                if (!studyPlan) return; 
+                buildSubjectMap(); 
+                const daysMap = new Map(studyPlan.map(day => [day.date, day])); 
+                const startDate = new Date(studyPlan[0].date + "T00:00:00");
+                const calendarEndDate = new Date(`${currentYear}-09-30T00:00:00`);
+                
+                const lastDayOfPlanStr = countdownTargetDateStr;
+                let dayBeforeTargetStr = '';
+                if (lastDayOfPlanStr) {
+                    const targetDateObj = new Date(lastDayOfPlanStr + 'T00:00:00');
+                    targetDateObj.setDate(targetDateObj.getDate() - 1);
+                    dayBeforeTargetStr = targetDateObj.toISOString().split('T')[0];
+                }
+
+                let weeks = []; 
+                let dateCursor = new Date(startDate); 
+                dateCursor.setDate(dateCursor.getDate() - dateCursor.getDay()); 
+                while (dateCursor <= calendarEndDate) { 
+                    let week = []; 
+                    for(let i=0; i < 7; i++) { 
+                        week.push(new Date(dateCursor)); 
+                        dateCursor.setDate(dateCursor.getDate() + 1); 
+                    } 
+                    weeks.push(week); 
+                } 
+                const monthLayout = new Map(); 
+                weeks.forEach((week, weekIndex) => { const firstDayOfWeek = week[0]; const monthName = firstDayOfWeek.toLocaleString('es-ES', { month: 'long' }); if (!monthLayout.has(monthName)) { monthLayout.set(monthName, { startRow: weekIndex + 2, rowSpan: 1 }); } else { monthLayout.get(monthName).rowSpan++; } }); 
+                calendarContainer.innerHTML = ''; 
+                calendarContainer.innerHTML += '<div class="header-cell meta-header">M</div><div class="header-cell meta-header">S</div>'; 
+                ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].forEach(day => calendarContainer.innerHTML += `<div class="header-cell day-header">${day}</div>`); 
+                monthLayout.forEach((layout, name) => { calendarContainer.innerHTML += `<div class="month-cell" style="grid-row: ${layout.startRow} / span ${layout.rowSpan}">${name}</div>`; }); 
+                weeks.forEach((week, weekIndex) => { 
+                    const getWeekNumber = (d) => { d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7)); var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1)); var weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7); return weekNo; }; 
+                    calendarContainer.innerHTML += `<div class="week-cell-container" style="grid-row: ${weekIndex + 2}"><span class="week-number">${getWeekNumber(week[0])}</span></div>`; 
+                    week.forEach(date => { 
+                        const cell = document.createElement('div'); 
+                        cell.className = 'day-cell'; 
+                        const dateString = date.toISOString().split('T')[0]; 
+                        const dayData = daysMap.get(dateString); 
+                        
+                        cell.innerHTML = `<div class="calendar-day-number">${date.getDate()}</div>`;
+
+                        if (dayData) {
+                            cell.dataset.date = dateString; 
+                            let contentHTML = '<div class="day-content">'; 
+                            
+                            const topicsBySubject = new Map();
+                            dayData.blocks.forEach(block => {
+                                if (block.subject) {
+                                    if (!topicsBySubject.has(block.subject)) {
+                                        topicsBySubject.set(block.subject, []);
+                                    }
+                                    if(block.topics) {
+                                        topicsBySubject.get(block.subject).push(...block.topics);
+                                    }
+                                }
+                            });
+
+                            topicsBySubject.forEach((topics, subject) => {
+                                let allTopicsInBlockComplete = topics.length > 0 && topics.every(topic => isTopicComplete(generateTopicId(topic)));
+                                const completedClass = allTopicsInBlockComplete ? 'subject-completed' : '';
+                                const score = calculateSubjectScore(subject);
+                                const scoreText = score !== null ? `<span class="subject-score">(${score}%)</span>` : '';
+                                
+                                contentHTML += `<h3 class="subject-title ${completedClass}">${subject}${scoreText}</h3>`;
+                                contentHTML += '<ul class="topic-list">';
+                                contentHTML += topics.map(topic => createTopicListItem(topic)).join('');
+                                contentHTML += '</ul>';
+                            });
+
+                            contentHTML += '</div>'; 
+                            cell.innerHTML += contentHTML;
+                        } else {
+                            cell.classList.add('empty');
+                        }
+                        
+                        if (dateString === lastDayOfPlanStr) cell.classList.add('target-date');
+                        if (dateString === dayBeforeTargetStr) cell.classList.add('day-before-target');
+                        calendarContainer.appendChild(cell); 
+                    }); 
+                }); 
+                updateGlobalProgressBars(); 
+            }
+
             function createSpecialtyHeaderHTML(specialtyName, colorVar) { const specialtyId = generateTopicId(specialtyName); return `<div class="specialty-header" data-specialty-header="${specialtyName}" style="border-left-color: var(${colorVar})"><div class="specialty-header-main"><h3 style="color: var(${colorVar})">${specialtyName}</h3></div><div class="specialty-progress-wrapper"><small>Avance</small><div class="specialty-progress-container"><div class="specialty-progress-bar" id="sp-progress-${specialtyId}"></div></div><span class="specialty-percentage-text" id="sp-progress-text-${specialtyId}">0%</span></div><div class="specialty-progress-wrapper"><small>Nota</small><div class="specialty-progress-container"><div class="specialty-score-bar" id="sp-score-${specialtyId}"></div></div><span class="specialty-percentage-text" id="sp-score-text-${specialtyId}">0%</span></div></div>`; }
-            function populateKanbanBoard() { todoContainer.innerHTML = ''; inprogressContainer.innerHTML = ''; doneContainer.innerHTML = ''; const specialtyColors = ['--step-1-color', '--step-2-color', '--step-3-color', '--step-4-color', '--step-5-color', '--step-6-color']; let colorIndex = 0; const allSpecialties = {}; buildSubjectMap(); subjectToTopicsMap.forEach((topicIds, specialtyName) => { const topicNames = topicIds.map(id => { for (const day of studyPlan) { for (const block of day.blocks) { if (block.topics) { const foundTopic = block.topics.find(t => generateTopicId(t) === id); if (foundTopic) return foundTopic; } } } return null; }).filter(Boolean); if (topicNames.length > 0) { allSpecialties[specialtyName] = { topics: topicNames, color: specialtyColors[colorIndex % specialtyColors.length] }; colorIndex++; } }); for (const specialtyName in allSpecialties) { const specialtyData = allSpecialties[specialtyName]; const headerHTML = createSpecialtyHeaderHTML(specialtyName, specialtyData.color); const specialtyFragments = { todo: document.createDocumentFragment(), inprogress: document.createDocumentFragment(), done: document.createDocumentFragment() }; specialtyData.topics.forEach(topicName => { const topicId = generateTopicId(topicName); const state = getTopicKanbanState(topicId); const cardHTML = createKanbanCardHTML(topicName, topicId, specialtyName); const cardElement = document.createElement('div'); cardElement.innerHTML = cardHTML; specialtyFragments[state].appendChild(cardElement.firstChild); }); if (specialtyFragments.todo.hasChildNodes()) { todoContainer.innerHTML += headerHTML; todoContainer.appendChild(specialtyFragments.todo); } if (specialtyFragments.inprogress.hasChildNodes()) { inprogressContainer.innerHTML += headerHTML; inprogressContainer.appendChild(specialtyFragments.inprogress); } if (specialtyFragments.done.hasChildNodes()) { doneContainer.innerHTML += headerHTML; doneContainer.appendChild(specialtyFragments.done); } } updateAllSpecialtyProgressOnBoard(); }
+            function populateKanbanBoard() { todoContainer.innerHTML = ''; inprogressContainer.innerHTML = ''; doneContainer.innerHTML = ''; const specialtyColors = ['--step-1-color', '--step-2-color', '--step-3-color', '--step-4-color', '--step-5-color', '--step-6-color', '#FF69B4', '#8A2BE2']; let colorIndex = 0; const allSpecialties = {}; buildSubjectMap(); subjectToTopicsMap.forEach((topicIds, specialtyName) => { const topicNames = topicIds.map(id => { for (const day of studyPlan) { for (const block of day.blocks) { if (block.topics) { const foundTopic = block.topics.find(t => generateTopicId(t) === id); if (foundTopic) return foundTopic; } } } return null; }).filter(Boolean); if (topicNames.length > 0) { allSpecialties[specialtyName] = { topics: topicNames, color: specialtyColors[colorIndex % specialtyColors.length] }; colorIndex++; } }); for (const specialtyName in allSpecialties) { const specialtyData = allSpecialties[specialtyName]; const headerHTML = createSpecialtyHeaderHTML(specialtyName, specialtyData.color); const specialtyFragments = { todo: document.createDocumentFragment(), inprogress: document.createDocumentFragment(), done: document.createDocumentFragment() }; specialtyData.topics.forEach(topicName => { const topicId = generateTopicId(topicName); const state = getTopicKanbanState(topicId); const cardHTML = createKanbanCardHTML(topicName, topicId, specialtyName); const cardElement = document.createElement('div'); cardElement.innerHTML = cardHTML; specialtyFragments[state].appendChild(cardElement.firstChild); }); if (specialtyFragments.todo.hasChildNodes()) { todoContainer.innerHTML += headerHTML; todoContainer.appendChild(specialtyFragments.todo); } if (specialtyFragments.inprogress.hasChildNodes()) { inprogressContainer.innerHTML += headerHTML; inprogressContainer.appendChild(specialtyFragments.inprogress); } if (specialtyFragments.done.hasChildNodes()) { doneContainer.innerHTML += headerHTML; doneContainer.appendChild(specialtyFragments.done); } } updateAllSpecialtyProgressOnBoard(); }
             function createKanbanCardHTML(topicName, topicId, specialtyName) { const { completionPercentage, scorePercentage } = getTopicProgress(topicId); const scoreColor = getScoreColor(scorePercentage); const state = getTopicKanbanState(topicId); let statusColorVar = '--color-todo'; if (state === 'inprogress') statusColorVar = '--color-inprogress'; if (state === 'done') statusColorVar = '--color-done'; return `<article class="kanban-card" data-topic-id="${topicId}" data-topic-name="${topicName}" data-specialty="${specialtyName}" style="border-left: 4px solid var(${statusColorVar});"><div class="card-summary"><div class="card-topic-name">${topicName}</div><div class="card-progress-display"><div class="card-progress-bar-container"><div class="card-progress-bar" style="width: ${completionPercentage}%; background-color: var(${statusColorVar});"></div></div><span class="card-progress-text">${completionPercentage.toFixed(0)}%</span><span class="card-score-text" style="color: ${scoreColor}">${scorePercentage.toFixed(0)}%</span></div></div></article>`; }
+            function populateGlobalProgress() { updateGlobalProgressBars(); accordionsContainer.innerHTML = ''; buildSubjectMap(); subjectToTopicsMap.forEach((topicIds, specialtyName) => { let specialtyScores = []; let completedTopicsInSpecialty = 0; let panelContent = ''; topicIds.forEach(topicId => { const topicData = getTopicProgress(topicId); const topicName = studyPlan.flatMap(d => d.blocks.flatMap(b => b.topics || [])).find(t => generateTopicId(t) === topicId); const reactivos = getData(`topicData.${topicId}.scoreReactivos`); let scoreText = 'No iniciado'; let scoreClass = 'not-started'; if (reactivos > 0) { scoreText = `Calificación: ${topicData.scorePercentage.toFixed(1)}%`; scoreClass = topicData.scorePercentage >= 80 ? 'score-green' : topicData.scorePercentage >= 60 ? 'score-yellow' : 'score-red'; specialtyScores.push(topicData.scorePercentage); } else if (topicData.completionPercentage === 100) { scoreText = `Completado (Sin calificar)`; scoreClass = 'score-yellow'; } else if (topicData.completionPercentage > 0) { scoreText = `Avance: ${topicData.completionPercentage.toFixed(0)}%`; scoreClass = 'score-yellow'; } if (topicData.completionPercentage === 100) { completedTopicsInSpecialty++; } panelContent += `<div class="topic-progress-item"><span class="topic-name">${topicName || 'Tema desconocido'}</span><span class="topic-score ${scoreClass}">${scoreText}</span></div>`; }); let specialtyScoreAvg = 0; if (specialtyScores.length > 0) { specialtyScoreAvg = specialtyScores.reduce((a, b) => a + b, 0) / specialtyScores.length; } const specialtyScoreClass = specialtyScoreAvg >= 80 ? 'score-green' : specialtyScoreAvg >= 60 ? 'score-yellow' : 'score-red'; const specialtyCompletionAvg = topicIds.length > 0 ? (completedTopicsInSpecialty / topicIds.length) * 100 : 0; const completionIconClass = specialtyCompletionAvg >= 80 ? 'score-green' : specialtyCompletionAvg >= 60 ? 'score-yellow' : 'score-red'; const accordionHTML = ` <div class="specialty-accordion"> <button class="accordion-header"> <span class="specialty-name">${specialtyName}</span> <div class="specialty-progress-indicators"> <div class="indicator score-indicator"><i class="fas fa-star"></i><span class="score-value ${specialtyScoreClass}">${specialtyScoreAvg.toFixed(1)}%</span></div> <div class="indicator completion-indicator"><i class="fas fa-check-double ${completionIconClass}"></i><span class="completion-value">${specialtyCompletionAvg.toFixed(0)}%</span></div> </div> <i class="fas fa-chevron-down"></i> </button> <div class="accordion-panel">${panelContent}</div> </div>`; accordionsContainer.innerHTML += accordionHTML; }); document.querySelectorAll('.accordion-header').forEach(button => { button.addEventListener('click', () => { button.classList.toggle('active'); const panel = button.nextElementSibling; panel.style.maxHeight = panel.style.maxHeight ? null : panel.scrollHeight + "px"; panel.style.padding = panel.style.maxHeight ? "10px 20px" : "0px 20px"; }); }); }
             function showDayModal(dateString) { const dayData = studyPlan.find(d => d.date === dateString); const date = new Date(dateString + "T00:00:00"); dayModalTitle.textContent = date.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' }); let topicsHTML = '<ul>'; if (dayData && dayData.blocks) { dayData.blocks.forEach(block => { if (block.subject) { const score = calculateSubjectScore(block.subject); const scoreText = score !== null ? `<span class="subject-score">(${score}%)</span>` : ''; topicsHTML += `<li><span class="subject-title">${block.subject}${scoreText}</span></li>`; } if(block.topics) { topicsHTML += block.topics.map(topic => createTopicListItem(topic)).join(''); } }); } topicsHTML += '</ul>'; dayModalTopicsContainer.innerHTML = topicsHTML; dayModalNotes.value = getData(`dayNotes.${dateString}`, ''); dayModal.dataset.currentDate = dateString; dayModalOverlay.classList.add('visible'); dayModal.classList.add('visible'); }
             function closeDayModal() { dayModalOverlay.classList.remove('visible'); dayModal.classList.remove('visible'); }
             async function saveDayNote() { const dateString = dayModal.dataset.currentDate; if (dateString) { await saveData(`dayNotes.${dateString}`, dayModalNotes.value); } closeDayModal(); }
@@ -570,62 +625,52 @@
             function closeTopicModal() { const topicId = topicModal.dataset.currentTopicId; topicModalOverlay.classList.remove('visible'); topicModal.classList.remove('visible'); if (topicId) { updateUIForTopic(topicId); } }
             function loadTopicState(topicId) { topicTaskCheckboxes.forEach(checkbox => { checkbox.checked = getData(`topicData.${topicId}.${checkbox.id}`) === true; }); aciertosInput.value = getData(`topicData.${topicId}.scoreAciertos`, ''); reactivosInput.value = getData(`topicData.${topicId}.scoreReactivos`, ''); updateScorePercentage(); updateAllStepCardsStatus(); }
             async function saveTopicState(key, value) { const topicId = topicModal.dataset.currentTopicId; if (topicId) { await saveData(`topicData.${topicId}.${key}`, value); } }
-            function updateScorePercentage() { const aciertos = parseInt(aciertosInput.value) || 0; const reactivos = parseInt(reactivosInput.value) || 0; let percentage = 0; if (reactivos > 0) { percentage = (aciertos / reactivos) * 100; } const color = getScoreColor(percentage); percentageOutput.value = percentage.toFixed(2) + "%"; percentageOutput.style.color = color; }
+            function updateScorePercentage() { const aciertos = parseInt(aciertosInput.value) || 0; const reactivos = parseInt(reactivosInput.value) || 0; let percentage = 0; if (reactivos > 0) { percentage = (aciertos / reactivos) * 100; } const color = getScoreColor(percentage); percentageOutput.value = percentage.toFixed(1) + "%"; percentageOutput.style.color = color; }
             function updateStepCardStatus(cardElement) { const tasksInCard = cardElement.querySelectorAll('.task-checkbox'); const allTasksCompleted = Array.from(tasksInCard).every(task => task.checked); cardElement.classList.toggle('completed', allTasksCompleted); }
             function updateAllStepCardsStatus() { topicStepCards.forEach(updateStepCardStatus); }
             function finishTopicSession() { closeTopicModal(); }
-            function updateUIForTopic(topicId) { const isBoardVisible = !boardView.classList.contains('hidden'); if (isBoardVisible) { populateKanbanBoard(); } else { populateCalendar(); } updateGlobalProgressBars(); }
+            function updateUIForTopic(topicId) { const isBoardVisible = !boardView.classList.contains('hidden'); const isProgressVisible = !progressView.classList.contains('hidden'); if(isProgressVisible) { populateGlobalProgress(); } else if (isBoardVisible) { populateKanbanBoard(); } else { populateCalendar(); } updateGlobalProgressBars(); }
             function updateAllSpecialtyProgressOnBoard() { const headers = document.querySelectorAll('.specialty-header'); headers.forEach(header => { const specialtyName = header.dataset.specialtyHeader; const specialtyId = generateTopicId(specialtyName); const topicIds = subjectToTopicsMap.get(specialtyName) || []; const progressTextEl = document.getElementById(`sp-progress-text-${specialtyId}`); const scoreTextEl = document.getElementById(`sp-score-text-${specialtyId}`); const progressBar = document.getElementById(`sp-progress-${specialtyId}`); const scoreBar = document.getElementById(`sp-score-${specialtyId}`); if (!progressTextEl || !scoreTextEl || !progressBar || !scoreBar) return; let totalCompletion = 0, totalScore = 0, scoredTopics = 0; topicIds.forEach(topicId => { const { completionPercentage, scorePercentage } = getTopicProgress(topicId); totalCompletion += completionPercentage; const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`)) || 0; if (reactivos > 0 || isTopicComplete(topicId)) { totalScore += scorePercentage; scoredTopics++; } }); const avgCompletion = topicIds.length > 0 ? totalCompletion / topicIds.length : 0; const avgScore = scoredTopics > 0 ? totalScore / scoredTopics : 0; progressBar.style.width = `${avgCompletion}%`; progressTextEl.textContent = `${avgCompletion.toFixed(0)}%`; scoreBar.style.width = `${avgScore}%`; scoreTextEl.textContent = `${avgScore.toFixed(0)}%`; scoreBar.classList.remove('low', 'medium', 'high'); if (scoredTopics > 0 || avgCompletion === 100) { const colorClass = getScoreColor(avgScore); if(colorClass.includes('error')) scoreBar.classList.add('low'); if(colorClass.includes('warning')) scoreBar.classList.add('medium'); if(colorClass.includes('green')) scoreBar.classList.add('high'); } }); }
             function getSubjectForTopic(topicName) { const topicId = generateTopicId(topicName); for (const [subject, topicIds] of subjectToTopicsMap.entries()) { if (topicIds.includes(topicId)) { return subject; } } return null; }
-            
             let draggedItem = null; let lastDragOverCell = null; let lastDragOverTopic = null; function clearDragStyles() { if (lastDragOverCell) lastDragOverCell.classList.remove('drag-over'); if (lastDragOverTopic) lastDragOverTopic.classList.remove('drag-over-top', 'drag-over-bottom'); lastDragOverCell = null; lastDragOverTopic = null; }
             
-            // --- INICIO: Función de inicialización principal ---
             async function main() {
                 assignDOMelements();
                 displayDailyQuote();
                 
                 const docRef = db.collection('userProgress').doc(currentUser.uid);
-                const doc = await doc.get();
+                const doc = await docRef.get();
                 loadUserProgress(doc.data());
-
-                const userPlan = getData('studyPlan');
                 
-                // Si no hay plan de usuario o el plan guardado no corresponde al año actual, se crea uno nuevo.
-                // Esto asegura que la primera vez que un usuario entra o si el año cambia, obtiene el plan actualizado.
-                if (!userPlan || !userPlan.length > 0 || !doc.exists) {
-                    studyPlan = defaultStudyPlan;
-                    
-                    // Pre-poblar el progreso con los datos de `INITIAL_PROGRESS_DATA`
-                    const initialDataToSave = { 'studyPlan': defaultStudyPlan };
-                    INITIAL_PROGRESS_DATA.forEach(item => {
-                        const topicId = generateTopicId(item.topic);
-                        ALL_TASK_IDS.forEach(taskId => {
-                            initialDataToSave[`topicData.${topicId}.${taskId}`] = true;
-                        });
-                        initialDataToSave[`topicData.${topicId}.scoreAciertos`] = item.aciertos;
-                        initialDataToSave[`topicData.${topicId}.scoreReactivos`] = item.reactivos;
-                    });
-
-                    // Usamos la función optimizada para guardar todo de una vez
-                    await saveMultipleData(initialDataToSave);
-
-                } else {
-                    studyPlan = userPlan;
+                const userPlan = getData('studyPlan');
+                // CAMBIO 1: Se actualiza la comprobación para la v3 del plan.
+                if (userPlan && userPlan.length > 0 && userPlan[userPlan.length - 1].date === `${currentYear}-09-20`) { 
+                    studyPlan = userPlan; 
+                } else { 
+                    studyPlan = defaultStudyPlan; 
+                    await saveData('studyPlan', defaultStudyPlan); 
+                    const initialProgress = {};
+                    const geneticaTopics = ["Síndrome de Down", "Síndrome de Klinefelter", "Síndrome de Turner", "Síndrome de Marfan", "Enfermedad de Wilson", "Síndrome de Dravet", "Síndrome de Lynch", "Síndrome de Peutz Jegher", "Von Hippel Lindau"];
+                    geneticaTopics.forEach(topic => { const topicId = generateTopicId(topic); initialProgress[topicId] = { scoreAciertos: '0', scoreReactivos: '0' }; ALL_TASK_IDS.forEach(taskId => { initialProgress[topicId][taskId] = true; }); });
+                    legacyProgressData.forEach(item => { const topicId = generateTopicId(item.topic); initialProgress[topicId] = { scoreAciertos: String(item.aciertos), scoreReactivos: String(item.reactivos) }; ALL_TASK_IDS.forEach(taskId => { initialProgress[topicId][taskId] = true; }); });
+                    await saveData('topicData', initialProgress);
+                    loadUserProgress((await docRef.get()).data());
                 }
                 
                 countdownTargetDateStr = getData('countdownTarget') || studyPlan[studyPlan.length - 1].date;
                 countdownDatePicker.value = countdownTargetDateStr;
                 startCountdown();
-                populateCalendar();
                 
-                // --- REGISTRO DE EVENT LISTENERS ---
-                viewSwitcher.addEventListener('click', switchView);
+                switchView('progress'); 
+                
+                tabBtnProgress.addEventListener('click', () => switchView('progress'));
+                tabBtnCalendar.addEventListener('click', () => switchView('calendar'));
+                tabBtnBoard.addEventListener('click', () => switchView('board'));
                 boardView.addEventListener('click', e => { const card = e.target.closest('.kanban-card'); if (card) { const { topicId, topicName } = card.dataset; showTopicPlan(topicId, topicName); }});
                 calendarContainer.addEventListener('click', e => { const topicLi = e.target.closest('.topic-item'); if (topicLi && !draggedItem) { const { topicId, topicName } = topicLi.dataset; showTopicPlan(topicId, topicName); return; } const cell = e.target.closest('.day-cell:not(.empty)'); if (cell) showDayModal(cell.dataset.date); });
                 dayModalTopicsContainer.addEventListener('click', e => { const topicLi = e.target.closest('.topic-item'); if (topicLi) { const { topicId, topicName } = topicLi.dataset; showTopicPlan(topicId, topicName); } });
                 editCountdownBtn.addEventListener('click', () => { countdownEditor.style.display = countdownEditor.style.display === 'flex' ? 'none' : 'flex'; });
-                saveCountdownBtn.addEventListener('click', async () => { const newDate = countdownDatePicker.value; if (newDate) { countdownTargetDateStr = newDate; await saveData('countdownTarget', newDate); startCountdown(); populateCalendar(); countdownEditor.style.display = 'none'; } });
+                saveCountdownBtn.addEventListener('click', async () => { const newDate = countdownDatePicker.value; if (newDate) { countdownTargetDateStr = newDate; await saveData('countdownTarget', newDate); startCountdown(); if(!calendarView.classList.contains('hidden')) populateCalendar(); countdownEditor.style.display = 'none'; } });
                 dayModal.querySelector('#modal-close-day').addEventListener('click', closeDayModal);
                 dayModalOverlay.addEventListener('click', closeDayModal);
                 topicModal.querySelector('#modal-close-topic').addEventListener('click', closeTopicModal);
@@ -638,7 +683,7 @@
                 calendarContainer.addEventListener('dragstart', e => { if (e.target.classList.contains('topic-item')) { draggedItem = e.target; const topicName = draggedItem.dataset.topicName; const subjectTitle = getSubjectForTopic(topicName); e.dataTransfer.setData('application/json', JSON.stringify({ topicName: topicName, sourceSubject: subjectTitle })); setTimeout(() => e.target.classList.add('dragging'), 0); } });
                 calendarContainer.addEventListener('dragend', e => { if (draggedItem) { draggedItem.classList.remove('dragging'); draggedItem = null; clearDragStyles(); } });
                 calendarContainer.addEventListener('dragover', e => { e.preventDefault(); const targetCell = e.target.closest('.day-cell:not(.empty)'); if (!targetCell || !draggedItem) { clearDragStyles(); return; } const sourceDate = draggedItem.closest('.day-cell').dataset.date; const targetDate = targetCell.dataset.date; clearDragStyles(); if (sourceDate === targetDate) { const targetTopic = e.target.closest('.topic-item'); if (targetTopic && targetTopic !== draggedItem) { lastDragOverTopic = targetTopic; const rect = targetTopic.getBoundingClientRect(); const midpointY = rect.top + rect.height / 2; if (e.clientY < midpointY) { targetTopic.classList.add('drag-over-top'); } else { targetTopic.classList.add('drag-over-bottom'); } } } else { lastDragOverCell = targetCell; targetCell.classList.add('drag-over'); } });
-                calendarContainer.addEventListener('drop', async e => { e.preventDefault(); if (!draggedItem) return; const targetCell = e.target.closest('.day-cell'); if (!targetCell || targetCell.classList.contains('empty')) { clearDragStyles(); return; } const sourceCell = draggedItem.closest('.day-cell'); const sourceDate = sourceCell.dataset.date; const targetDate = targetCell.dataset.date; const { topicName, sourceSubject } = JSON.parse(e.dataTransfer.getData('application/json')); const sourceDay = studyPlan.find(d => d.date === sourceDate); if (!sourceDay) return; let removed = false; sourceDay.blocks.forEach(block => { if (block.topics) { const topicIndex = block.topics.indexOf(topicName); if (topicIndex > -1) { block.topics.splice(topicIndex, 1); removed = true; } } }); if (!removed) return; let targetDay = studyPlan.find(d => d.date === targetDate); if (!targetDay) { targetDay = { date: targetDate, blocks: [{ topics: [] }] }; studyPlan.push(targetDay); } let targetBlock = targetDay.blocks.find(b => getSubjectForTopic(b.topics?.[0]) === sourceSubject || b.subject === sourceSubject); if (!targetBlock) { targetBlock = { topics: [] }; targetDay.blocks.unshift(targetBlock); } const targetTopicEl = e.target.closest('.topic-item'); if (targetTopicEl && sourceDate === targetDate) { const targetTopicName = targetTopicEl.dataset.topicName; const rect = targetTopicEl.getBoundingClientRect(); const midpointY = rect.top + rect.height / 2; const insertBefore = e.clientY < midpointY; const targetIndex = targetBlock.topics.indexOf(targetTopicName); targetBlock.topics.splice(insertBefore ? targetIndex : targetIndex + 1, 0, topicName); } else { targetBlock.topics.push(topicName); } studyPlan.forEach(day => { day.blocks = day.blocks.filter(block => (block.subject && block.topics && block.topics.length > 0) || (!block.subject && block.topics && block.topics.length > 0) || (block.subject && !block.topics)); }); studyPlan = studyPlan.filter(day => day.blocks.length > 0 && day.blocks.some(b => (b.topics && b.topics.length > 0) || b.subject)); studyPlan.sort((a, b) => new Date(a.date) - new Date(b.date)); clearDragStyles(); await saveData('studyPlan', studyPlan); populateCalendar(); });
+                calendarContainer.addEventListener('drop', async e => { e.preventDefault(); if (!draggedItem) return; const targetCell = e.target.closest('.day-cell'); if (!targetCell || targetCell.classList.contains('empty')) { clearDragStyles(); return; } const sourceCell = draggedItem.closest('.day-cell'); const sourceDate = sourceCell.dataset.date; const targetDate = targetCell.dataset.date; const { topicName, sourceSubject } = JSON.parse(e.dataTransfer.getData('application/json')); const sourceDay = studyPlan.find(d => d.date === sourceDate); if (!sourceDay) return; let removed = false; sourceDay.blocks.forEach(block => { if (block.topics) { const topicIndex = block.topics.indexOf(topicName); if (topicIndex > -1) { block.topics.splice(topicIndex, 1); removed = true; } } }); if (!removed) return; let targetDay = studyPlan.find(d => d.date === targetDate); if (!targetDay) { targetDay = { date: targetDate, blocks: [{ topics: [] }] }; studyPlan.push(targetDay); } let targetBlock = targetDay.blocks.find(b => getSubjectForTopic(b.topics?.[0]) === sourceSubject || b.subject === sourceSubject); if (!targetBlock) { targetBlock = { subject: sourceSubject, topics: [] }; targetDay.blocks.push(targetBlock); } const targetTopicEl = e.target.closest('.topic-item'); if (targetTopicEl && sourceDate === targetDate) { const targetTopicName = targetTopicEl.dataset.topicName; const rect = targetTopicEl.getBoundingClientRect(); const midpointY = rect.top + rect.height / 2; const insertBefore = e.clientY < midpointY; const targetIndex = targetBlock.topics.indexOf(targetTopicName); targetBlock.topics.splice(insertBefore ? targetIndex : targetIndex + 1, 0, topicName); } else { targetBlock.topics.push(topicName); } studyPlan.forEach(day => { day.blocks = day.blocks.filter(block => (block.subject && block.topics && block.topics.length > 0) || (!block.subject && block.topics && block.topics.length > 0) || (block.subject && !block.topics)); }); studyPlan = studyPlan.filter(day => day.blocks.length > 0 && day.blocks.some(b => (b.topics && b.topics.length > 0) || b.subject)); studyPlan.sort((a, b) => new Date(a.date) - new Date(b.date)); clearDragStyles(); await saveData('studyPlan', studyPlan); populateCalendar(); });
             }
             main();
         }
