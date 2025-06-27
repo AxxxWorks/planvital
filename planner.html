@@ -15,6 +15,7 @@
             --text-color: #e0e0e0;
             --text-secondary: #a0a0a0;
             --accent-color: #00FF7F;
+            --subject-highlight-color: #ff9800; /* Original color, will be overridden for titles */
             --meta-bg: #181c25;
             --meta-header-bg: #101217;
             --meta-border: #2c3240;
@@ -90,21 +91,12 @@
         .calendar-day-number { font-size: 0.9em; font-weight: 600; color: #777; position: absolute; top: 8px; right: 12px; z-index: 1; transition: color 0.2s; }
         .day-content ul { list-style-type: none; padding-left: 0; margin: 25px 0 0 0; }
         .day-content li { margin-bottom: 4px; padding-left: 14px; position: relative; font-size: 0.85em; }
-        
-        /* CAMBIO: Lógica de estilo para títulos de especialidad */
         .day-content .subject-title {
-            color: var(--text-color); /* Color blanco por defecto */
+            color: var(--text-color); /* CAMBIO: Título de especialidad a blanco */
             font-weight: 700; display: block; margin-bottom: 6px; text-transform: uppercase;
-            font-size: 1em; text-shadow: 0 0 4px rgba(255, 255, 255, 0.15);
+            font-size: 1em; text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
             padding-left: 0;
-            transition: color 0.4s ease;
         }
-        .day-content .subject-title.subject-completed {
-            color: var(--text-completed); /* Color gris cuando está completado */
-            text-shadow: none;
-            font-style: italic;
-        }
-
         .subject-title::before { content: none !important; }
         .subject-score { color: var(--meta-text); font-size: 0.8em; font-weight: 400; margin-left: 8px; }
         .topic-item { display: flex; align-items: center; justify-content: space-between; padding: 4px 6px; margin-left: -6px; border-radius: 4px; transition: all 0.2s; border-top: 2px solid transparent; border-bottom: 2px solid transparent; }
@@ -315,6 +307,10 @@
                 currentUser = user;
                 initializeAppLogic();
             } else {
+                // For a real app, you'd redirect to a login page.
+                // For this example, we'll proceed with a mock user.
+                // In a real scenario, this block would be:
+                // window.location.href = 'index.html';
                 currentUser = { uid: 'mockUser123' }; // Mock user for demonstration if not logged in
                 initializeAppLogic();
             }
@@ -325,6 +321,12 @@
             const subjectToTopicsMap = new Map();
             const motivationalQuotes = [ "La disciplina es el puente entre metas y logros.", "El éxito es la suma de pequeños esfuerzos repetidos día tras día.", "No te detengas hasta que te sientas orgulloso.", "Cree en ti mismo y todo será posible.", "El único modo de hacer un gran trabajo es amar lo que haces." ];
             
+            // =========================================================================================
+            // == INICIO DEL NUEVO PLAN DE ESTUDIO UNIFICADO ==
+            // Frecuencia Vital: Se ha reestructurado completamente el temario para crear un plan
+            // de estudio coherente y sin precedentes, fusionando las fuentes de datos y distribuyendo
+            // los temas de manera equitativa a lo largo del nuevo cronograma.
+            // =========================================================================================
             let defaultStudyPlan = [
                 // --- FASE 1: 13 de Abril - 14 de Junio (Temas de 2listado.html) ---
                 { date: `${currentYear}-04-13`, blocks: [{ subject: "GENÉTICA", topics: ["Síndrome de Down", "Síndrome de Klinefelter", "Síndrome de Turner", "Síndrome de Marfan", "Enfermedad de Wilson"] }] },
@@ -529,16 +531,6 @@
             async function saveData(key, value) { if (!currentUser || !currentUser.uid) return; const docRef = db.collection('userProgress').doc(currentUser.uid); const keys = key.split('.'); let currentLocal = userProgress; for (let i = 0; i < keys.length - 1; i++) { currentLocal = currentLocal[keys[i]] = currentLocal[keys[i]] || {}; } currentLocal[keys[keys.length - 1]] = value; const payload = {}; let currentPayload = payload; for (let i = 0; i < keys.length - 1; i++) { currentPayload = currentPayload[keys[i]] = {}; } currentPayload[keys[keys.length - 1]] = value; try { await docRef.set(payload, { merge: true }); } catch (error) { if (key === 'studyPlan') { await docRef.set({ studyPlan: value }, { merge: true }); } else { console.error("Error al guardar en Firestore:", error); } } }
             function getData(key, defaultValue = null) { const keys = key.split('.'); let result = userProgress; for (const k of keys) { if (result && typeof result === 'object' && k in result) { result = result[k]; } else { return defaultValue; } } return result; }
             function isTopicComplete(topicId) { return ALL_TASK_IDS.every(taskId => getData(`topicData.${topicId}.${taskId}`) === true); }
-            
-            // CAMBIO: Nueva función para verificar si todos los temas de una especialidad están completos
-            function isSubjectComplete(subjectName) {
-                const topicIds = subjectToTopicsMap.get(subjectName);
-                if (!topicIds || topicIds.length === 0) {
-                    return false;
-                }
-                return topicIds.every(topicId => isTopicComplete(topicId));
-            }
-
             function getTopicKanbanState(topicId) { const progress = getTopicProgress(topicId); if (progress.completionPercentage === 100) return 'done'; if (progress.completionPercentage > 0) return 'inprogress'; return 'todo'; }
             function getTopicProgress(topicId) { const checkedCount = ALL_TASK_IDS.filter(taskId => getData(`topicData.${topicId}.${taskId}`) === true).length; const completionPercentage = (checkedCount / ALL_TASK_IDS.length) * 100; const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`, '0')) || 0; const aciertos = parseInt(getData(`topicData.${topicId}.scoreAciertos`, '0')) || 0; const scorePercentage = reactivos > 0 ? (aciertos / reactivos) * 100 : 0; return { completionPercentage, scorePercentage }; }
             function displayDailyQuote() { if (quoteContainer) { const randomIndex = Math.floor(Math.random() * motivationalQuotes.length); quoteContainer.textContent = motivationalQuotes[randomIndex]; } }
@@ -546,95 +538,9 @@
             function createTopicListItem(topic) { const topicId = generateTopicId(topic); const isComplete = isTopicComplete(topicId); const liClass = `topic-item ${isComplete ? 'topic-completed' : ''}`; let scoreHTML = ''; const { scorePercentage } = getTopicProgress(topicId); const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`, '0')) || 0; if (reactivos > 0) { const color = getScoreColor(scorePercentage); scoreHTML = `<span class="topic-score" style="color: ${color};">(${scorePercentage.toFixed(2)}%)</span>`; } return `<li class="${liClass}" draggable="true" data-topic-id="${topicId}" data-topic-name="${topic}"><span>${topic}</span>${scoreHTML}</li>`; }
             function buildSubjectMap() { subjectToTopicsMap.clear(); if (!studyPlan) return; let lastSubject = null; studyPlan.forEach(day => { day.blocks.forEach(block => { if (block.subject) { lastSubject = block.subject; } if (lastSubject) { if (!subjectToTopicsMap.has(lastSubject)) { subjectToTopicsMap.set(lastSubject, []); } if (block.topics) { const dayTopicIds = block.topics.map(topicName => generateTopicId(topicName)); const topicsForSubject = subjectToTopicsMap.get(lastSubject); dayTopicIds.forEach(id => { if (!topicsForSubject.includes(id)) { topicsForSubject.push(id); } }); } } }); }); }
             function calculateSubjectScore(subjectName) { const topicIds = subjectToTopicsMap.get(subjectName); if (!topicIds || topicIds.length === 0) return null; let totalScoreSum = 0; let scoredTopicsCount = 0; topicIds.forEach(topicId => { const reactivos = parseInt(getData(`topicData.${topicId}.scoreReactivos`)) || 0; if (reactivos > 0) { const { scorePercentage } = getTopicProgress(topicId); totalScoreSum += scorePercentage; scoredTopicsCount++; } }); return scoredTopicsCount > 0 ? (totalScoreSum / scoredTopicsCount).toFixed(2) : null; }
-            function updateGlobalProgressBars() { if (!studyPlan) return; buildSubjectMap(); let totalTopics = 0; subjectToTopicsMap.forEach((topics, subject) => { if(subject !== "DÍA LIBRE / COLCHÓN" && subject !== "DÍA DE REPASO" && subject !== "SIMULACRO FASE 1") totalTopics += topics.length; }); let completedTopics = 0; subjectToTopicsMap.forEach((topicIds, subject) => { if(subject !== "DÍA LIBRE / COLCHÓN" && subject !== "DÍA DE REPASO" && subject !== "SIMULACRO FASE 1") { topicIds.forEach(topicId => { if (isTopicComplete(topicId)) { completedTopics++; } }); }}); const advancePercentage = totalTopics > 0 ? (completedTopics / totalTopics) * 100 : 0; globalAdvanceBar.style.width = `${advancePercentage}%`; globalAdvanceBar.textContent = `${advancePercentage.toFixed(1)}%`; let totalSubjectScoreSum = 0; let subjectsWithScoresCount = 0; subjectToTopicsMap.forEach((_, subject) => { if(subject !== "DÍA LIBRE / COLCHÓN" && subject !== "DÍA DE REPASO" && subject !== "SIMULACRO FASE 1") { const subjectScoreStr = calculateSubjectScore(subject); if (subjectScoreStr !== null) { totalSubjectScoreSum += parseFloat(subjectScoreStr); subjectsWithScoresCount++; } }}); const scorePercentage = subjectsWithScoresCount > 0 ? totalSubjectScoreSum / subjectsWithScoresCount : 0; globalScoreBar.style.width = `${scorePercentage}%`; globalScoreBar.textContent = `${scorePercentage.toFixed(1)}%`; }
-            
-            function populateCalendar() {
-                if (!studyPlan) return;
-                buildSubjectMap();
-                const daysMap = new Map(studyPlan.map(day => [day.date, day]));
-                const startDate = new Date(studyPlan[0].date + "T00:00:00");
-                const finalDate = new Date(studyPlan[studyPlan.length - 1].date + "T00:00:00");
-                
-                // CAMBIO: Set para rastrear los títulos de especialidad ya mostrados. Se reinicia en cada render.
-                const displayedSubjects = new Set();
-                
-                let dayBeforeTargetStr = '';
-                if (countdownTargetDateStr) { const targetDateObj = new Date(countdownTargetDateStr + 'T00:00:00'); targetDateObj.setDate(targetDateObj.getDate() - 1); dayBeforeTargetStr = targetDateObj.toISOString().split('T')[0]; }
-                
-                let weeks = [];
-                let dateCursor = new Date(startDate);
-                dateCursor.setDate(dateCursor.getDate() - dateCursor.getDay());
-                
-                while (dateCursor <= finalDate) {
-                    let week = [];
-                    for(let i=0; i < 7; i++) {
-                        week.push(new Date(dateCursor));
-                        dateCursor.setDate(dateCursor.getDate() + 1);
-                    }
-                    weeks.push(week);
-                }
-                
-                const monthLayout = new Map();
-                weeks.forEach((week, weekIndex) => {
-                    const firstDayOfWeek = week[0];
-                    const monthName = firstDayOfWeek.toLocaleString('es-ES', { month: 'long' });
-                    if (!monthLayout.has(monthName)) {
-                        monthLayout.set(monthName, { startRow: weekIndex + 2, rowSpan: 1 });
-                    } else {
-                        monthLayout.get(monthName).rowSpan++;
-                    }
-                });
-                
-                calendarContainer.innerHTML = '';
-                calendarContainer.innerHTML += '<div class="header-cell meta-header">M</div><div class="header-cell meta-header">S</div>';
-                ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].forEach(day => calendarContainer.innerHTML += `<div class="header-cell day-header">${day}</div>`);
-                
-                monthLayout.forEach((layout, name) => {
-                    calendarContainer.innerHTML += `<div class="month-cell" style="grid-row: ${layout.startRow} / span ${layout.rowSpan}">${name}</div>`;
-                });
-                
-                weeks.forEach((week, weekIndex) => {
-                    calendarContainer.innerHTML += `<div class="week-cell-container" style="grid-row: ${weekIndex + 2}"><span class="week-number">${weekIndex + 1}</span></div>`;
-                    week.forEach(date => {
-                        const cell = document.createElement('div');
-                        cell.className = 'day-cell';
-                        const dateString = date.toISOString().split('T')[0];
-                        
-                        if (date < startDate || date > finalDate) {
-                            cell.classList.add('empty');
-                        } else {
-                            cell.dataset.date = dateString;
-                            cell.innerHTML = `<div class="calendar-day-number">${date.getDate()}</div>`;
-                            const dayData = daysMap.get(dateString);
-                            
-                            if (dayData && dayData.blocks) {
-                                let contentHTML = '<ul>';
-                                dayData.blocks.forEach(block => {
-                                    // CAMBIO: Lógica modificada para mostrar el título solo una vez y aplicar estilo de completado.
-                                    if (block.subject && !displayedSubjects.has(block.subject)) {
-                                        const isComplete = isSubjectComplete(block.subject);
-                                        const completedClass = isComplete ? ' subject-completed' : '';
-                                        const score = calculateSubjectScore(block.subject);
-                                        const scoreText = score !== null ? `<span class="subject-score">(${score}%)</span>` : '';
-                                        contentHTML += `<li><span class="subject-title${completedClass}">${block.subject}${scoreText}</span></li>`;
-                                        displayedSubjects.add(block.subject); // Marcar como mostrado
-                                    }
-                                    if (block.topics) {
-                                        contentHTML += block.topics.map(topic => createTopicListItem(topic)).join('');
-                                    }
-                                });
-                                contentHTML += '</ul>';
-                                cell.innerHTML += `<div class="day-content">${contentHTML}</div>`;
-                            }
-                            if (dateString === countdownTargetDateStr) cell.classList.add('target-date');
-                            if (dateString === dayBeforeTargetStr) cell.classList.add('day-before-target');
-                        }
-                        calendarContainer.appendChild(cell);
-                    });
-                });
-                updateGlobalProgressBars();
-            }
-
+            function updateGlobalProgressBars() { if (!studyPlan) return; buildSubjectMap(); let totalTopics = 0; subjectToTopicsMap.forEach(topics => totalTopics += topics.length); let completedTopics = 0; subjectToTopicsMap.forEach(topicIds => { topicIds.forEach(topicId => { if (isTopicComplete(topicId)) { completedTopics++; } }); }); const advancePercentage = totalTopics > 0 ? (completedTopics / totalTopics) * 100 : 0; globalAdvanceBar.style.width = `${advancePercentage}%`; globalAdvanceBar.textContent = `${advancePercentage.toFixed(1)}%`; let totalSubjectScoreSum = 0; let subjectsWithScoresCount = 0; subjectToTopicsMap.forEach((_, subject) => { const subjectScoreStr = calculateSubjectScore(subject); if (subjectScoreStr !== null) { totalSubjectScoreSum += parseFloat(subjectScoreStr); subjectsWithScoresCount++; } }); const scorePercentage = subjectsWithScoresCount > 0 ? totalSubjectScoreSum / subjectsWithScoresCount : 0; globalScoreBar.style.width = `${scorePercentage}%`; globalScoreBar.textContent = `${scorePercentage.toFixed(1)}%`; }
+            function populateCalendar() { if (!studyPlan) return; buildSubjectMap(); const daysMap = new Map(studyPlan.map(day => [day.date, day])); const startDate = new Date(studyPlan[0].date + "T00:00:00"); const finalDateOfMonth = new Date(currentYear, 8, 30); // Render up to end of September
+            let dayBeforeTargetStr = ''; if (countdownTargetDateStr) { const targetDateObj = new Date(countdownTargetDateStr + 'T00:00:00'); targetDateObj.setDate(targetDateObj.getDate() - 1); dayBeforeTargetStr = targetDateObj.toISOString().split('T')[0]; } let weeks = []; let dateCursor = new Date(startDate); dateCursor.setDate(dateCursor.getDate() - dateCursor.getDay()); while (dateCursor <= finalDateOfMonth) { let week = []; for(let i=0; i < 7; i++) { week.push(new Date(dateCursor)); dateCursor.setDate(dateCursor.getDate() + 1); } weeks.push(week); } const monthLayout = new Map(); weeks.forEach((week, weekIndex) => { const firstDayOfWeek = week[0]; const monthName = firstDayOfWeek.toLocaleString('es-ES', { month: 'long' }); if (!monthLayout.has(monthName)) { monthLayout.set(monthName, { startRow: weekIndex + 2, rowSpan: 1 }); } else { monthLayout.get(monthName).rowSpan++; } }); calendarContainer.innerHTML = ''; calendarContainer.innerHTML += '<div class="header-cell meta-header">M</div><div class="header-cell meta-header">S</div>'; ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].forEach(day => calendarContainer.innerHTML += `<div class="header-cell day-header">${day}</div>`); monthLayout.forEach((layout, name) => { calendarContainer.innerHTML += `<div class="month-cell" style="grid-row: ${layout.startRow} / span ${layout.rowSpan}">${name}</div>`; }); weeks.forEach((week, weekIndex) => { calendarContainer.innerHTML += `<div class="week-cell-container" style="grid-row: ${weekIndex + 2}"><span class="week-number">${weekIndex + 1}</span></div>`; week.forEach(date => { const cell = document.createElement('div'); cell.className = 'day-cell'; const dateString = date.toISOString().split('T')[0]; const monthOfDate = date.getMonth(); if (monthOfDate < startDate.getMonth() || date < startDate) { cell.classList.add('empty'); } else { cell.dataset.date = dateString; cell.innerHTML = `<div class="calendar-day-number">${date.getDate()}</div>`; const dayData = daysMap.get(dateString); if (dayData && dayData.blocks) { let contentHTML = '<ul>'; dayData.blocks.forEach(block => { if (block.subject) { const score = calculateSubjectScore(block.subject); const scoreText = score !== null ? `<span class="subject-score">(${score}%)</span>` : ''; contentHTML += `<li><span class="subject-title">${block.subject}${scoreText}</span></li>`; } if (block.topics) { contentHTML += block.topics.map(topic => createTopicListItem(topic)).join(''); } }); contentHTML += '</ul>'; cell.innerHTML += `<div class="day-content">${contentHTML}</div>`; } if (dateString === countdownTargetDateStr) cell.classList.add('target-date'); if (dateString === dayBeforeTargetStr) cell.classList.add('day-before-target'); } calendarContainer.appendChild(cell); }); }); updateGlobalProgressBars(); }
             function createSpecialtyHeaderHTML(specialtyName, colorVar) { const specialtyId = generateTopicId(specialtyName); return `<div class="specialty-header" data-specialty-header="${specialtyName}" style="border-left-color: var(${colorVar})"><div class="specialty-header-main"><h3 style="color: var(${colorVar})">${specialtyName}</h3></div><div class="specialty-progress-wrapper"><small>Avance</small><div class="specialty-progress-container"><div class="specialty-progress-bar" id="sp-progress-${specialtyId}"></div></div><span class="specialty-percentage-text" id="sp-progress-text-${specialtyId}">0%</span></div><div class="specialty-progress-wrapper"><small>Nota</small><div class="specialty-progress-container"><div class="specialty-score-bar" id="sp-score-${specialtyId}"></div></div><span class="specialty-percentage-text" id="sp-score-text-${specialtyId}">0%</span></div></div>`; }
             function populateKanbanBoard() { todoContainer.innerHTML = ''; inprogressContainer.innerHTML = ''; doneContainer.innerHTML = ''; const specialtyColors = ['--step-1-color', '--step-2-color', '--step-3-color', '--step-4-color', '--step-5-color', '--step-6-color']; let colorIndex = 0; const allSpecialties = {}; buildSubjectMap(); subjectToTopicsMap.forEach((topicIds, specialtyName) => { const topicNames = topicIds.map(id => { for (const day of studyPlan) { for (const block of day.blocks) { if (block.topics) { const foundTopic = block.topics.find(t => generateTopicId(t) === id); if (foundTopic) return foundTopic; } } } return null; }).filter(Boolean); if (topicNames.length > 0) { allSpecialties[specialtyName] = { topics: topicNames, color: specialtyColors[colorIndex % specialtyColors.length] }; colorIndex++; } }); for (const specialtyName in allSpecialties) { const specialtyData = allSpecialties[specialtyName]; const headerHTML = createSpecialtyHeaderHTML(specialtyName, specialtyData.color); const specialtyFragments = { todo: document.createDocumentFragment(), inprogress: document.createDocumentFragment(), done: document.createDocumentFragment() }; specialtyData.topics.forEach(topicName => { const topicId = generateTopicId(topicName); const state = getTopicKanbanState(topicId); const cardHTML = createKanbanCardHTML(topicName, topicId, specialtyName); const cardElement = document.createElement('div'); cardElement.innerHTML = cardHTML; specialtyFragments[state].appendChild(cardElement.firstChild); }); if (specialtyFragments.todo.hasChildNodes()) { todoContainer.innerHTML += headerHTML; todoContainer.appendChild(specialtyFragments.todo); } if (specialtyFragments.inprogress.hasChildNodes()) { inprogressContainer.innerHTML += headerHTML; inprogressContainer.appendChild(specialtyFragments.inprogress); } if (specialtyFragments.done.hasChildNodes()) { doneContainer.innerHTML += headerHTML; doneContainer.appendChild(specialtyFragments.done); } } updateAllSpecialtyProgressOnBoard(); }
             function createKanbanCardHTML(topicName, topicId, specialtyName) { const { completionPercentage, scorePercentage } = getTopicProgress(topicId); const scoreColor = getScoreColor(scorePercentage); const state = getTopicKanbanState(topicId); let statusColorVar = '--color-todo'; if (state === 'inprogress') statusColorVar = '--color-inprogress'; if (state === 'done') statusColorVar = '--color-done'; return `<article class="kanban-card" data-topic-id="${topicId}" data-topic-name="${topicName}" data-specialty="${specialtyName}" style="border-left: 4px solid var(${statusColorVar});"><div class="card-summary"><div class="card-topic-name">${topicName}</div><div class="card-progress-display"><div class="card-progress-bar-container"><div class="card-progress-bar" style="width: ${completionPercentage}%; background-color: var(${statusColorVar});"></div></div><span class="card-progress-text">${completionPercentage.toFixed(0)}%</span><span class="card-score-text" style="color: ${scoreColor}">${scorePercentage.toFixed(0)}%</span></div></div></article>`; }
@@ -659,6 +565,7 @@
                 assignDOMelements();
                 displayDailyQuote();
                 
+                // Use a mock user if not logged in for local testing, otherwise use real auth
                 const userDocId = currentUser && currentUser.uid ? currentUser.uid : 'mockUser123';
                 const docRef = db.collection('userProgress').doc(userDocId);
                 
